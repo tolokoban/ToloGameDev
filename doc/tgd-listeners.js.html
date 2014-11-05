@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>Documentation Source: tgd.js</title>
+	<title>Documentation Source: tgd-listeners.js</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -74,140 +74,72 @@
 					
 
 
-		<h1 class="page-title">Source: tgd.js</h1>
+		<h1 class="page-title">Source: tgd-listeners.js</h1>
     
 <section>
 	<article>
 		<pre
 			class="sunlight-highlight-javascript linenums">/**
- * Effectuer un document.querySelector().
+ * Gestion d'une liste de fonctions devant réagir à des événements.
+ * @class
  */
-function $(selector) {
-    var elem = typeof selector === 'string' ? window.document.querySelector(selector) : selector;
-    if (!elem) {
-        throw new Error("Bad selector: \"" + selector + "\"!");
-    }
-    return elem;
+var Listeners = function() {
+    this._list = [];
 };
-
 
 /**
- * Add slots for mouse touch events.
- * * __tap__:
- * * __touchstart__:
- * * __touchend__:
- * * __move__:
+ * Ajouter un __listener__ à la liste.
+ * @param listener{function} Fonction à appeler quand l'énément est déclenché.
+ * @return false  si le __listener__  n'a pas été ajouté  (parce qu'il
+ * existe déjà ou parce qu'il n'est pas une fonction).
  */
-function $events(element, slots) {
-    element = $(element);
-    var onTouchstart = function(evt) {
-        if (slots.touchstart) {
-            slots.touchstart({target: element, button: evt.button});
-        }
-    },
-    onTouchend = function(evt) {
-        evt.preventDefault();
-        if (slots.touchend) {
-            slots.touchend({target: element, button: evt.button});
-        }
-        if (slots.tap) {
-            slots.tap({target: element, button: evt.button});
-        }
-    };
-    slots._type = null;
-    element.addEventListener(
-        "touchstart",
-        function(evt) {
-            if (slots._type) return;
-            slots._type = "T";
-            onTouchstart(evt);
-        }
-    );
-    element.addEventListener(
-        "mousedown",
-        function(evt) {
-            if (slots._type) return;
-            slots._type = "M";
-            onTouchstart(evt);
-        }
-    );
-    element.addEventListener(
-        "touchend",
-        function(evt) {
-            if (slots._type == "T") {
-                onTouchend(evt);
-            }
-            delete slots._type;
-        }
-    );
-    element.addEventListener(
-        "mouseup",
-        function(evt) {
-            if (slots._type == "M") {
-                onTouchend(evt);
-            }
-            delete slots._type;
-        }
-    );
-    element.addEventListener(
-        "mousemove",
-        function(evt) {
-            if (typeof slots.move === 'function') {
-                slots.move({target: element, x: evt.offsetX, y: evt.offsetY});
-            }
-        },
-        false
-    );
-    return element;
+Listeners.prototype.add = function(listener) {
+    if (typeof listener !== 'function') return false;
+    this.remove(listener);
+    for (var i = 0 ; i &lt; this._list.length ; i++) {
+        if (listener === this._list[i]) return false;
+    }
+    this._list.push(listener);
+    return true;
 };
 
-function randint(a, b) {
-    if (typeof b === 'undefined') {
-        b = a;
-        a = 0;
-    }
-    return a + Math.floor(Math.random() * (b - a));
-}
-
-function toInt(a, min, max) {
-    var x = parseInt(a);
-    if (isNaN(x)) return 0;
-    if (typeof min !== 'undefined' &amp;&amp; x &lt; min) x = min;
-    if (typeof max !== 'undefined' &amp;&amp; x > max) x = max;
-    return x;
-}
-
-function toFloat(a, min, max) {
-    var x = parseFloat(a);
-    if (isNaN(x)) return 0;
-    if (typeof min !== 'undefined' &amp;&amp; x &lt; min) x = min;
-    if (typeof max !== 'undefined' &amp;&amp; x > max) x = max;
-    return x;
-}
-
-var Mobil = require("tgd-mobil.js");
-
-exports.$ = $;
-exports.$events = $events;
-exports.toInt = toInt;
-exports.toFloat = toFloat;
-exports.randint = randint;
-exports.Runtime = require("tgd-runtime");
-exports.Mobil = require("tgd-mobil");
-
-exports.init = function() {
-    window.addEventListener(
-        'DOMContentLoaded',
-        function() {
-            if (typeof window.main !== 'function') {
-                alert("Missing draw function 'window.main()'!");
-            } else {
-                var runtime = new exports.Runtime();
-                runtime.start(window.main);
-            }
+/**
+ * Supprimer le __listener__ de la liste.
+ * @param listener{function} Fonction à appeler quand l'énément est déclenché.
+ * @return false si le __listener__  n'existe pas.
+ */
+Listeners.prototype.remove = function(listener) {
+    if (typeof listener !== 'function') return false;
+    for (var i = 0 ; i &lt; this._list.length ; i++) {
+        if (listener === this._list[i]) {
+            this._list.splice(i, 1);
         }
-    );
-};</pre>
+        return true;
+    }
+    return false;
+};
+
+/**
+ * Supprimer tous les __listeners__ de la liste.
+ */
+Listeners.prototype.clear = function() {
+    this._list = [];
+};
+
+/**
+ * Emettre l'événement. Tous les __listeners__ seront appelé avec __obj__ en tant que `this`.
+ */
+Listeners.prototype.fire = function(obj, arg) {
+    var i, listener;
+    for (i = 0 ; i &lt; this._list.length ; i++) {
+        listener = this._list[i];
+        if (false === listener.call(obj, arg)) return false;
+    }    
+    return true;
+};
+
+
+module.exports = Listeners;</pre>
 	</article>
 </section>
 

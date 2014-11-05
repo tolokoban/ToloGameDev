@@ -28,6 +28,10 @@
 					<ul class="dropdown-menu ">
 						
 						<li>
+							<a href="Listeners.html">Listeners</a>
+						</li>
+						
+						<li>
 							<a href="Mobil.html">Mobil</a>
 						</li>
 						
@@ -76,6 +80,7 @@
 	<article>
 		<pre
 			class="sunlight-highlight-javascript linenums">var TGD = require("tgd");
+var Listeners = require("tgd-listeners");
 
 var images = {};
 
@@ -88,6 +93,8 @@ var Runtime = function(canvas) {
     canvas = TGD.$(canvas);
     canvas.$runtime = this;
 
+    this._events = {};
+    this._mobils = [];
     this.draw = null;
     this.timestamp = 0;
     this.deltaTimestamp = 0;
@@ -95,19 +102,35 @@ var Runtime = function(canvas) {
     this.mouseButtons = [0,0,0];
     this.pointerX = -1;
     this.pointerY = -1;
-    this.mobils = [];
-    this.enabled = 0;
     var that = this;
     TGD.$events(
         canvas,
         {
             touchstart: function(evt) {
-                var btn = evt.button;
-                that.mouseButtons[btn] = that.mouseButtons[btn] &lt;= 0 ? 2 : 1;
+                that.mouseButtons[evt.button] = 1;
+                var events = ["touchstart", "touchstart2", "touchstart3"]  ;
+                var listeners = that._events[events[evt.button]];
+                if (typeof listeners === 'undefined') {
+                    return;
+                }
+                listeners.fire(that, evt);
             },
             touchend: function(evt) {
-                var btn = evt.button;
-                that.mouseButtons[btn] = that.mouseButtons[btn] >= 0 ? -2 : -1;
+                that.mouseButtons[evt.button] = -1;
+                var events = ["touchend", "touchend2", "touchend3"]  ;
+                var listeners = that._events[events[evt.button]];
+                if (typeof listeners === 'undefined') {
+                    return;
+                }
+                listeners.fire(that, evt);
+            },
+            tap: function(evt) {
+                var events = ["tap", "tap2", "tap3"]  ;
+                var listeners = that._events[events[evt.button]];
+                if (typeof listeners === 'undefined') {
+                    return;
+                }
+                listeners.fire(that, evt);
             },
             move: function(evt) {
                 that.pointerX = evt.x;
@@ -115,6 +138,51 @@ var Runtime = function(canvas) {
             }
         }
     );
+    canvas.addEventListener(
+        "mouseleave",
+        function() {
+            for (var i = 0 ; i &lt; 3 ; i++) {
+                that.mouseButtons[i] = 0;
+            }
+        },
+        false
+    );
+};
+
+/**
+ * Ajouter un __listener__ d'événement.
+ * @param event{string} Nom de l'événement que l'on veut écouter :
+ * * __tap__: click du bouton gauche ou du doigt.
+ * * __tap2__: click du bouton du milieu de la souris.
+ * * __tap3__: click du bouton droit de la souris.
+ * * __toushstart__: bouton gauche enfoncé ou doigt touchant l'écran.
+ * * __toushstart2__: bouton du milieu enfoncé.
+ * * __toushstart3__: bouton droit enfoncé.
+ * * __toushend__: bouton gauche relaché ou doigt ne touchant plus l'écran.
+ * * __toushend2__: bouton du milieu relaché.
+ * * __toushend3__: bouton droit relaché.
+ * @member
+ */
+Runtime.prototype.addListener = function(event, listener) {
+    if (typeof this._events[event] === 'undefined') this._events[event] = new Listeners();
+    return this._events[event].add(listener);
+};
+
+/**
+ * Retirer un __listener__ à un événement.
+ * @member
+ */
+Runtime.prototype.removeListener = function(event, listener) {
+    if (typeof this._events[event] === 'undefined') return false;
+    return this._events[event].remove(listener);
+};
+
+/**
+ * Retirer tous les __listeners__ d'un événement.
+ * @member
+ */
+Runtime.prototype.resetListeners = function(event) {
+    this._events[event] = new Listeners();    
 };
 
 /**
@@ -135,26 +203,36 @@ Runtime.prototype.start = function(draw) {
             if (typeof f === 'function') {
                 that.deltaTimestamp = timestamp - that.timestamp;
                 that.timestamp = timestamp;
-                that.mobils.forEach(
+                that._mobils.forEach(
                     function(m) {
                         m.$move(that);
                     }
                 );
                 f.call(that);                
-                that.mobils.forEach(
+                that._mobils.forEach(
                     function(m) {
                         m.$draw(that);
                     }
                 );
                 var lst = [];
-                that.mobils.forEach(
+                that._mobils.forEach(
                     function(m) {
                         if (!m.isDead) {
                             lst.push(m);
                         }
                     }
                 );
-                that.mobils = lst;
+                that._mobils = lst;
+            }
+            var i;
+            for (i = 0 ; i &lt; 3 ; i++) {
+                var v = that.mouseButtons[i];
+                if (v == 1) {
+                    that.mouseButtons[i] = 2;
+                }
+                else if (v == -1) {
+                    that.mouseButtons[i] = -2;
+                }
             }
         } catch (x) {
             this.enabled = 0;
@@ -166,7 +244,7 @@ Runtime.prototype.start = function(draw) {
 };
 
 /**
- * Add a mobil to the list.
+ * Ajouter un __Mobil__ à la liste.
  * @member
  */
 Runtime.prototype.addMobil = function(mobil) {
@@ -175,23 +253,38 @@ Runtime.prototype.addMobil = function(mobil) {
     return mobil;
 };
 
-Runtime.prototype.rgba = function(r,g,b,a) {
-    return "rgba(" + toInt(r, 0, 255) 
-        + "," + toInt(g, 0, 255) 
-        + "," + toInt(b, 0, 255)
-        + "," + toFloat(a, 0, 1) + ")";
+/**
+ * Retourner le code pour définir la couleur à partir du niveau de rouge, de vert et de bleu.
+ * @param r{number} Niveau de rouge entre 0 et 255. 
+ * @param g{number} Niveau de vert entre 0 et 255. 
+ * @param b{number} Niveau de bleu entre 0 et 255. 
+ * @param a{number} Niveau d'opacité définit par un nombre réel entre 0 et 1 : 0 = invisible et 1 = opaque.
+ * @member
+ */
+Runtime.prototype.rgb = function(r,g,b,a) {
+    r = TGD.toInt(r, 0, 255);
+    g = TGD.toInt(g, 0, 255);
+    b = TGD.toInt(b, 0, 255);
+    if (typeof a === 'number') {
+        return "rgba(" + r + "," + g + "," + b + "," + TGD.toFloat(a, 0, 1) + ")";
+    }
+    return "rgb(" + TGD.toInt(r, 0, 255) 
+        + "," + TGD.toInt(g, 0, 255) 
+        + "," + TGD.toInt(b, 0, 255) + ")";
 };
 
-Runtime.prototype.rgb = function(r,g,b) {
-    return "rgb(" + toInt(r, 0, 255) 
-        + "," + toInt(g, 0, 255) 
-        + "," + toInt(b, 0, 255) + ")";
-};
-
+/**
+ * 
+ * @member
+ */
 Runtime.prototype.image = function(id) {
     return images[id];
 };
 
+/**
+ * 
+ * @member
+ */
 Runtime.prototype.loadImages = function(dic, nextDraw) {
     var count = 0;
     var key;
@@ -211,8 +304,6 @@ Runtime.prototype.loadImages = function(dic, nextDraw) {
     }
 };
 
-
-
 module.exports = Runtime;
 </pre>
 	</article>
@@ -230,7 +321,7 @@ module.exports = Runtime;
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a>
-		on 2014-11-05T11:46:11+01:00 using the <a
+		on 2014-11-05T21:15:14+01:00 using the <a
 			href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>

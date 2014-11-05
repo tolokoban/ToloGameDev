@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>Documentation Global</title>
+	<title>Documentation Class: Listeners</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -74,12 +74,12 @@
 					
 
 
-	<h1 class="page-title">Global</h1>
+	<h1 class="page-title">Class: Listeners</h1>
 <section>
 
 <header>
     <h2>
-    
+    Listeners
     </h2>
     
 </header>
@@ -90,62 +90,8 @@
 
     
         
-
-        
-<dl class="details">
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-        
-    
-    </div>
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        <dl>
-            
 <dt>
-    <h4 class="name" id="$"><span class="type-signature"></span>$<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Listeners"><span class="type-signature"></span>new Listeners<span class="signature">()</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -153,7 +99,7 @@
     
     
     <div class="description">
-        <p>Effectuer un document.querySelector().</p>
+        <p>Gestion d'une liste de fonctions devant réagir à des événements.</p>
     </div>
     
 
@@ -190,8 +136,239 @@
 	<dd class="tag-source">
 		<ul class="dummy">
 			<li>
-				<a href="tgd.js.html">tgd.js</a>,
-				 <a href="tgd.js.html#sunlight-1-line-4">line 4</a>
+				<a href="tgd-listeners.js.html">tgd-listeners.js</a>,
+				 <a href="tgd-listeners.js.html#sunlight-1-line-5">line 5</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        <dl>
+            
+<dt>
+    <h4 class="name" id="add"><span class="type-signature"></span>add<span class="signature">(listener)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Ajouter un <strong>listener</strong> à la liste.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>listener</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Fonction à appeler quand l'énément est déclenché.</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="tgd-listeners.js.html">tgd-listeners.js</a>,
+				 <a href="tgd-listeners.js.html#sunlight-1-line-15">line 15</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>false  si le <strong>listener</strong>  n'a pas été ajouté  (parce qu'il
+existe déjà ou parce qu'il n'est pas une fonction).</p>
+</div>
+
+
+
+
+        
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="clear"><span class="type-signature"></span>clear<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Supprimer tous les <strong>listeners</strong> de la liste.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="tgd-listeners.js.html">tgd-listeners.js</a>,
+				 <a href="tgd-listeners.js.html#sunlight-1-line-44">line 44</a>
 			</li>
 		</ul>
 	</dd>
@@ -221,7 +398,7 @@
         
             
 <dt>
-    <h4 class="name" id="$events"><span class="type-signature"></span>$events<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="fire"><span class="type-signature"></span>fire<span class="signature">()</span><span class="type-signature"></span></h4>
     
     
 </dt>
@@ -229,13 +406,7 @@
     
     
     <div class="description">
-        <p>Add slots for mouse touch events.</p>
-<ul>
-<li><strong>tap</strong>:</li>
-<li><strong>touchstart</strong>:</li>
-<li><strong>touchend</strong>:</li>
-<li><strong>move</strong>:</li>
-</ul>
+        <p>Emettre l'événement. Tous les <strong>listeners</strong> seront appelé avec <strong>obj</strong> en tant que <code>this</code>.</p>
     </div>
     
 
@@ -272,8 +443,8 @@
 	<dd class="tag-source">
 		<ul class="dummy">
 			<li>
-				<a href="tgd.js.html">tgd.js</a>,
-				 <a href="tgd.js.html#sunlight-1-line-20">line 20</a>
+				<a href="tgd-listeners.js.html">tgd-listeners.js</a>,
+				 <a href="tgd-listeners.js.html#sunlight-1-line-51">line 51</a>
 			</li>
 		</ul>
 	</dd>
@@ -296,6 +467,142 @@
     
     
     
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="remove"><span class="type-signature"></span>remove<span class="signature">(listener)</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Supprimer le <strong>listener</strong> de la liste.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>listener</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Fonction à appeler quand l'énément est déclenché.</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="tgd-listeners.js.html">tgd-listeners.js</a>,
+				 <a href="tgd-listeners.js.html#sunlight-1-line-30">line 30</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>false si le <strong>listener</strong>  n'existe pas.</p>
+</div>
+
+
+
+
+        
     
     
 </dd>

@@ -1,22 +1,37 @@
 require("tgd").init();
 var x, y;
-
+var dessiner = false;
 
 function main() {
+    this.addListener("tap3", onTap3);
+    this.addListener("touchstart", onTouchstart);
+    this.addListener("touchend", onTouchend);
+    this.draw = clear;
+}
+
+function onTap3() {
+    this.draw = clear;
+}
+
+function onTouchstart() {
+    x = this.pointerX;
+    y = this.pointerY;
+    dessiner = true;
+}
+
+function onTouchend() {
+    dessiner = false;
+}
+
+function clear() {
     var ctx = this.context;
     ctx.fillStyle = "#fff";
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     this.draw = draw;
 }
 
-
 function draw() {
-    var btn = this.mouseButtons[0];
-    if (btn == 1) {
-        x = this.pointerX;
-        y = this.pointerY;
-    }
-    else if (btn > 1) {
+    if (dessiner) {
         var ctx = this.context;
         ctx.strokeStyle = "red";
         ctx.beginPath();
@@ -25,9 +40,5 @@ function draw() {
         y = this.pointerY;
         ctx.lineTo(x, y);
         ctx.stroke();
-    }
-
-    if (this.mouseButtons[2] > 0) {
-        this.draw = main;
     }
 }
