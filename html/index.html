@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>ToloGameDev v0.0.1</title>
+    <script src="common.js"></script>
+    <script src="index.js"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>ToloGameDev</h1>
+
+    <div class="flex">
+      <article>
+        <h2 lang="en">Demos' List</h2>
+        <h2 lang="fr">Liste des démos</h2>
+        <ul id="demos"></ul>
+        <button onclick="alert(window.location.href)">Test</button>
+      </article>
+
+      <article>
+        <h2 lang="en">Projects' list</h2>
+        <h2 lang="fr">Liste des projets</h2>
+        <a href="new-project.html" class="center">
+          <span lang="en">New</span>
+          <span lang="fr">Nouveau</span>
+        </a>
+      </article>
+    </div>
+
+    <hr/>
+    <center>
+      <button lang="en" onclick="Common.lang('fr')">Je parle français, s'il vous plait !</button>
+      <button lang="fr" onclick="Common.lang('en')">I speak english, please!</button>
+    </center>
+  </body>
+</html>

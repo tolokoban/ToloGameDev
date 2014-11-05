@@ -1,0 +1,9 @@
+{
+    "name": "{{name}}",
+    "main": "html/index.html",
+    "window": {
+	"toolbar": true,
+        "width": 820,
+        "height": 700
+    }    
+}
