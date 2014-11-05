@@ -21,6 +21,8 @@ html {
 }
 
 body {
+    display: flex;
+    
     position: absolute;
     left: 0;
     top: 0;
@@ -30,8 +32,7 @@ body {
 
 canvas {
     display: block;
-    margin: 10px;
-    float: right;
+    margin: auto;
     box-shadow: 0 0 5px #000;
 }
 

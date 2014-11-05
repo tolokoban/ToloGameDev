@@ -2,11 +2,12 @@ require("tgd").init();
 
 function main() {
     var ctx = this.context;
+    var y = (this.timestamp / 20) % ctx.canvas.height;
     ctx.fillStyle = "white";
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    ctx.font = 'italic 20pt serif';
-    ctx.fillStyle = "black";
-    ctx.fillText("Hello world!", 51, 51);
-    ctx.fillStyle = "cyan";
-    ctx.fillText("Hello world!", 50, 50);
+    ctx.font = 'bold 32pt serif';
+    ctx.strokeStyle = "black";
+    ctx.fillStyle = "orange";
+    ctx.fillText("{{name}}", 10, y);
+    ctx.strokeText("{{name}}", 10, y);
 }
