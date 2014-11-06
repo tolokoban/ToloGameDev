@@ -4,10 +4,7 @@ var FS = require("fs");
 window.addEventListener(
     'DOMContentLoaded',
     function() {
-        var demodir = Path.join(
-            Path.dirname(window.location.href.substr(7)),
-            "demo"
-        );
+        var demodir = Path.join(Common.pwd(), "demo");
         var ul = window.document.getElementById("demos");
         FS.readdir(
             demodir,
