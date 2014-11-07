@@ -3,7 +3,7 @@ var FS = require("fs");
 var Template = require("template");
 
 function createProject() {
-    var dir = Path.join(Path.dirname(window.location.href.substr(7)), "..");
+    var dir = Path.join(Common.pwd(), "..");
     dir = Path.join(dir, "project");
     if (false == FS.existsSync(dir)) {
         FS.mkdirSync(dir);
@@ -25,7 +25,7 @@ function createProject() {
         projectNumber++;
     }
     FS.mkdirSync(dirProject);
-    var dirTemplate = Path.join(Path.dirname(window.location.href.substr(7)), "template");
+    var dirTemplate = Path.join(Common.pwd(), "template");
     dirTemplate = Path.join(dirTemplate, "default");
     Template.copy(dirTemplate, dirProject, {name: name});
 
@@ -34,7 +34,7 @@ function createProject() {
     if (false == FS.existsSync(dirModules)) {
         FS.mkdirSync(dirModules);
     }
-    var dirLibrary = Path.join(Path.dirname(window.location.href.substr(7)), "node_modules");
+    var dirLibrary = Path.join(Common.pwd(), "node_modules");
     FS.readdir(
         dirLibrary,
         function(err, files) {

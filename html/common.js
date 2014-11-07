@@ -6,6 +6,20 @@ var Common = function() {
     var langStyle = null;
 
     return {
+        /**
+         * Retourner le répertoire de la page courante.
+         */
+        pwd: function() {
+            var path = window.location.href.substr(7);
+            console.info("[common] path=...", path);
+            if ((path.charAt(0) == '\\' || path.charAt(0) == '/') && path.charAt(2) == ':') {
+                path = path.substr(1);
+                console.info("[common] path (windows)=...", path);
+            }
+            console.info("[common] Path.dirname(path)=...", Path.dirname(path));
+            return Path.dirname(path);
+        },
+
         lang: function(id) {
             if (!languages) {
                 // Initialise localization.
@@ -76,7 +90,7 @@ var Common = function() {
 window.addEventListener(
     'DOMContentLoaded',
     function() {
-        var dir = Path.dirname(window.location.href.substr(7));
+        var dir = Common.pwd();
         Common.lang(Common.lang());
         var elements = window.document.querySelectorAll("pre");
         if (!elements) return;

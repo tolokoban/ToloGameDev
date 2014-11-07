@@ -135,6 +135,28 @@ pre {
     padding: .5em;
     border-radius: 1em;
     font-size: 8pt;
+    font-family: monospace;
     color: white;
     width: auto;
+}
+
+pre > ol { 
+    counter-reset: item;
+    padding: 0;
+}
+pre > ol > li { 
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+pre > ol > li:before {
+    display: inline-block;
+    content: counter(item) ". ";
+    counter-increment: item;
+    background: #333;
+    border-radius: 0;
+    color: #aaa; 
+    width: 48px;
+    text-align: right;
+    margin-right: 1em;
 }
