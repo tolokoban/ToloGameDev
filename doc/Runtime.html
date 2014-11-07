@@ -174,16 +174,19 @@
     
 
     
-        <h3 class="subsection-title">Members</h3>
+
+    
+        <h3 class="subsection-title">Methods</h3>
 
         <dl>
             
-<dt class="name" id="addListener">
-    <h4><span class="type-signature"></span>addListener<span class="type-signature"></span></h4>
-
+<dt>
+    <h4 class="name" id="addListener"><span class="type-signature"></span>addListener<span class="signature">(event)</span><span class="type-signature"></span></h4>
+    
     
 </dt>
 <dd>
+    
     
     <div class="description">
         <p>Ajouter un <strong>listener</strong> d'événement.</p>
@@ -191,7 +194,71 @@
     
 
     
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
 
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>event</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Nom de l'événement que l'on veut écouter :</p>
+<ul>
+<li><strong>tap</strong>: click du bouton gauche ou du doigt.</li>
+<li><strong>tap2</strong>: click du bouton du milieu de la souris.</li>
+<li><strong>tap3</strong>: click du bouton droit de la souris.</li>
+<li><strong>toushstart</strong>: bouton gauche enfoncé ou doigt touchant l'écran.</li>
+<li><strong>toushstart2</strong>: bouton du milieu enfoncé.</li>
+<li><strong>toushstart3</strong>: bouton droit enfoncé.</li>
+<li><strong>toushend</strong>: bouton gauche relaché ou doigt ne touchant plus l'écran.</li>
+<li><strong>toushend2</strong>: bouton du milieu relaché.</li>
+<li><strong>toushend3</strong>: bouton droit relaché.</li>
+</ul></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
     
 <dl class="details">
 	
@@ -220,7 +287,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="tgd-runtime.js.html">tgd-runtime.js</a>,
-				 <a href="tgd-runtime.js.html#sunlight-1-line-85">line 85</a>
+				 <a href="tgd-runtime.js.html#sunlight-1-line-84">line 84</a>
 			</li>
 		</ul>
 	</dd>
@@ -233,18 +300,29 @@
 	
 </dl>
 
+    
+    
 
+    
+
+    
+    
+    
+    
+    
+    
     
 </dd>
 
         
             
-<dt class="name" id="addMobil">
-    <h4><span class="type-signature"></span>addMobil<span class="type-signature"></span></h4>
-
+<dt>
+    <h4 class="name" id="addMobil"><span class="type-signature"></span>addMobil<span class="signature">()</span><span class="type-signature"></span></h4>
+    
     
 </dt>
 <dd>
+    
     
     <div class="description">
         <p>Ajouter un <strong>Mobil</strong> à la liste.</p>
@@ -252,7 +330,11 @@
     
 
     
-
+    
+    
+    
+    
+    
     
 <dl class="details">
 	
@@ -281,7 +363,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="tgd-runtime.js.html">tgd-runtime.js</a>,
-				 <a href="tgd-runtime.js.html#sunlight-1-line-169">line 169</a>
+				 <a href="tgd-runtime.js.html#sunlight-1-line-171">line 171</a>
 			</li>
 		</ul>
 	</dd>
@@ -294,22 +376,41 @@
 	
 </dl>
 
+    
+    
 
+    
+
+    
+    
+    
+    
+    
+    
     
 </dd>
 
         
             
-<dt class="name" id="image">
-    <h4><span class="type-signature"></span>image<span class="type-signature"></span></h4>
-
+<dt>
+    <h4 class="name" id="createCanvas"><span class="type-signature"></span>createCanvas<span class="signature">()</span><span class="type-signature"></span></h4>
+    
     
 </dt>
 <dd>
     
-
+    
+    <div class="description">
+        <p>Retourner un nouveau CANVAS invisible, mais utilisable en tant qu'image.</p>
+    </div>
     
 
+    
+    
+    
+    
+    
+    
     
 <dl class="details">
 	
@@ -351,22 +452,86 @@
 	
 </dl>
 
+    
+    
 
+    
+
+    
+    
+    
+    
+    
+    
     
 </dd>
 
         
             
-<dt class="name" id="loadImages">
-    <h4><span class="type-signature"></span>loadImages<span class="type-signature"></span></h4>
-
+<dt>
+    <h4 class="name" id="getImage"><span class="type-signature"></span>getImage<span class="signature">(id)</span><span class="type-signature"></span></h4>
+    
     
 </dt>
 <dd>
     
-
     
 
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Identifiant de l'image recherchée.</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
     
 <dl class="details">
 	
@@ -395,7 +560,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="tgd-runtime.js.html">tgd-runtime.js</a>,
-				 <a href="tgd-runtime.js.html#sunlight-1-line-207">line 207</a>
+				 <a href="tgd-runtime.js.html#sunlight-1-line-212">line 212</a>
 			</li>
 		</ul>
 	</dd>
@@ -408,18 +573,116 @@
 	
 </dl>
 
+    
+    
 
+    
+
+    
+    
+    
+    
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    <p>L'image dont on passe l'identifiant.</p>
+</div>
+
+
+
+
+        
+    
     
 </dd>
 
         
             
-<dt class="name" id="removeListener">
-    <h4><span class="type-signature"></span>removeListener<span class="type-signature"></span></h4>
-
+<dt>
+    <h4 class="name" id="loadImages"><span class="type-signature"></span>loadImages<span class="signature">()</span><span class="type-signature"></span></h4>
+    
     
 </dt>
 <dd>
+    
+    
+    <div class="description">
+        <p>Chargement asynchrone d'images.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+	<dt class="tag-source">Source:</dt>
+	<dd class="tag-source">
+		<ul class="dummy">
+			<li>
+				<a href="tgd-runtime.js.html">tgd-runtime.js</a>,
+				 <a href="tgd-runtime.js.html#sunlight-1-line-219">line 219</a>
+			</li>
+		</ul>
+	</dd>
+	
+
+	
+
+	
+
+	
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+</dd>
+
+        
+            
+<dt>
+    <h4 class="name" id="removeListener"><span class="type-signature"></span>removeListener<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+    
+</dt>
+<dd>
+    
     
     <div class="description">
         <p>Retirer un <strong>listener</strong> à un événement.</p>
@@ -427,7 +690,11 @@
     
 
     
-
+    
+    
+    
+    
+    
     
 <dl class="details">
 	
@@ -456,7 +723,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="tgd-runtime.js.html">tgd-runtime.js</a>,
-				 <a href="tgd-runtime.js.html#sunlight-1-line-94">line 94</a>
+				 <a href="tgd-runtime.js.html#sunlight-1-line-92">line 92</a>
 			</li>
 		</ul>
 	</dd>
@@ -469,18 +736,29 @@
 	
 </dl>
 
+    
+    
 
+    
+
+    
+    
+    
+    
+    
+    
     
 </dd>
 
         
             
-<dt class="name" id="resetListeners">
-    <h4><span class="type-signature"></span>resetListeners<span class="type-signature"></span></h4>
-
+<dt>
+    <h4 class="name" id="resetListeners"><span class="type-signature"></span>resetListeners<span class="signature">()</span><span class="type-signature"></span></h4>
+    
     
 </dt>
 <dd>
+    
     
     <div class="description">
         <p>Retirer tous les <strong>listeners</strong> d'un événement.</p>
@@ -488,7 +766,11 @@
     
 
     
-
+    
+    
+    
+    
+    
     
 <dl class="details">
 	
@@ -517,7 +799,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="tgd-runtime.js.html">tgd-runtime.js</a>,
-				 <a href="tgd-runtime.js.html#sunlight-1-line-103">line 103</a>
+				 <a href="tgd-runtime.js.html#sunlight-1-line-100">line 100</a>
 			</li>
 		</ul>
 	</dd>
@@ -530,18 +812,29 @@
 	
 </dl>
 
+    
+    
 
+    
+
+    
+    
+    
+    
+    
+    
     
 </dd>
 
         
             
-<dt class="name" id="rgb">
-    <h4><span class="type-signature"></span>rgb<span class="type-signature"></span></h4>
-
+<dt>
+    <h4 class="name" id="rgb"><span class="type-signature"></span>rgb<span class="signature">(r, g, b, a)</span><span class="type-signature"></span></h4>
+    
     
 </dt>
 <dd>
+    
     
     <div class="description">
         <p>Retourner le code pour définir la couleur à partir du niveau de rouge, de vert et de bleu.</p>
@@ -549,7 +842,129 @@
     
 
     
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
 
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>r</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Niveau de rouge entre 0 et 255.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>g</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Niveau de vert entre 0 et 255.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>b</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Niveau de bleu entre 0 et 255.</p></td>
+        </tr>
+
+	
+
+        <tr>
+            
+                <td class="name"><code>a</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Niveau d'opacité définit par un nombre réel entre 0 et 1 : 0 = invisible et 1 = opaque.</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
     
 <dl class="details">
 	
@@ -578,7 +993,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="tgd-runtime.js.html">tgd-runtime.js</a>,
-				 <a href="tgd-runtime.js.html#sunlight-1-line-183">line 183</a>
+				 <a href="tgd-runtime.js.html#sunlight-1-line-184">line 184</a>
 			</li>
 		</ul>
 	</dd>
@@ -591,22 +1006,91 @@
 	
 </dl>
 
+    
+    
 
+    
+
+    
+    
+    
+    
+    
+    
     
 </dd>
 
         
             
-<dt class="name" id="start">
-    <h4><span class="type-signature"></span>start<span class="type-signature"></span></h4>
-
+<dt>
+    <h4 class="name" id="start"><span class="type-signature"></span>start<span class="signature">(draw)</span><span class="type-signature"></span></h4>
+    
     
 </dt>
 <dd>
     
-
+    
+    <div class="description">
+        <p>Démarer l'animation en utilisant la fonction <strong>draw</strong>.</p>
+    </div>
     
 
+    
+    
+    
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+
+		<th>Type</th>
+
+		
+
+		
+
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+
+	<tbody>
+	
+
+        <tr>
+            
+                <td class="name"><code>draw</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Fonction à appeler lors du dessin de chaque image.
+Le <code>this</code> sera le <strong>Runtime</strong> courant.</p></td>
+        </tr>
+
+	
+	</tbody>
+</table>
+
+    
+    
     
 <dl class="details">
 	
@@ -635,7 +1119,7 @@
 		<ul class="dummy">
 			<li>
 				<a href="tgd-runtime.js.html">tgd-runtime.js</a>,
-				 <a href="tgd-runtime.js.html#sunlight-1-line-110">line 110</a>
+				 <a href="tgd-runtime.js.html#sunlight-1-line-109">line 109</a>
 			</li>
 		</ul>
 	</dd>
@@ -648,13 +1132,21 @@
 	
 </dl>
 
+    
+    
 
+    
+
+    
+    
+    
+    
+    
+    
     
 </dd>
 
         </dl>
-    
-
     
 
     
@@ -675,7 +1167,7 @@
 					
 		<span class="jsdoc-message">
 		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a>
-		on 2014-11-05T21:15:14+01:00 using the <a
+		on 2014-11-07T19:57:41+01:00 using the <a
 			href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
 		</span>
 				</footer>
