@@ -6,6 +6,7 @@ var Keyboard = require("tgd.keyboard");
 
 
 var decor = {
+    rip: new MobilImage({img: "rip"}),
     wall1: new MobilImage({img: "wall1"}),
     wall2: new MobilImage({img: "wall2"})
 };
@@ -14,7 +15,13 @@ var P = function(i, j, w, h) {
     return i % 2 ? "wall1" : "wall2";
 };
 
+var R = function() { return "rip"; };
+
 var tableau1 = [
+        [R, 10, 13],
+        [R, 17, 13],
+        [R, 20, 13],
+        [R, 30, 13],
         [P, 0, 14, 40]
 ];
 
@@ -33,6 +40,7 @@ function main() {
     var ctx = this.context;
     this.loadImages(
         {
+            rip: "rip.png",
             wall1: "wall1.png",
             wall2: "wall2.png",
             ghost: "ghost.png",
@@ -79,6 +87,8 @@ function onTap() {
 
 function moveArthur(runtime) {
     var tileDown = map.getTileAtXY(this.x, this.y + 16);
+    var tileRight = map.getTileAtXY(this.x + 16, this.y);
+    var tileLeft = map.getTileAtXY(this.x - 16, this.y);
     if (this.jump) {
         // Arthur est en l'air.
         this.mode = "jump";
@@ -108,6 +118,14 @@ function moveArthur(runtime) {
             this.mode = "move";
         }
         else {
+            this.sx = 0;
+        }
+        if (this.sx > 0 && tileRight) {
+            this.ax = 0;
+            this.sx = 0;
+        }
+        if (this.sx < 0 && tileLeft) {
+            this.ax = 0;
             this.sx = 0;
         }
         if (tileDown) {
