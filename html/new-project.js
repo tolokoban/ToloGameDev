@@ -14,6 +14,9 @@ function createProject() {
         alert("Missing project's name!");
         return;
     }
+    var width = parseFloat(window.document.getElementById("width").value.trim());
+    var height = parseFloat(window.document.getElementById("height").value.trim());
+
     // Looking for a free name for the new project.
     var projectNumber = 0;
     var dirProject;
@@ -25,30 +28,45 @@ function createProject() {
         projectNumber++;
     }
     FS.mkdirSync(dirProject);
-    var dirTemplate = Path.join(Common.pwd(), "template");
-    dirTemplate = Path.join(dirTemplate, "default");
-    Template.copy(dirTemplate, dirProject, {name: name});
 
     // Copy the TGD library.
-    var dirModules = Path.join(dirProject, "node_modules");
-    if (false == FS.existsSync(dirModules)) {
-        FS.mkdirSync(dirModules);
+    var scripts = "";
+    var dirLibDst = Path.join(dirProject, "html");
+    if (!FS.existsSync(dirLibDst)) {
+        FS.mkdirSync(dirLibDst);
     }
-    var dirLibrary = Path.join(Common.pwd(), "node_modules");
-    FS.readdir(
-        dirLibrary,
-        function(err, files) {
-            if (err) {
-                console.error(err);
-                return;
-            }
-            files.forEach(
-                function(file) {
-                    var newFile = FS.createWriteStream(Path.join(dirLibrary, file));     
-                    var oldFile = FS.createReadStream(Path.join(dirModules, file));
-                    oldFile.pipe(newFile);
-                } 
+    dirLibDst = Path.join(dirLibDst, "lib");
+    if (!FS.existsSync(dirLibDst)) {
+        FS.mkdirSync(dirLibDst);
+    }
+    var dirLibSrc = Path.normalize(Path.join(Common.pwd(), "../node_modules"));
+    var files = FS.readdirSync(dirLibSrc);
+    files.forEach(
+        function(file) {
+            if (file.substr(0, 3) != 'tgd') return;
+            scripts += "    <script src='lib/" + file + "'></script>\n";
+            var content = FS.readFileSync(Path.join(dirLibSrc, file));
+            FS.writeFileSync(
+                Path.join(dirLibDst, file),
+                "window['TFW::" + file.substr(0, file.length - 3)
+                    + "'] = function(module, exports){\n"
+                    + content
+                    + "};"                        
             );
+        } 
+    );
+
+    // Copy rest of template.
+    var dirTemplate = Path.join(Common.pwd(), "template");
+    dirTemplate = Path.join(dirTemplate, "default");
+    Template.copy(
+        dirTemplate, 
+        dirProject, 
+        {
+            name: name, 
+            width: width, 
+            height: height, 
+            scripts: scripts
         }
     );
 

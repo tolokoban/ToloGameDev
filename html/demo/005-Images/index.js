@@ -1,5 +1,5 @@
-var TGD = require("tgd");
-TGD.init();
+var MobilImage = require("tgd.mobil-image");
+require("tgd").init();
 
 var x, y;
 
@@ -37,7 +37,7 @@ function attractor(runtime) {
 
 function onLoad() {
     this.draw = start;
-    var cyberlab = new TGD.MobilImage(
+    var cyberlab = new MobilImage(
         {
             x: x,
             y: y,

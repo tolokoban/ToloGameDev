@@ -7,6 +7,11 @@
 html, body {
     padding: 0;
     margin: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
 }
 
 html {
@@ -21,11 +26,7 @@ html {
 }
 
 body {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
+    overflow: auto;
 }
 
 section {
@@ -85,7 +86,7 @@ h2 {
     margin-right: auto;
 }
 
-a, button {
+a.btn, button {
     display: inline-block;
     text-align: center;
     text-decoration: none;
@@ -110,7 +111,7 @@ a, button {
     -ms-transition: all .2s;
 }
 
-a:active, button:active {
+a.btn:active, button:active {
     transform: translateX(.5em) translateY(.5em);
     -moz-transform: translateX(.5em) translateY(.5em);
     -webkit-transform: translateX(.5em) translateY(.5em);

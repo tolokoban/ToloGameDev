@@ -1,29 +1,8 @@
-var TGD = require("tgd");
-TGD.init();
 var TiledMap = require("tgd.tiled-map");
 var MobilImage = require("tgd.mobil-image");
 var Keyboard = require("tgd.keyboard");
 
 
-var decor = {
-    rip: new MobilImage({img: "rip"}),
-    wall1: new MobilImage({img: "wall1"}),
-    wall2: new MobilImage({img: "wall2"})
-};
-
-var P = function(i, j, w, h) {
-    return i % 2 ? "wall1" : "wall2";
-};
-
-var R = function() { return "rip"; };
-
-var tableau1 = [
-        [R, 10, 13],
-        [R, 17, 13],
-        [R, 20, 13],
-        [R, 30, 13],
-        [P, 0, 14, 40]
-];
 
 var map = new TiledMap(
     {
@@ -36,10 +15,13 @@ var map = new TiledMap(
 var beginTime = null;
 var arthur;
 
-function main() {
+function init() {
+    this.clear();
     var ctx = this.context;
     this.loadImages(
         {
+            skull: "skull.png",
+            moon: "moon.png",
             rip: "rip.png",
             wall1: "wall1.png",
             wall2: "wall2.png",
@@ -48,22 +30,21 @@ function main() {
             arthurMove1: "arthur-run1.png",
             arthurMove2: "arthur-run2.png",
             arthurJump: "arthur-jump.png"
-        }
+        },
+        onLoaded
     );
     map.mapWidth = ctx.canvas.width;
     map.mapHeight = ctx.canvas.height;
-    this.draw = null;
-    this.addListener("tap", onTap);
     ctx.fillStyle = "#fff";
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    ctx.fillStyle = "#000";
-    ctx.fillText("Click!", 10, 10);
 }
 
-function onTap() {
+require("tgd").init(init);
+
+
+
+function onLoaded() {
     var ctx = this.context;
-    this.draw = loop;
-    this.removeListener("tap", onTap);
     arthur = new MobilImage(
         {
             img: {
@@ -79,20 +60,28 @@ function onTap() {
 
     map.add(arthur);
     map.setTarget(arthur, arthur.x, arthur.y);
-    map.initTiles(decor, tableau1);
+    var decor = window.Tableaux[0].decor;
+    map.initTiles(decor);
     map.origX = 0;
     map.origY = 0;
     this.add(map);
+    this.start(loop);
 }
 
 function moveArthur(runtime) {
+    var tile = map.getTileAtXY(this.x, this.y);
+    if (tile && tile.type == -1) {
+        alert("T'es mort !");
+        init.call(runtime);
+        return;
+    }
     var tileDown = map.getTileAtXY(this.x, this.y + 16);
     var tileRight = map.getTileAtXY(this.x + 16, this.y);
     var tileLeft = map.getTileAtXY(this.x - 16, this.y);
     if (this.jump) {
         // Arthur est en l'air.
         this.mode = "jump";
-        if (tileDown) {
+        if (tileDown && tileDown.type == 1) {
             this.sy = 0;
             this.sx = 0;
             this.ax = 0;
@@ -120,20 +109,24 @@ function moveArthur(runtime) {
         else {
             this.sx = 0;
         }
-        if (this.sx > 0 && tileRight) {
+        if (this.sx > 0 && tileRight && tileRight.type == 1) {
             this.ax = 0;
             this.sx = 0;
         }
-        if (this.sx < 0 && tileLeft) {
+        if (this.sx < 0 && tileLeft && tileLeft.type == 1) {
             this.ax = 0;
             this.sx = 0;
         }
-        if (tileDown) {
+        if (tileDown && tileDown.type == 1) {
             // Le sol ferme : on peut sauter.
             if (Keyboard.isPressed(Keyboard.UP)) {
                 this.ay = 350;
                 this.sy = -250;
                 this.jump = 1;
+            } else {
+                this.jump = 0;
+                this.ay = 0;
+                this.sy = 0;
             }
         } else {
             // Rien sous les pieds : arthur tombe.
@@ -153,4 +146,5 @@ function loop() {
     var ctx = this.context;
     ctx.fillStyle = "#000";
     ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.drawImage(this.getImage("moon"), ctx.canvas.width - 64, 8);
 }
