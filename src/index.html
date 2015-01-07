@@ -1,0 +1,40 @@
+<w:resource>img</w:resource>
+<w:css>style.css</w:css>
+<w:html app="main">
+  <div class="flex">
+    <article>
+      <h2 lang="fr">Liste des animations</h2>
+      <ul id="anims"></ul>
+    </article>
+
+    <article>
+      <h2 lang="fr">Editer l'animation</h2>
+      <div id="background">
+        <img id="img" src=""/>
+        <div id="horizontal"></div>
+        <div id="vertical"></div>
+      </div>
+      <div id="detail"></div>
+    </article>
+  </div>
+
+  <h1>Aide</h1>
+  <div lang="fr">
+    Placez toutes vos images dans le répertoire <code>img</code>.<br/>
+    Si l'une d'elles se nomme <b><code>background.jpg</code></b>, elle sera utilisée comme décor de fond à mettre derrière les animations. Les images relatives aux animations peuvent prendre le nom qu'on veut.<br/>
+    Il faut ensuite créer des fichiers d'animation dont l'extension doit être <b><code>.json</code></b>. En voici un exemple :
+    <pre>
+      {
+      "time": 600,
+      "frames": [
+      {"src":"monsterA-walk-1.png","y":48,"x":29},
+      {"src":"monsterA-walk-2.png","y":48,"x":29},
+      {"src":"monsterA-walk-3.png","y":48,"x":34},
+      {"src":"monsterA-walk-4.png","y":48,"x":30}
+      ]
+      }
+    </pre>
+    L'attribut <code>time</code> indique la durée totale d'un cycle d'animation, exprimée en millisecondes.<br/>
+    Chaque <i>frame</i> est une image composant l'animation. Les coordonnées <b>x</b> et <b>y</b> sont celles du point d'ancrage de l'image. A l'aide de l'interface, il faut essayer de faire correspondre ce point d'ancrage avec l'intersection des lignes en pointillés.
+  </div>
+</w:html>
