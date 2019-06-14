@@ -1,10 +1,12 @@
 exports.config={
     name:"ToloGameDev",
+    description:"Developper studio for beginners.",
+    author:"Tolokoban",
     version:"0.0.31",
     major:0,
     minor:0,
     revision:31,
-    date:new Date(2015,0,7,12,59,38)
+    date:new Date(2016,1,22,11,43,38)
 };
 var currentLang = null;
 exports.lang = function(lang) {
@@ -30,14 +32,12 @@ exports.intl = function(words, params) {
     k = params[0],
     txt, newTxt, i, c, lastIdx, pos;
     if (!dic) {
-        console.error("Missing internationalization for language : \"" + exports.lang() + "\"!");
+        //console.error("Missing internationalization for language : \"" + exports.lang() + "\"!");
         return k;
     }
     txt = dic[k];
     if (!txt) {
-        console.error("Missing internationalization ["
-                      + exports.lang()
-                     + "]: \"" + k + "\"!");
+        //console.error("Missing internationalization [" + exports.lang() + "]: \"" + k + "\"!");
         return k;
     }
     if (params.length > 1) {
@@ -65,5 +65,5 @@ exports.intl = function(words, params) {
         newTxt += txt.substr(lastIdx);
         txt = newTxt;
     }
-    return txt;    
+    return txt;
 };
