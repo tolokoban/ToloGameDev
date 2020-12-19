@@ -110,16 +110,18 @@ class App {
     render = (time: number) => {
         window.requestAnimationFrame(this.render)
 
-        this.resize()
         const {
+            scene,
             W, H, gl, prg, camera,
             uniCamera, uniTexture,
             buffData, buffElem,
             attUV, attPoint
         } = this
+        scene.resize()
 
         this.camera[0] = Math.cos(time * 0.001048) * 1
         this.camera[1] = Math.sin(time * 0.001341) * 0.2
+        this.camera[2] = Math.sin(time * 0.001177) * 0.3
 
         gl.enable(gl.DEPTH_TEST)
         gl.depthRange(0, 1)
@@ -130,7 +132,7 @@ class App {
 
         gl.useProgram(prg)
         gl.activeTexture(gl.TEXTURE0)
-        gl.uniform1f(this.uniAspectRatio, W / H)
+        gl.uniform1f(this.uniAspectRatio, scene.aspectRatio)
         gl.uniform3fv(uniCamera, camera)
         gl.uniform1i(uniTexture, 0)
 
