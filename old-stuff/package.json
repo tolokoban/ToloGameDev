@@ -1,0 +1,26 @@
+{
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/tolokoban/ToloGameDev.git"
+    },
+    "homepage": "https://github.com/tolokoban/ToloGameDev",
+    "bugs": {
+        "url": "https://github.com/tolokoban/ToloGameDev/issues"
+    },
+    "scripts": {
+        "test": "jasmine",
+        "test:dbg": "node --debug-brk node_modules/jasmine/bin/jasmine.js"
+    },
+    "name": "ToloGameDev",
+    "version": "0.0.31",
+    "author": "Tolokoban",
+    "description": "Developper studio for beginners.",
+    "license": "GPL",
+    "tfw": {
+        "modules": [],
+        "compile": {
+            "type": "firefoxos",
+            "files": "\\.html$"
+        }
+    }
+}

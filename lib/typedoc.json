@@ -1,0 +1,14 @@
+{
+    "name": "FlatLand Documentation",
+    "mode": "modules",
+    "out": "doc",
+    "excludeNotExported": true,
+    "excludePrivate": true,
+    "excludeProtected": true,
+    "exclude": [
+        "**/index.*",
+        "**/webgl/**/*",
+        "**/gesture/**/*",
+        "**/converter/**/*"
+    ]
+}

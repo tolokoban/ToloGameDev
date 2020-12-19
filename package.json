@@ -1,26 +1,42 @@
 {
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/tolokoban/ToloGameDev.git"
-    },
-    "homepage": "https://github.com/tolokoban/ToloGameDev",
-    "bugs": {
-        "url": "https://github.com/tolokoban/ToloGameDev/issues"
-    },
-    "scripts": {
-        "test": "jasmine",
-        "test:dbg": "node --debug-brk node_modules/jasmine/bin/jasmine.js"
-    },
-    "name": "ToloGameDev",
-    "version": "0.0.31",
-    "author": "Tolokoban",
-    "description": "Developper studio for beginners.",
-    "license": "GPL",
-    "tfw": {
-        "modules": [],
-        "compile": {
-            "type": "firefoxos",
-            "files": "\\.html$"
-        }
-    }
+  "name": "tolo-game-dev",
+  "version": "0.1.0",
+  "description": "Blurry preview of image while loading it.",
+  "license": "GPL-3.0",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "author": "Tolokoban <contact@tolokoban.org>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tolokoban/ToloGameDev.git"
+  },
+  "keywords": [
+    "tolokoban",
+    "toloframework",
+    "tfw",
+    "react"
+  ],
+  "scripts": {
+    "deploy": "gh-pages-clean && gh-pages -b gh-pages -d doc/dist",
+    "publish": "npm publish lib/dist"
+  },
+  "bugs": {
+    "url": "https://github.com/tolokoban/ToloGameDev/issues"
+  },
+  "homepage": "https://github.com/tolokoban/ToloGameDev#readme",
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "gh-pages": "^3.1.0"
+  }
 }
