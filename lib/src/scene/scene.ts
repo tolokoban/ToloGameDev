@@ -35,12 +35,12 @@ export default class Scene {
 
     constructor(
         public readonly canvas: HTMLCanvasElement,
-        settings: Partial<IWebGLSettings>
+        settings?: Partial<IWebGLSettings>
     ) {
         this.settings = {
             alpha: false,
             desynchronized: false,
-            antialias: true,
+            antialias: false,
             depth: true,
             failIfMajorPerformanceCaveat: false,
             powerPreference: "default",
@@ -48,7 +48,7 @@ export default class Scene {
             preserveDrawingBuffer: false,
             stencil: false,
             ...settings
-        }        
+        }
         const gl2 = canvas.getContext("webgl2", this.settings)
         if (gl2) {
             this.gl = gl2
@@ -59,10 +59,22 @@ export default class Scene {
             this.gl = gl
             this.webglVersion = 1
         }
+        this.resize()
     }
 
     public readonly program = {
         create: (shaders: IShaders) => Program.create(this.gl, shaders)
+    }
+
+    createArrayBufferStatic(data: ArrayBuffer): WebGLBuffer {
+        const { gl } = this
+        const buff = gl.createBuffer()
+        if (!buff) throw "Unable to create data buffer!"
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, buff)
+        gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)
+
+        return buff
     }
 
     /**

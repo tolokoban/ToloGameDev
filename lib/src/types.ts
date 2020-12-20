@@ -5,3 +5,9 @@ export interface IShaders {
     frag: string
 }
 
+export interface IAttribute {
+    name: string
+    type: number
+    size: number
+    location: number
+}

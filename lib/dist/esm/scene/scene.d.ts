@@ -17,10 +17,11 @@ export default class Scene {
     readonly webglVersion: number;
     private lastWidth;
     private lastHeight;
-    constructor(canvas: HTMLCanvasElement, settings: Partial<IWebGLSettings>);
+    constructor(canvas: HTMLCanvasElement, settings?: Partial<IWebGLSettings>);
     readonly program: {
         create: (shaders: IShaders) => WebGLProgram;
     };
+    createArrayBufferStatic(data: ArrayBuffer): WebGLBuffer;
     /**
      * Call this function at every frame render to ensure that the canvas size is reported to the WebGL scene viewport.
      */

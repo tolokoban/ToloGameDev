@@ -1,7 +1,0 @@
-{
-    "name": "Hello World!",
-    "desc": {
-        "en": "Print 'Hello world!' to the screen.",
-        "fr": "Afficher 'Hello world!' à l'écran."
-    }
-}

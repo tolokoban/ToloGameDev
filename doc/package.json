@@ -5,7 +5,8 @@
     "homepage": ".",
     "dependencies": {
         "react": "^16.13.1",
-        "react-dom": "^16.13.1"
+        "react-dom": "^16.13.1",
+        "tolo-game-dev": "^0.1.0"
     },
     "devDependencies": {
         "@testing-library/jest-dom": "^4.2.4",

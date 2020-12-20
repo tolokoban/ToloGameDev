@@ -139,25 +139,6 @@ class App {
         gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffElem)
         gl.bindBuffer(gl.ARRAY_BUFFER, buffData)
 
-        // gl.enableVertexAttribArray(attUV)
-        // gl.vertexAttribPointer(
-        //     attUV,
-        //     VEC2_SIZE,
-        //     gl.FLOAT,
-        //     false,
-        //     0,
-        //     0
-        // )
-        // gl.enableVertexAttribArray(attPoint)
-        // gl.vertexAttribPointer(
-        //     attPoint,
-        //     VEC3_SIZE,
-        //     gl.FLOAT,
-        //     false,
-        //     0,
-        //     VEC2_BYTES * 4 * COUNT
-        // )
-
         gl.drawElements(
             gl.TRIANGLES,
             6 * COUNT,

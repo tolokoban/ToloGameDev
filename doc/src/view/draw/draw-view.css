@@ -1,0 +1,8 @@
+canvas.view-DrawView {
+    box-shadow: none;
+}
+
+.view-DrawView {
+    width: 300px;
+    height: 300px;
+}

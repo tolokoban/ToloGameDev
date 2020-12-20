@@ -4,7 +4,7 @@
     "description": "Blurry preview of image while loading it.",
     "license": "GPL-3.0",
     "main": "umd/index.js",
-    "types": "types/index.d.ts",
+    "types": "esm/index.d.ts",
     "author": "Tolokoban <contact@tolokoban.org>",
     "repository": {
         "type": "git",

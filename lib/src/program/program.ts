@@ -1,11 +1,13 @@
-import { IWebGL, IShaders } from '../types'
+import { IWebGL, IShaders, IAttribute } from '../types'
+
 
 export default {
-    create
+    create,
+    getAttribs
 }
 
+
 function create(gl: IWebGL, shaders: IShaders) {
-    console.log("[program] gl, shaders = ", gl, shaders) // @FIXME: Remove this line written on 2020-12-19 at 21:35
     const prg = gl.createProgram()
     if (!prg) throw "Unable to create Program!"
 
@@ -19,6 +21,25 @@ function create(gl: IWebGL, shaders: IShaders) {
     gl.useProgram(prg)
 
     return prg
+}
+
+/**
+ * Return an object will all the active attributes of a given Program.
+ * If an attribute is defined in a shader but not used, it will be removed
+ * at compilation time. In that case, it will not be returned in this function.
+ */
+function getAttribs(gl: IWebGL, prg: WebGLProgram): { [key: string]: IAttribute } {
+    const attribs: { [key: string]: IAttribute } = {}
+    const count = gl.getProgramParameter(prg, gl.ACTIVE_ATTRIBUTES)
+    for (let location = 0; location < count; ++location) {
+        const info = gl.getActiveAttrib(prg, location)
+        if (!info) continue
+
+        const { name, size, type } = info
+        attribs[info.name] = { name, location, size, type }
+    }
+
+    return attribs
 }
 
 function loadVertexShader(gl: WebGLRenderingContext, code: string) {
