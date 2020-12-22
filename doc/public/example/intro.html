@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ToloGameDev: Fundamentals</title>
+</head>
+
+<body>
+    <canvas width="300" height="300"></canvas>
+    <script>
+        // Get the only canvas of this page.
+        const canvas = document.querySelector("canvas")
+        // Create a WebGL context.
+        const gl = canvas.getContext("webgl")
+        // Clearing the screen.
+        gl.clearColor(0, 0.4, 0.867, 1.0)
+        gl.clear(gl.COLOR_BUFFER_BIT)
+        // Create Program with two shaders: vertex and fragment.
+        const prg = gl.createProgram()
+        const vertexShader = gl.createShader(gl.VERTEX_SHADER)
+        const vertexCode = `
+attribute vec2 attPoint;
+void main() {
+    gl_Position = vec4(attPoint / 10.0, 0.0, 1.0);
+}`
+        gl.shaderSource(vertexShader, vertexCode)
+        gl.compileShader(vertexShader)
+        const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER)
+        const fragmentCode = `
+// precision highp float;
+precision mediump float;
+// precision lowp float;
+
+void main() {
+    gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0);
+}
+`
+        gl.shaderSource(fragmentShader, fragmentCode)
+        gl.compileShader(fragmentShader)
+        gl.attachShader(prg, vertexShader)
+        gl.attachShader(prg, fragmentShader)
+        gl.linkProgram(prg)
+        gl.useProgram(prg)
+        // Storing attributes data in GPU memory.
+        const data = new Float32Array([
+            -7, -5,
+            -1, +7,
+            +5, -8
+        ])
+        const buff = gl.createBuffer()
+        gl.bindBuffer(gl.ARRAY_BUFFER, buff)
+        gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)
+        // Defining the structure of memory for attribute.
+        gl.enableVertexAttribArray(0)
+        gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0)
+        // Drawing the triangle.
+        gl.drawArrays(gl.TRIANGLES, 0, 3)
+    </script>
+</body>
+
+</html>

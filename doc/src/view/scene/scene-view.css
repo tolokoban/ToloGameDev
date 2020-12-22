@@ -1,9 +1,5 @@
-canvas.view-SceneView {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    right: 0;
-    bottom: 0;
+.view-SceneView {
+    box-shadow: 0 .25rem .5rem var(--thm-color-shadow);
+    height: 300px;
+    width: 300px;
 }

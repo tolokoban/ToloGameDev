@@ -1,10 +1,8 @@
 {
   "name": "tolo-game-dev",
   "version": "0.1.0",
-  "description": "Blurry preview of image while loading it.",
+  "description": "Helper library for WebGL.",
   "license": "GPL-3.0",
-  "main": "index.js",
-  "types": "index.d.ts",
   "author": "Tolokoban <contact@tolokoban.org>",
   "repository": {
     "type": "git",

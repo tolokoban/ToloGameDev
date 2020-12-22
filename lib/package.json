@@ -1,7 +1,7 @@
 {
     "name": "tolo-game-dev",
     "version": "0.1.0",
-    "description": "Blurry preview of image while loading it.",
+    "description": "Helper library for WebGL.",
     "license": "GPL-3.0",
     "main": "dist/umd/index.js",
     "module": "dist/esm/index.js",

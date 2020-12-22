@@ -1,7 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-//import Scene from './view/scene'
-import Intro from './page/intro'
+import App from './app'
 import Font from 'tfw/font'
 import Theme from 'tfw/theme'
 
@@ -10,19 +9,19 @@ import './index.css'
 async function start() {
     Theme.register(
         "default-dark", {
-        colorP: "#06d",
-        colorS: "#FFA000",
-        color0: "#ccc",
-        color3: "#fff",
-        colorE: "#f44"
-    })    
+        colorP: "#28F",
+        colorS: "#F90",
+        color0: "#CCC",
+        color3: "#FFF",
+        colorE: "#F44"
+    })
     Theme.apply("default-dark")
+    await Font.loadIndieFlower(true)
     await Font.loadJosefin(true)
-    
-    
+
     ReactDOM.render(
         <React.StrictMode>
-            <Intro />
+            <App />
         </React.StrictMode>,
         document.getElementById('root')
     )

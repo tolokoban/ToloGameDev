@@ -37,14 +37,20 @@ declare module "*.css" {
     export default content
 }
 
-declare module "*.vert" {
+declare module "*.md" {
     // Loaded as URL.
     const content: string
     export default content
 }
 
+declare module "*.vert" {
+    // Loaded as content.
+    const content: string
+    export default content
+}
+
 declare module "*.frag" {
-    // Loaded as URL.
+    // Loaded as content.
     const content: string
     export default content
 }

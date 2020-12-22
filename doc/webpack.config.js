@@ -29,7 +29,8 @@ module.exports = {
         extensions: ['.tsx', '.ts', '.js', '.jsx', '.wasm'],
         enforceExtension: false
     },
-    devtool: 'source-map',
+    mode: "development",
+    devtool: 'inline-source-map',
     devServer: {
         contentBase: Path.join(__dirname, 'build'),
         compress: true,
@@ -125,7 +126,7 @@ module.exports = {
                 }
             },
             {
-                test: /\.(woff|woff2|eot|ttf|otf)$/,
+                test: /\.(woff|woff2|eot|ttf|otf|md)$/,
                 loader: "file-loader",
                 options: {
                     name: "fnt/[contenthash].[ext]"

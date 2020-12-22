@@ -1,0 +1,81 @@
+.page-intro-Pipeline > section {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-areas:
+        "a a . b b . . . ."
+        "c c . d d . . . ."
+        "e e e e e f f f f"
+        "g g . . . . . . ."
+        "h h . i i . . . ."
+        "j j . k k . . . ."
+        "l l l l l m m m m"
+    ;
+}
+
+.page-intro-Pipeline> section > *:nth-child(1) { grid-area: a; }
+.page-intro-Pipeline> section > *:nth-child(2) { grid-area: b; }
+.page-intro-Pipeline> section > *:nth-child(3) { grid-area: c; }
+.page-intro-Pipeline> section > *:nth-child(4) { grid-area: d; }
+.page-intro-Pipeline> section > *:nth-child(5) { grid-area: e; }
+.page-intro-Pipeline> section > *:nth-child(6) { grid-area: f; }
+.page-intro-Pipeline> section > *:nth-child(7) { grid-area: g; }
+.page-intro-Pipeline> section > *:nth-child(8) { grid-area: h; }
+.page-intro-Pipeline> section > *:nth-child(9) { grid-area: i; }
+.page-intro-Pipeline> section > *:nth-child(10) { grid-area: j; }
+.page-intro-Pipeline> section > *:nth-child(11) { grid-area: k; }
+.page-intro-Pipeline> section > *:nth-child(12) { grid-area: l; }
+.page-intro-Pipeline> section > *:nth-child(13) { grid-area: m; }
+.page-intro-Pipeline> section > *:nth-child(14) { grid-area: n; }
+.page-intro-Pipeline> section > *:nth-child(15) { grid-area: o; }
+.page-intro-Pipeline> section > *:nth-child(16) { grid-area: p; }
+.page-intro-Pipeline> section > *:nth-child(17) { grid-area: q; }
+.page-intro-Pipeline> section > *:nth-child(18) { grid-area: r; }
+
+.page-intro-Pipeline>section * {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.page-intro-Pipeline>section div {
+    font-size: 80%;
+}
+
+.page-intro-Pipeline>section code {
+    font-size: 70%;
+    margin-left: 1rem;
+}
+
+.page-intro-Pipeline>section code::before {
+    content: "→";
+    color: #444;
+    margin: 0 .25rem;
+    font-size: 2rem;
+}
+
+.page-intro-Pipeline>section em {
+    background-color: var(--thm-color-PL);
+    color: var(--thm-color-on-PL);
+    height: 2rem;
+}
+
+.page-intro-Pipeline>section big {
+    position: relative;
+    height: 3rem;
+}
+
+.page-intro-Pipeline>section big::before {
+    content: "↓";
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    font-weight: 100;
+    opacity: .4;
+    color: #f80;
+}
