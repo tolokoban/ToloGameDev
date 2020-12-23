@@ -1,0 +1,44 @@
+.view-AttributesEditorView {
+    max-width: 25rem;
+    padding: .5rem;
+    margin: .5rem;
+}
+
+.view-AttributesEditorView > div.edit {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+}
+
+.view-AttributesEditorView > div.edit > div.flex {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.view-AttributesEditorView > table.list {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.view-AttributesEditorView > table.list td {
+    font-size: 80%;
+    padding: 0 .25rem;
+    border: 1px solid var(--thm-color-on-2-7);
+    text-align: center;
+}
+
+.view-AttributesEditorView > table.list td.small {
+    width: 2rem;
+}
+
+.view-AttributesEditorView > table.list th {
+    padding: .25rem;
+    background-color: var(--thm-color-PD);
+    color: var(--thm-color-on-PD);
+    border: 1px solid var(--thm-color-on-2-7);
+    text-align: center;
+}
+

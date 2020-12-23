@@ -26,16 +26,22 @@ export default class UniformsView extends ArticleView {
 
 function renderExercise(): JSX.Element {
     return <figure>
-        <Scene
+        <Scene<WebGLProgram>
             onInit={scene => {
                 const prg = scene.program.create({
                     vert: VertShader,
                     frag: FragShader
                 })
                 const data = new Float32Array([
-                    0.5, 0, 0, 0,
-                    0.5, 120, 0, 0,
-                    0.5, 240, 0, 0,
+                    0.5, 0, .5, 0,
+                    0.5, 150, .5, 0,
+                    0.5, 210, .5, 0,
+                    0.5, 0, .5, 150,
+                    0.5, 150, .5, 150,
+                    0.5, 210, .5, 150,
+                    0.5, 0, .5, 210,
+                    0.5, 150, .5, 210,
+                    0.5, 210, .5, 210,
                 ])
                 const { gl } = scene
                 const buff = gl.createBuffer()
@@ -51,8 +57,9 @@ function renderExercise(): JSX.Element {
                 const { gl } = scene
                 gl.clearColor(0, 0.4, 0.867, 1.0)
                 gl.clear(gl.COLOR_BUFFER_BIT)
-
-                gl.drawArrays(gl.TRIANGLES, 0, 3)
+                const uniTime = gl.getUniformLocation(prg, "uniTime")
+                gl.uniform1f(uniTime, time)
+                gl.drawArrays(gl.TRIANGLES, 0, 9)
             }}
         />
         <div>Dancing triangles</div>

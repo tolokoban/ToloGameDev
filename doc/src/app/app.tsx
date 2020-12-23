@@ -71,6 +71,16 @@ const SECTIONS: {
                 content: React.lazy(() => import("../article/solution/fundamentals"))
             }
         }
+    },
+    tool: {
+        title: "Tools",
+        articles: {
+            attributes: {
+                title: "Attributes Structure",
+                keywords: ["attribute"],
+                content: React.lazy(() => import("../view/attributes-editor"))
+            }
+        }
     }
 }
 

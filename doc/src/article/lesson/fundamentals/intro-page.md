@@ -223,4 +223,103 @@ By playing with the code you will notice that WebGL has no forgiveness.
 If you do something wrong, you will just end up with an empty screen
 but no error message to help you find out what's going on.
 
-If you are stuck, you can refer to the [troubleshooting](#lesson/troubleshooting) lesson to learn how to debug WebGL.
+If you are stuck, you can refer to the
+[troubleshooting](#lesson/troubleshooting) lesson to learn how to debug WebGL.
+
+# A little bit of optimization
+
+In the vertex shader, we used a division (`attPoint / 10.0`) to convert our coordinates:
+
+```js
+attribute vec2 attPoint;
+void main() {
+    gl_Position = vec4(attPoint / 10.0, 0.0, 1.0);
+}`
+```
+
+Divisions are very slow. And since multiplications are faster, you should
+always convert divisions into multiplications when you can.
+This code does the same thing, but faster:
+
+```js
+attribute vec2 attPoint;
+void main() {
+    gl_Position = vec4(attPoint * 0.1, 0.0, 1.0);
+}`
+```
+
+Now look closely at the following code because it also does the same thing:
+
+```js
+attribute vec2 attPoint;
+void main() {
+    gl_Position = vec4(attPoint, 0.0, 10.0);
+}`
+```
+
+We used the last component of `gl_Position` which is called `w` and we set it
+to `10`.
+
+Now I can reveal a little secret. The final coordinates of a vertex are
+__not__ `(gl_Position.x, gl_Position.y)`!
+
+They actually are:
+```js
+(
+    gl_Position.x / gl_Position.w, 
+    gl_Position.y / gl_Position.w
+)
+```
+
+Of course, since we set it to `1.0` you couldn't have guessed it.
+But now that you know the trick,
+you have one more weapon in your optimisation arsenal.
+Keep it in mind because it will become useful when we will deal with 3D.
+
+# Using polar coordinates
+
+<Polar />
+
+WebGL understands only cartesian coordinates `(x,y)`.
+But that's not the only way of defining the position of a point in space.
+
+For instance, in 2D, you can use polar coordinates `(r,a)`.
+Where `r` is the __Radius__ and `a` the __angle__.
+
+Let use this new coordinates system to create an equilateral triangle
+facing right.
+
+```js
+const data = new Float32Array([
+    1, 0,    // r=1, a=0°
+    1, 120,  // r=1, a=120°
+    1, 240   // r=1, a=240°
+])
+```
+
+Of course, now the vertex shader must be adapted otherwise you will
+get an extremely thin vertical line, which turns out to be invisible.
+
+```js
+attribute vec2 attPoint;
+// DEG2RAD = PI / 180
+const float DEG2RAD = 0.017453292519943295;
+
+void main() {
+    float r = attPoint.x;
+    // Convert angle from DEG to RAD
+    // because webGL understands only radians.
+    float a = attPoint.y * DEG2RAD;
+    // Use trigonometry to convert into
+    // cartesian coordinates.
+    float x = r * cos(a);
+    float y = r * sin(a);
+    gl_Position = vec4(x, y, 0.0, 1.0);
+}`,
+```
+
+You learned two new GLSL functions: `cos()` and `sin()`.
+And you also learned how to declare constants:
+`const float DEG2RAD = 0.017453292519943295;`.
+
+We will discover more in other lessons. Stay tuned!

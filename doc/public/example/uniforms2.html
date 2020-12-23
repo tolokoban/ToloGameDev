@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ToloGameDev: Uniforms</title>
+</head>
+
+<body>
+    <canvas width="300" height="300"></canvas>
+    <script>
+        // Get the only canvas of this page.
+        const canvas = document.querySelector("canvas")
+        // Create a WebGL context.
+        const gl = canvas.getContext("webgl")
+        // Create Program with two shaders: vertex and fragment.
+        const prg = createProgram(gl, {
+            vert: `uniform float uniTime;
+attribute vec4 attPoint;
+
+const float DEG2RAD = 0.017453292519943295;
+
+void main() {
+    float rv = attPoint.x * sin(uniTime * 0.0010574);
+    float av = (attPoint.y + uniTime * 0.107) * DEG2RAD;
+    float xv = rv * cos(av);
+    float yv = rv * sin(av);
+    float rc = attPoint.z * cos(uniTime * 0.0014574);
+    float ac = (attPoint.w + uniTime * 0.0731) * DEG2RAD;
+    float xc = rc * cos(ac);
+    float yc = rc * sin(ac);
+    float x = xv + xc;
+    float y = yv + yc;
+    gl_Position = vec4(x, y, 0.0, 1.0);
+}`,
+    frag: `precision mediump float;
+void main() {
+    gl_FragColor = vec4(1.0, 0.5, 0.0, 1.0);
+}`
+        })
+        // Storing attributes data in GPU memory.
+        const data = new Float32Array([
+            0.5, 0, .5, 0,
+            0.5, 150, .5, 0,
+            0.5, 210, .5, 0,
+            0.5, 0, .5, 150,
+            0.5, 150, .5, 150,
+            0.5, 210, .5, 150,
+            0.5, 0, .5, 210,
+            0.5, 150, .5, 210,
+            0.5, 210, .5, 210,
+        ])
+        const buff = gl.createBuffer()
+        gl.bindBuffer(gl.ARRAY_BUFFER, buff)
+        gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)
+        // Defining the structure of memory for attribute.
+        gl.enableVertexAttribArray(0)
+        gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 0, 0)
+        // Setting color.
+        const uniTime = gl.getUniformLocation(prg, "uniTime")
+        // Start the animation.
+        window.requestAnimationFrame(render)
+
+        function render(time) {
+            window.requestAnimationFrame(render)
+            // Clearing the screen.
+            gl.clearColor(0, 0.4, 0.867, 1.0)
+            gl.clear(gl.COLOR_BUFFER_BIT)
+            // Setting uniTime value.
+            gl.uniform1f(uniTime, time)
+            // Drawing the triangles.
+            gl.drawArrays(gl.TRIANGLES, 0, 9)
+        }
+
+        function createProgram(gl, shaders) {
+            const prg = gl.createProgram()
+            if (!prg) throw "Unable to create Program!"
+
+            gl.attachShader(prg, loadVertexShader(gl, shaders.vert))
+            gl.attachShader(prg, loadFragmentShader(gl, shaders.frag))
+            gl.linkProgram(prg)
+            // If creating the shader program failed, alert
+            if (!gl.getProgramParameter(prg, gl.LINK_STATUS)) {
+                throw `Unable to link the shader program: ${gl.getProgramInfoLog(prg)}`
+            }
+            gl.useProgram(prg)
+
+            return prg
+        }
+
+        function loadVertexShader(gl, code) {
+            try {
+                return loadShader(gl, code, gl.VERTEX_SHADER)
+            } catch (ex) {
+                console.info(code)
+                throw `Unable to compile VERTEX shader: ${ex}`
+            }
+        }
+
+        function loadFragmentShader(gl, code) {
+            try {
+                return loadShader(gl, code, gl.FRAGMENT_SHADER)
+            } catch (ex) {
+                console.info(code)
+                throw `Unable to compile FRAGMENT shader: ${ex}`
+            }
+        }
+
+        function loadShader(gl, code, type) {
+            const shader = gl.createShader(type)
+            if (!shader) throw `Invalid shader type: ${type}!`
+
+            gl.shaderSource(shader, code)
+            gl.compileShader(shader)
+            if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+                const message = gl.getShaderInfoLog(shader)
+                gl.deleteShader(shader)
+                throw message
+            }
+
+            return shader
+        }
+    </script>
+</body>
+
+</html>

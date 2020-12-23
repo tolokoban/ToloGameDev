@@ -2,12 +2,12 @@ import { IWebGL, IShaders, IAttribute } from '../types'
 
 
 export default {
-    create,
+    create: createProgram,
     getAttribs
 }
 
 
-function create(gl: IWebGL, shaders: IShaders) {
+function createProgram(gl: IWebGL, shaders: IShaders) {
     const prg = gl.createProgram()
     if (!prg) throw "Unable to create Program!"
 
@@ -74,3 +74,32 @@ function loadShader(gl: WebGLRenderingContext, code: string, type: number) {
 
     return shader
 }
+
+const RX_ERROR_MESSAGE = /ERROR: ([0-9]+):([0-9]+):/g
+
+/**
+ * Return a portion of the code that is two lines before the error and two lines after.
+ */
+function getCodeSection(code: string, errorMessage: string) {
+    const lines = code.split(/\n\r?/)
+    lines.unshift("")  // Because lines numbers start at 1
+    RX_ERROR_MESSAGE.lastIndex = -1  // Reinit RegExp
+    const matcher = RX_ERROR_MESSAGE.exec(errorMessage)
+    if (!matcher) {
+        return code
+    }
+    const SURROUNDING_LINES = 2
+    const [, , lineNumberMatch] = matcher
+    const lineNumber = Number(lineNumberMatch)
+    const firstLine = Math.max(1, lineNumber - SURROUNDING_LINES)
+    const lastLine = Math.min(lines.length - 1, lineNumber + SURROUNDING_LINES)
+    const outputLines = ["Here is an extract of the shader code:"]
+    for (let n = firstLine; n <= lastLine; n++) {
+        outputLines.push(
+            `| ${n}:    ${lines[n]}`
+        )
+    }
+    return outputLines.join("\n")
+}
+
+

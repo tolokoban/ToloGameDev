@@ -4,6 +4,7 @@
 
 // tslint:disable: no-magic-numbers
 import * as React from "react"
+import { ContextReplacementPlugin } from "webpack"
 import './draw-view.css'
 
 const ORANGE = "#f90"
@@ -97,6 +98,78 @@ export default class Draw {
                 ctx.lineTo(X(0), Y(+2))
                 ctx.stroke()
                 ctx.restore()
+            }
+        )
+
+        return this
+    }
+
+    /**
+     * @param x X center of the arc.
+     * @param y Y center of the arc.
+     * @param r Radius.
+     * @param from Start angle (in degrees).
+     * @param to End angle (in degrees).
+     */
+    drawArc(x: number, y: number, r: number, from = 0, to = 360): Draw {
+        this.commands.push(
+            (ctx: CanvasRenderingContext2D, w: number, h: number) => {
+                const X = convX(w, h)
+                const Y = convY(w, h)
+                const W = convW(w, h)
+                const DEG2RAD = 0.017453292519943295
+                ctx.beginPath()
+                ctx.ellipse(
+                    X(x), Y(y),
+                    W(r), W(r), 0,
+                    -from * DEG2RAD,
+                    -to * DEG2RAD,
+                    true
+                )
+                ctx.stroke()
+            }
+        )
+
+        return this
+    }
+
+    /**
+     * @param x X center of the arc.
+     * @param y Y center of the arc.
+     * @param r Radius.
+     * @param from Start angle (in degrees).
+     * @param to End angle (in degrees).
+     */
+    fillArc(x: number, y: number, r: number, from = 0, to = 360): Draw {
+        this.commands.push(
+            (ctx: CanvasRenderingContext2D, w: number, h: number) => {
+                const X = convX(w, h)
+                const Y = convY(w, h)
+                const W = convW(w, h)
+                const DEG2RAD = 0.017453292519943295
+                ctx.beginPath()
+                ctx.ellipse(
+                    X(x), Y(y),
+                    W(r), W(r), 0,
+                    from * DEG2RAD,
+                    to * DEG2RAD
+                )
+                ctx.fill()
+            }
+        )
+
+        return this
+    }
+
+    line(x1: number, y1: number, x2: number, y2: number): Draw {
+        this.commands.push(
+            (ctx: CanvasRenderingContext2D, w: number, h: number) => {
+                const X = convX(w, h)
+                const Y = convY(w, h)
+                ctx.beginPath()
+                ctx.moveTo(X(x1), Y(y1))
+                ctx.lineTo(X(x2), Y(y2))
+                ctx.stroke()
             }
         )
 
@@ -313,7 +386,7 @@ class DrawView extends React.Component<IDrawViewProps> {
 
     render() {
         const classNames = ['custom', 'view-DrawView']
-        const { width, height, className} = this.props
+        const { width, height, className } = this.props
         if (typeof className === 'string') {
             classNames.push(className)
         }

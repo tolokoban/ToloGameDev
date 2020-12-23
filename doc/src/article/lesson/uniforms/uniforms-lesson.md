@@ -78,6 +78,7 @@ while (true) {
 ```
 
 Javascript has a special way to achieve this:
+
 ``` js
 function render(time) {
     window.requestAnimationFrame(render)
@@ -104,5 +105,9 @@ as sole argument.
 >  
 > Hint: It's feasible with only one uniform.  
 > Hint: Use a `vec4` as `uniPoint` attribute.
-> It will give you 4 numbers for each vertex.
+> It will give you 4 numbers for each vertex.  
+> Hint: Polar coordinates are more suited for this.
 
+You can see [a solution here](example/uniforms2.html).
+
+Unleash your imagination and try other animations!
