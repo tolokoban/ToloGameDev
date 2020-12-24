@@ -51,7 +51,7 @@ export default class AttributesEditorView extends React.Component<IAttributesEdi
     componentDidMount() {
         this.fire(this.state.attributes)
     }
-    
+
     private readonly handleAddAttribute = () => {
         const { attribute, attributes } = this.state
         attribute.name = attribute.name.trim()
@@ -63,13 +63,13 @@ export default class AttributesEditorView extends React.Component<IAttributesEdi
         ]
         this.setState({
             attributes: newAttributes
-        })        
+        })
         LocalStorage.set("attribute", attribute)
         this.fire(newAttributes)
     }
 
     private fire(attributes: IAttribute[]) {
-        const { onChange}=this.props
+        const { onChange } = this.props
         LocalStorage.set("attributes", attributes)
         if (typeof onChange === "function") {
             onChange(attributes)
@@ -197,12 +197,11 @@ export default class AttributesEditorView extends React.Component<IAttributesEdi
                                     `${attribute.type}[${attribute.size}]`
                                 }</td>
                                 <td className="small">
-                                    <Icon
-                                        content={
-                                            attribute.normalized ?
-                                                "ok" : "cancel"
-                                        }
-                                    />
+                                    {
+                                        attribute.normalized ?
+                                            <b>Yes</b> :
+                                            <span className="no">No</span>
+                                    }
                                 </td>
                                 <td className="small">
                                     <Button

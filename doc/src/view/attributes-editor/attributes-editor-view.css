@@ -42,3 +42,6 @@
     text-align: center;
 }
 
+.view-AttributesEditorView > table.list td span.no {
+    color: var(--thm-color-E);
+}

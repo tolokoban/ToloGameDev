@@ -92,8 +92,8 @@ function generateClassCode(attributes: IAttribute[]): string {
     initVertexAttribPointer(prg: WebGLProgram) {
         const { gl, buff } = this
         gl.bindBuffer(gl.ARRAY_BUFFER, buff)
-        prg.use()
-${generateVertexAttribPointer(attributes, "        ")}
+        gl.useProgram(prg)
+        ${generateVertexAttribPointer(attributes, "        ")}
     }
 
     set(
@@ -103,7 +103,15 @@ ${generateVertexAttribPointer(attributes, "        ")}
         if (cursor < 0) throw "Cursor cannot be negative!"
         if (cursor >= attribsCount )
             throw \`Cursor must be lesser than \${attribsCount}!\`
-        const ptr = cursor * ${attributeLengthInBytes}
+        const view = new DataView(this.data, cursor * ${attributeLengthInBytes}, ${attributeLengthInBytes})
+        ${generateSetValues(attributes, "        ")}
+        this.cursor++
+    }
+
+    sendToGPU() {
+        const { gl, buff, data } = this
+        gl.bindBuffer(gl.ARRAY_BUFFER, buff)
+        gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW)
     }
 }\n`
 }
@@ -124,7 +132,7 @@ ${indent})\n`
         offset += getLength(att)
     }
 
-    return code.trimRight()
+    return code.trim()
 }
 
 function generateSetParams(attributes: IAttribute[], indent: string): string {
@@ -132,12 +140,65 @@ function generateSetParams(attributes: IAttribute[], indent: string): string {
         if (att.size === 1) return `${att.name}: number`
 
         const args: string[] = []
-        for (let i=1; i<=att.size;i++) {
+        for (let i = 1; i <= att.size; i++) {
             args.push(`${att.name}${i}: number`)
         }
 
-        return args.join(`,\n${indent}`)
+        return args.join(`, `)
     }).join(`,\n${indent}`).trimRight()
+}
+
+function generateSetValues(attributes: IAttribute[], indent: string): string {
+    const lines: string[] = []
+    let offset = 0
+    for (const att of attributes) {
+        if (att.size === 1) {
+            lines.push(
+                `view.set${getViewType(att.type, offset, att.name)}`
+            )
+        } else {
+            const typeLen = getTypeLen(att)
+            for (let i = 1; i <= att.size; i++) {
+                lines.push(
+                    `view.set${getViewType(
+                        att.type,
+                        offset + (i - 1) * typeLen,
+                        `${att.name}${i}`
+                    )}`
+                )
+            }
+        }
+        offset += getLength(att)
+    }
+
+    return lines.join(`\n${indent}`).trim()
+}
+
+function getViewType(type: IAttributeType, offset: number, name: string): string {
+    switch (type) {
+        case "BYTE": return `Int8(${offset}, ${name})`
+        case "FLOAT": return `Float32(${offset}, ${name}, true)`
+        case "HALF_FLOAT": return `Float16(${offset}, ${name}, true)`
+        case "SHORT": return `Int16(${offset}, ${name}, true)`
+        case "UNSIGNED_BYTE": return `Uint8(${offset}, ${name})`
+        case "UNSIGNED_SHORT": return `Uint16(${offset}, ${name}, true)`
+        default: return "ERROR"
+    }
+}
+
+function getTypeLen(attribute: IAttribute): number {
+    switch (attribute.type) {
+        case "UNSIGNED_BYTE":
+        case "BYTE":
+            return 1
+        case "FLOAT":
+            return 4
+        case "SHORT":
+        case "UNSIGNED_SHORT":
+        case "HALF_FLOAT":
+            return 2
+        default: throw `Unknown type: "${attribute.type}"!`
+    }
 }
 
 function getAlignedSize(attribute: IAttribute): number {
