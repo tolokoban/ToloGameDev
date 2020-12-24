@@ -1,0 +1,83 @@
+.view-CodeView pre {
+    white-space: pre-wrap;
+    min-height: 50vh;
+    min-width: 25vw;
+    position: relative;
+    color: #000;
+    background: #def;
+    border: 1px solid #0003;
+    font-size: 80%;
+    padding: .5em;
+    margin: 1rem 0;
+}
+
+.view-CodeView pre.hljs::after {
+    position: absolute;
+    font-size: 80%;
+    right: 0;
+    top: -1.5em;
+    opacity: .3;
+}
+
+.view-CodeView pre.lang-js::after {
+    content: "Javascript"
+}
+
+.view-CodeView pre.lang-ts::after {
+    content: "Typescript"
+}
+
+.view-CodeView pre.lang-glsl::after {
+    content: "Shader Language"
+}
+
+.view-CodeView pre {
+    position: relative;
+    color: #000;
+    background: #def;
+    border: 1px solid #0003;
+    font-size: 80%;
+    padding: .5em;
+    margin: 1rem 0;
+}
+
+.view-CodeView pre>code,
+.view-CodeView pre>code span {
+    color: #000;
+}
+
+.view-CodeView pre>code span.hljs-keyword {
+    color: var(--thm-color-PD);
+}
+
+.view-CodeView pre>code span.hljs-string {
+    color: var(--thm-color-S);
+}
+
+.view-CodeView pre>code span.hljs-built_in {
+    color: var(--thm-color-PD);
+    font-weight: bolder;
+}
+
+.view-CodeView pre>code span.hljs-punctuation {
+    opacity: .5;
+}
+
+.view-CodeView pre>code span.hljs-comment {
+    opacity: .4;
+    font-style: italic;
+}
+
+.view-CodeView pre>code span.hljs-constant,
+.view-CodeView pre>code span.hljs-type {
+    font-weight: bolder;
+}
+
+.view-CodeView pre>code span.hljs-function {
+    color: #0064D8;
+}
+
+.view-CodeView pre>code span.hljs-number {
+    color: #BF7200;
+}
+

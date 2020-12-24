@@ -78,7 +78,7 @@ const SECTIONS: {
             attributes: {
                 title: "Attributes Structure",
                 keywords: ["attribute"],
-                content: React.lazy(() => import("../view/attributes-editor"))
+                content: React.lazy(() => import("../tool/attributes"))
             }
         }
     }

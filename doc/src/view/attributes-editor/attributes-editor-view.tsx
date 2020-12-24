@@ -35,7 +35,6 @@ export interface IAttributesEditorViewProps {
     onChange?(attributes: IAttribute[]): void
 }
 
-// tslint:disable-next-line: no-empty-interface
 interface IAttributesEditorViewState {
     attributes: IAttribute[]
     attribute: IAttribute
@@ -49,6 +48,10 @@ export default class AttributesEditorView extends React.Component<IAttributesEdi
         }) as IAttribute
     }
 
+    componentDidMount() {
+        this.fire(this.state.attributes)
+    }
+    
     private readonly handleAddAttribute = () => {
         const { attribute, attributes } = this.state
         attribute.name = attribute.name.trim()
@@ -60,9 +63,17 @@ export default class AttributesEditorView extends React.Component<IAttributesEdi
         ]
         this.setState({
             attributes: newAttributes
-        })
+        })        
         LocalStorage.set("attribute", attribute)
-        LocalStorage.set("attributes", newAttributes)
+        this.fire(newAttributes)
+    }
+
+    private fire(attributes: IAttribute[]) {
+        const { onChange}=this.props
+        LocalStorage.set("attributes", attributes)
+        if (typeof onChange === "function") {
+            onChange(attributes)
+        }
     }
 
     private select(name: string) {
@@ -84,6 +95,7 @@ export default class AttributesEditorView extends React.Component<IAttributesEdi
         this.setState({
             attributes: newAttributes
         })
+        this.fire(newAttributes)
     }
 
     render() {

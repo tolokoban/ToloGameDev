@@ -1,0 +1,8 @@
+.tool-AttributesTool {
+    margin: 1rem;
+    padding: 1rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
