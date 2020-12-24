@@ -124,6 +124,8 @@ function generateVertexAttribPointer(attributes: IAttribute[], indent: string): 
         stride += getLength(att)
     }
     for (const att of attributes) {
+        code += `${indent}gl.enableVertexAttribArray(\n`
+        code += `${indent}    gl.getAttribLocation(prg, 'attColor'))\n`
         code += `${indent}gl.vertexAttribPointer(
 ${indent}    gl.getAttribLocation(prg, '${att.name}'),
 ${indent}    ${att.size}, gl.${att.type}, ${att.normalized},
