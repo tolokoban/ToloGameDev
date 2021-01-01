@@ -272,10 +272,10 @@ export default class Draw {
 
         if (text.trim().length === 0) return this
 
-        return this.text(text, x, y, getBestAttach(attach, x, y))
+        return this.text(x, y, text, getBestAttach(attach, x, y))
     }
 
-    text(text: string, x: number, y: number, attach: IAttach = "") {
+    text(x: number, y: number, text: string, attach: IAttach = "") {
         this.commands.push(
             (ctx: CanvasRenderingContext2D, w: number, h: number) => {
                 const X = convX(w, h)

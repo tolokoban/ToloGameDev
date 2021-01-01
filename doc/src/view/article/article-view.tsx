@@ -6,6 +6,10 @@
 import * as React from "react"
 import MarkdownToJSX from 'markdown-to-jsx'
 import Highlighter from 'highlight.js'
+import AttribsTable from '../attribs-table'
+import { IAttribute, IAttributeType } from "../../manager/code-generator/types"
+import castBoolean from 'tfw/converter/boolean'
+import castInteger from 'tfw/converter/integer'
 
 import './article-view.css'
 
@@ -72,6 +76,9 @@ Unable to load URL:
         props: { [key: string]: any },
         ...children: React.ReactChild[]
     ) => {
+        if (type === "Att") {
+            return renderAttribs(readContent(children))
+        }
         const firstLetter = type.charAt(0)
         if (firstLetter === firstLetter.toUpperCase()) {
             const attribs = readAttribs(props)
@@ -110,6 +117,8 @@ function readContent(children: React.ReactChild[]): string {
     for (const child of children) {
         if (typeof child === 'string') {
             content += child
+        } else if (Array.isArray(child)) {
+            content += readContent(child)
         } else {
             console.log("[article-view] child = ", child) // @FIXME: Remove this line written on 2020-12-21 at 11:39
         }
@@ -128,4 +137,42 @@ function readAttribs(props: { [key: string]: any }): { [key: string]: string } {
     }
 
     return attribs
+}
+
+function renderAttribs(content: string): JSX.Element {
+    console.log("[article-view] content = ", content) // @FIXME: Remove this line written on 2020-12-28 at 14:25
+    const RX_SEP = /[ \t,;|]+/
+    const attributes: IAttribute[] = []
+    const lines = content.trim().split("\n")
+    for (const line of lines) {
+        const [name, type, size, norm] = line.split(RX_SEP)
+        console.log("[article-view] [name, type, size, norm] = ", [name, type, size, norm]) // @FIXME: Remove this line written on 2020-12-28 at 14:24
+        if (name.trim().length === 0) continue
+
+        const attType = getAttType(type)
+        if (!attType) {
+            console.error("Unknown attribute type:", type)
+            continue
+        }
+
+        const attSize = castInteger(size, 1)
+        const attNorm = castBoolean(norm, false)
+        attributes.push({
+            name, type: attType, size: attSize, normalized: attNorm
+        })
+    }
+
+    return <AttribsTable attributes={attributes} />
+}
+
+function getAttType(type: string): IAttributeType | null {
+    switch (type.toLowerCase()) {
+        case "byte": return "BYTE"
+        case "float": return "FLOAT"
+        case "half-float": return "HALF_FLOAT"
+        case "short": return "SHORT"
+        case "ubyte": return "UNSIGNED_BYTE"
+        case "ushort": return "UNSIGNED_SHORT"
+        default: return null
+    }
 }

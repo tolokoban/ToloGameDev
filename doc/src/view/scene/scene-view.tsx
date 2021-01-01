@@ -11,6 +11,8 @@ export class IScene extends TGD.Scene { }
 
 export interface ISceneViewProps<T> {
     className?: string
+    width?: number
+    height?: number
     onInit(scene: IScene): T
     onAnim?(time: number, scene: IScene, runtime: T): void
 }
@@ -53,12 +55,26 @@ export default class SceneView<T = undefined> extends React.Component<ISceneView
     }
 
     render() {
+        const { width, height, className } = this.props
         const classNames = ['custom', 'view-SceneView']
-        if (typeof this.props.className === 'string') {
-            classNames.push(this.props.className)
+        if (typeof className === 'string') {
+            classNames.push(className)
+        }
+        const style: React.CSSProperties = {}
+        if (typeof width === 'number') {
+            style.width = `${width}px`
+        }
+        if (typeof height === 'number') {
+            style.height = `${height}px`
         }
 
-        return <canvas ref={this.refCanvas} className={classNames.join(" ")}>
+        return <canvas
+            ref={this.refCanvas}
+            className={classNames.join(" ")}
+            width={width}
+            height={height}
+            style={style}
+        >
         </canvas>
     }
 }

@@ -3,7 +3,7 @@
     margin: 0;
 }
 
-.view-CodeView pre {
+.view-CodeView pre.view-CodeView-pre {
     white-space: pre-wrap;
     min-height: 50vh;
     min-width: 25vw;
@@ -12,17 +12,16 @@
     background: #def;
     border: 1px solid #0003;
     font-size: 80%;
-    padding: .5em;
+    padding: 1rem .5em .5em .5em;
     margin: 0;
     overflow: auto;
-    max-height: calc(100vh - 6rem);
 }
 
 .view-CodeView pre.hljs::after {
     position: absolute;
     font-size: 80%;
-    right: 0;
-    top: -1.5em;
+    right: .125rem;
+    top: .125em;
     opacity: .3;
 }
 

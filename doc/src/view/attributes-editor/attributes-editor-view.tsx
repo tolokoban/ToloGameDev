@@ -112,39 +112,41 @@ export default class AttributesEditorView extends React.Component<IAttributesEdi
 
         return <div className={classNames.join(" ")}>
             <div className="edit">
-                <Input
-                    label="Attribute's Name"
-                    value={attribute.name}
-                    onChange={name => this.setState({
-                        attribute: { ...attribute, name }
-                    })}
-                />
-                <Combo
-                    label="Attribute's Type"
-                    value={attribute.type}
-                    onChange={type => this.setState({
-                        attribute: { ...attribute, type: type as IAttributeType }
-                    })}
-                >
-                    <div key="BYTE">
-                        <b>BYTE</b>: integer within [-128, 127]
-                        </div>
-                    <div key="SHORT">
-                        <b>SHORT</b>: integer within [-32768, 32767]
-                        </div>
-                    <div key="UNSIGNED_BYTE">
-                        <b>UNSIGNED_BYTE</b>: integer within [0, 255]
-                        </div>
-                    <div key="UNSIGNED_SHORT">
-                        <b>UNSIGNED_SHORT</b>: integer within [0, 65535]
-                        </div>
-                    <div key="FLOAT">
-                        <b>FLOAT</b>: 32-bits IEEE floating point number
-                        </div>
-                    <div key="HALF_FLOAT">
-                        <b>HALF_FLOAT</b>: 16-bits IEEE number (only WebGL2)
-                        </div>
-                </Combo>
+                <div className="flex">
+                    <Input
+                        label="Attribute's Name"
+                        value={attribute.name}
+                        onChange={name => this.setState({
+                            attribute: { ...attribute, name }
+                        })}
+                    />
+                    <Combo
+                        label="Attribute's Type"
+                        value={attribute.type}
+                        onChange={type => this.setState({
+                            attribute: { ...attribute, type: type as IAttributeType }
+                        })}
+                    >
+                        <div key="BYTE">
+                            <b>BYTE</b>: int [-128, 127]
+                    </div>
+                        <div key="SHORT">
+                            <b>SHORT</b>: int [-32768, 32767]
+                    </div>
+                        <div key="UNSIGNED_BYTE">
+                            <b>UBYTE</b>: int [0, 255]
+                    </div>
+                        <div key="UNSIGNED_SHORT">
+                            <b>USHORT</b>: int [0, 65535]
+                    </div>
+                        <div key="FLOAT">
+                            <b>FLOAT</b>: 32-bits
+                    </div>
+                        {/* <div key="HALF_FLOAT">
+                        <b>HALF_FLOAT</b>: 16-bits
+                    </div> */}
+                    </Combo>
+                </div>
                 <div className="flex">
                     <InputInteger
                         label="Size"
@@ -176,9 +178,11 @@ export default class AttributesEditorView extends React.Component<IAttributesEdi
             <hr />
             <table className="list">
                 <thead>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Nor.</th>
+                    <tr>
+                        <th>Name</th>
+                        <th>Type</th>
+                        <th>Nor.</th>
+                    </tr>
                 </thead>
                 <tbody>
                     {

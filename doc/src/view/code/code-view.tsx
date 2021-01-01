@@ -4,6 +4,7 @@
 import * as React from "react"
 import Touchable from 'tfw/view/touchable'
 import NotifyFactory from 'tfw/factory/notify'
+import Highlighter from 'highlight.js'
 
 import './code-view.css'
 
@@ -23,9 +24,17 @@ export default class CodeView extends React.Component<ICodeViewProps, ICodeViewS
     private readonly highlight = () => {
         const pre = this.refPre.current
         if (!pre) return
-        
-        const { content } = this.props
-        pre.textContent = content
+
+        const codes = pre.querySelectorAll("code")
+        for (const code of codes) {
+            Highlighter.highlightBlock(code)
+            const parent = code.parentElement
+            if (parent) {
+                parent.classList.add(
+                    ...code.classList
+                )
+            }
+        }
     }
 
     componentDidMount = this.highlight
@@ -40,6 +49,7 @@ export default class CodeView extends React.Component<ICodeViewProps, ICodeViewS
     }
 
     render() {
+        const { content, lang } = this.props
         const classNames = ['custom', 'view-CodeView']
         if (typeof this.props.className === 'string') {
             classNames.push(this.props.className)
@@ -49,7 +59,9 @@ export default class CodeView extends React.Component<ICodeViewProps, ICodeViewS
             className={classNames.join(" ")}
             onClick={this.handleCopy}
         >
-            <pre ref={this.refPre}></pre>
+            <pre ref={this.refPre} className={`view-CodeView-pre lang-${lang}`}>
+                <code>{content}</code>
+            </pre>
         </Touchable>
     }
 }

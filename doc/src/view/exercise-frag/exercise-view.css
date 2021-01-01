@@ -1,0 +1,20 @@
+.view-ExerciseView > div.header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.view-ExerciseView > div.header > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+}
+
+.view-ExerciseView pre.error {
+    white-space: pre-wrap;
+    color: var(--thm-color-on-E);
+    background-color: var(--thm-color-E);
+    padding: .5rem;
+}

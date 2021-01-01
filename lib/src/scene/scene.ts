@@ -1,5 +1,6 @@
-import { IWebGL, IShaders } from '../types'
+import { IWebGL, IShaders, ITextureOptions } from '../types'
 import Program from '../program'
+import Texture from '../texture'
 
 
 interface IWebGLSettings {
@@ -66,6 +67,23 @@ export default class Scene {
         create: (shaders: IShaders) => Program.create(this.gl, shaders)
     }
 
+    public readonly texture = {
+        fromURL: (url: string, options?: Partial<ITextureOptions>) =>
+            Texture.fromURL(this.gl, url, options),
+        fromData: (
+            width: number,
+            height: number,
+            data?: Uint8Array,
+            options?: Partial<ITextureOptions>
+        ) => Texture.fromData(this.gl, width, height, data, options),
+        fromDataLuminance: (
+            width: number,
+            height: number,
+            data?: Uint8Array,
+            options?: Partial<ITextureOptions>
+        ) => Texture.fromDataLuminance(this.gl, width, height, data, options)
+    }
+
     createArrayBufferStatic(data: ArrayBuffer): WebGLBuffer {
         const { gl } = this
         const buff = gl.createBuffer()
@@ -88,8 +106,8 @@ export default class Scene {
             canvas.setAttribute("height", `${rect.height}`)
             this.lastWidth = rect.width
             this.lastHeight = rect.height
-            gl.viewport(0, 0, this.lastWidth, this.lastHeight)
         }
+        gl.viewport(0, 0, this.lastWidth, this.lastHeight)
     }
 
     get width() { return this.gl.drawingBufferWidth }

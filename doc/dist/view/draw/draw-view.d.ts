@@ -20,6 +20,23 @@ export default class Draw {
     black(): Draw;
     grey(): Draw;
     axis(): Draw;
+    /**
+     * @param x X center of the arc.
+     * @param y Y center of the arc.
+     * @param r Radius.
+     * @param from Start angle (in degrees).
+     * @param to End angle (in degrees).
+     */
+    drawArc(x: number, y: number, r: number, from?: number, to?: number): Draw;
+    /**
+     * @param x X center of the arc.
+     * @param y Y center of the arc.
+     * @param r Radius.
+     * @param from Start angle (in degrees).
+     * @param to End angle (in degrees).
+     */
+    fillArc(x: number, y: number, r: number, from?: number, to?: number): Draw;
+    line(x1: number, y1: number, x2: number, y2: number): Draw;
     opacity(value: number): Draw;
     color(style: string): Draw;
     thickness(value: number): Draw;

@@ -1,4 +1,4 @@
-import { IWebGL, IShaders } from '../types';
+import { IWebGL, IShaders, ITextureOptions } from '../types';
 interface IWebGLSettings {
     alpha: boolean;
     desynchronized: boolean;
@@ -20,6 +20,11 @@ export default class Scene {
     constructor(canvas: HTMLCanvasElement, settings?: Partial<IWebGLSettings>);
     readonly program: {
         create: (shaders: IShaders) => WebGLProgram;
+    };
+    readonly texture: {
+        fromURL: (url: string, options?: Partial<ITextureOptions> | undefined) => WebGLTexture;
+        fromData: (width: number, height: number, data?: Uint8Array | undefined, options?: Partial<ITextureOptions> | undefined) => WebGLTexture;
+        fromDataLuminance: (width: number, height: number, data?: Uint8Array | undefined, options?: Partial<ITextureOptions> | undefined) => WebGLTexture;
     };
     createArrayBufferStatic(data: ArrayBuffer): WebGLBuffer;
     /**

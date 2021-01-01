@@ -11,3 +11,8 @@ export interface IAttribute {
     size: number
     location: number
 }
+
+export interface ITextureOptions {
+    linear: boolean
+}
+

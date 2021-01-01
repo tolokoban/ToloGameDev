@@ -1,0 +1,15 @@
+.view-AttribsTableView {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.view-AttribsTableView table thead tr {
+    background-color: var(--thm-color-PD);
+    color: var(--thm-color-on-PD);
+}
+
+.view-AttribsTableView table tbody td {
+    text-align: center;
+}

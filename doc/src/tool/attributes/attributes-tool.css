@@ -3,6 +3,14 @@
     padding: 1rem;
     display: flex;
     flex-direction: row;
-    justify-content: flex-start;
-    align-items: flex-start;
+    justify-content: space-between;
+    align-items: stretch;
+    max-height: calc(100vh - 2rem);
+}
+
+.tool-AttributesTool > *:first-child {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: stretch;
 }

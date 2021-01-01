@@ -19,6 +19,16 @@ const SECTIONS: {
         }
     }
 } = {
+    gallery: {
+        title: "Gallery",
+        articles: {
+            dripping: {
+                title: "Dripping",
+                keywords: [],
+                content: React.lazy(() => import("../gallery/dripping"))
+            }
+        }
+    },
     lesson: {
         title: "Lessons",
         articles: {
@@ -54,6 +64,13 @@ const SECTIONS: {
                     "useProgram"
                 ],
                 content: React.lazy(() => import("../article/lesson/uniforms"))
+            },
+            varyings: {
+                title: "Varyings",
+                keywords: [
+                    "varying"
+                ],
+                content: React.lazy(() => import("../article/lesson/varyings"))
             },
             troubleshooting: {
                 title: "Troubleshooting",
