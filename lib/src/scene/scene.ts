@@ -1,6 +1,9 @@
 import { IWebGL, IShaders, ITextureOptions } from '../types'
 import Program from '../program'
 import Texture from '../texture'
+import Painter from '../painter'
+import ListPainter from '../painter/list'
+import painter from '../painter'
 
 
 interface IWebGLSettings {
@@ -27,12 +30,16 @@ interface IWebGLSettings {
     stencil: boolean
 }
 
+let globalId = 1
+
 export default class Scene {
+    public readonly id = globalId++
     public readonly gl: IWebGL
     public readonly settings: IWebGLSettings
     public readonly webglVersion: number
     private lastWidth = 0
     private lastHeight = 0
+    private readonly painterList: ListPainter
 
     constructor(
         public readonly canvas: HTMLCanvasElement,
@@ -61,6 +68,21 @@ export default class Scene {
             this.webglVersion = 1
         }
         this.resize()
+        this.painterList = new ListPainter(this)
+    }
+
+    addPainter(painter: Painter) {
+        this.painterList.add(painter)
+    }
+
+    removePainter(painter: Painter) {
+        this.painterList.remove(painter)
+    }
+
+    paintAll(time: number) {
+        const { painterList } = this
+        painterList.paint(time)
+        painterList.prepareNextFrame(time)
     }
 
     public readonly program = {
@@ -68,6 +90,8 @@ export default class Scene {
     }
 
     public readonly texture = {
+        fromCamera: (width: number=0, height: number=0) =>
+            Texture.fromCamera(this.gl, width, height),
         fromURL: (url: string, options?: Partial<ITextureOptions>) =>
             Texture.fromURL(this.gl, url, options),
         fromData: (

@@ -1,29 +1,27 @@
 {
     "compilerOptions": {
         "alwaysStrict": false,
-        "allowSyntheticDefaultImports": true,
+        "allowSyntheticDefaultImports": false,
         "baseUrl": "./src/",
         "composite": false,
         "declaration": true,
         "declarationMap": true,
         "diagnostics": true,
         "downlevelIteration": true,
-        "esModuleInterop": true,
-        "extendedDiagnostics": false,
-        "incremental": false,
-        "jsx": "react",
-        "lib": [
-            "dom",
-            "dom.iterable",
-            "es6"
-        ],
+        "esModuleInterop": false,
+        "extendedDiagnostics": true,
+        "incremental": true,
+        "lib": [ "dom", "es6" ],
         "module": "CommonJS",
         "moduleResolution": "node",
         "noImplicitAny": false,
         "noImplicitReturns": false,
-        "outDir": "./dist/esm",
+        "outDir": "./dist",
         "paths": {
-            "*": ["src/*", "node_modules/*"]
+            "*": [
+                "src/*",
+                "node_modules/*"
+            ]
         },
         "removeComments": false,
         "resolveJsonModule": true,
@@ -32,17 +30,24 @@
         "strictNullChecks": true,
         "target": "es5"
     },
-    "output": ["./dist/esm"],
-    "files": ["src/index.ts"],
+    "output": [
+        "./dist"
+    ],
+    "files": [
+        "src/index.ts"
+    ],
     "include": [
         "./src/**/*.ts",
         "./src/**/*.tsx",
         "./src/**/*.css",
         "./src/**/*.svg",
+        "./src/**/*.webp",
         "./src/**/*.png",
         "./src/**/*.jpg",
         "./src/**/*.jpeg",
-        "./src/**/*.gif"
+        "./src/**/*.gif",
+        "./src/**/*.vert",
+        "./src/**/*.frag"
     ],
     "exclude": [
         "node_modules/",

@@ -2,8 +2,8 @@
  * Exercise on Fragment Shader.
  */
 import * as React from "react"
+import * as TGD from "tolo-game-dev"
 import Debouncer from 'tfw/async/debouncer'
-import TGD from "tolo-game-dev"
 import CodeEditor from '../code-editor'
 import Storage from 'tfw/storage'
 

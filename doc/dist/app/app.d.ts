@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import './app.css';
 interface IArticle {
     title: string;

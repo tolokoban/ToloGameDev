@@ -1,4 +1,4 @@
-import TGD from 'tolo-game-dev'
+import * as TGD from 'tolo-game-dev'
 import SimpleTriVert from './simple-tri.vert'
 import SimpleTriFrag from './simple-tri.frag'
 

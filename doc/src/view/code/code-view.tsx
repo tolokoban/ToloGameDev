@@ -4,7 +4,7 @@
 import * as React from "react"
 import Touchable from 'tfw/view/touchable'
 import NotifyFactory from 'tfw/factory/notify'
-import Highlighter from 'highlight.js'
+import * as Highlighter from 'highlight.js'
 
 import './code-view.css'
 

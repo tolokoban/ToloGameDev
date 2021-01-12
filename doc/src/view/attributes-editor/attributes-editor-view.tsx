@@ -6,7 +6,6 @@ import * as React from "react"
 import Button from 'tfw/view/button'
 import Checkbox from 'tfw/view/checkbox'
 import Combo from "tfw/view/combo"
-import Icon from 'tfw/view/icon'
 import Input from "tfw/view/input"
 import InputInteger from "tfw/view/input-integer"
 import Storage from 'tfw/storage'

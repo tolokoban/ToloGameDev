@@ -1,4 +1,4 @@
-import TGD from 'tolo-game-dev'
+import * as TGD from 'tolo-game-dev'
 import ColorTriVert from './color-tri.vert'
 import ColorTriFrag from './color-tri.frag'
 

@@ -5,7 +5,7 @@
 
 import * as React from "react"
 import MarkdownToJSX from 'markdown-to-jsx'
-import Highlighter from 'highlight.js'
+import * as Highlighter from 'highlight.js'
 import AttribsTable from '../attribs-table'
 import { IAttribute, IAttributeType } from "../../manager/code-generator/types"
 import castBoolean from 'tfw/converter/boolean'

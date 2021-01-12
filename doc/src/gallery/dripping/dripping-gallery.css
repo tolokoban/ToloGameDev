@@ -14,5 +14,11 @@
     height: calc(100vh - 2rem);
 }
 
-
-
+.gallery-DrippingGallery > div.colors {
+    margin: 1rem;
+    padding: .5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}

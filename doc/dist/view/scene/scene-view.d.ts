@@ -2,12 +2,14 @@
  * Easy to use scene animator
  */
 import * as React from "react";
-import TGD from 'tolo-game-dev';
+import * as TGD from 'tolo-game-dev';
 import './scene-view.css';
 export declare class IScene extends TGD.Scene {
 }
 export interface ISceneViewProps<T> {
     className?: string;
+    width?: number;
+    height?: number;
     onInit(scene: IScene): T;
     onAnim?(time: number, scene: IScene, runtime: T): void;
 }

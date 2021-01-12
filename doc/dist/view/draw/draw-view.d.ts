@@ -44,7 +44,7 @@ export default class Draw {
     fillTri(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number): Draw;
     drawTri(x1: number, y1: number, x2: number, y2: number, x3: number, y3: number): Draw;
     dot(x: number, y: number, text?: string, attach?: IAttach): this;
-    text(text: string, x: number, y: number, attach?: IAttach): this;
+    text(x: number, y: number, text: string, attach?: IAttach): this;
 }
 export interface IDrawViewProps {
     className?: string;

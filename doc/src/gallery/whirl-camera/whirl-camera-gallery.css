@@ -1,0 +1,17 @@
+.gallery-WhirlCameraGallery {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.gallery-WhirlCameraGallery > canvas {
+    width: 256px;
+    height: 512px;
+    box-shadow: 0 8px 16px #000a;
+}

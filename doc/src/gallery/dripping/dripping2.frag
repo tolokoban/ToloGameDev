@@ -1,55 +1,32 @@
 precision mediump float;
 
+uniform float uniTime;
 uniform sampler2D uniTexture;
 varying vec2 varUV;
 
 const float S = 1.0 / 1024.0;
-const float Q = 1.0 / 64.0;
+const float Q = 1.0 / 256.0;
+const float D2G = 0.017453292519943295;
 
 void main() {
-    vec4 cNW = texture2D(uniTexture, varUV + vec2(-S, -S));
-    vec4 cN  = texture2D(uniTexture, varUV + vec2(0, -S));
-    vec4 cNE = texture2D(uniTexture, varUV + vec2(S, -S));
-    vec4 cW  = texture2D(uniTexture, varUV + vec2(-S, 0));
-    vec4 cE  = texture2D(uniTexture, varUV + vec2(S, 0));
-    vec4 cSW = texture2D(uniTexture, varUV + vec2(-S, S));
-    vec4 cS  = texture2D(uniTexture, varUV + vec2(0, S));
-    vec4 cSE = texture2D(uniTexture, varUV + vec2(S, S));
+    float ANGLES[3];
+    ANGLES[0] = -30.0 * D2G;
+    ANGLES[1] = 0.0 * D2G;
+    ANGLES[2] = +30.0 * D2G;
+    vec3 cumul = vec3(0,0,0);
+    for (int i=0; i<3; i++) {
+        float ang = ANGLES[i];
+        float u = varUV.x + S * sin(ang);
+        float v = varUV.y - S * cos(ang);
+        cumul += texture2D(uniTexture, vec2(u, v)).rgb;
+    }
 
     vec3 color = texture2D(uniTexture, varUV).rgb;
-
-    float rH = 2.0;
-    float rL = 1.0;
-    if (cNW.r + cN.r + cNE.r >= rH) color.r += Q;
-    if (cNW.r + cN.r + cNE.r <= rL) color.r -= Q;
-    if (cSW.r + cS.r + cSE.r >= rH) color.r += Q;
-    if (cSW.r + cS.r + cSE.r <= rL) color.r -= Q;
-    if (cNW.r + cW.r + cSW.r >= rH) color.r += Q;
-    if (cNW.r + cW.r + cSW.r <= rL) color.r -= Q;
-    if (cNE.r + cE.r + cSE.r >= rH) color.r += Q;
-    if (cNE.r + cE.r + cSE.r <= rL) color.r -= Q;
-
-    float gH = 1.6;
-    float gL = 1.4;
-    if (cNW.g + cN.g + cNE.g >= gH) color.g += Q;
-    if (cNW.g + cN.g + cNE.g <= gL) color.g -= Q;
-    if (cSW.g + cS.g + cSE.g >= gH) color.g += Q;
-    if (cSW.g + cS.g + cSE.g <= gL) color.g -= Q;
-    if (cNW.g + cW.g + cSW.g >= gH) color.g += Q;
-    if (cNW.g + cW.g + cSW.g <= gL) color.g -= Q;
-    if (cNE.g + cE.g + cSE.g >= gH) color.g += Q;
-    if (cNE.g + cE.g + cSE.g <= gL) color.g -= Q;
-
-    float bH = 1.8;
-    float bL = 1.2;
-    if (cNW.b + cN.b + cNE.b >= bH) color.b += Q;
-    if (cNW.b + cN.b + cNE.b <= bL) color.b -= Q;
-    if (cSW.b + cS.b + cSE.b >= bH) color.b += Q;
-    if (cSW.b + cS.b + cSE.b <= bL) color.b -= Q;
-    if (cNW.b + cW.b + cSW.b >= bH) color.b += Q;
-    if (cNW.b + cW.b + cSW.b <= bL) color.b -= Q;
-    if (cNE.b + cE.b + cSE.b >= bH) color.b += Q;
-    if (cNE.b + cE.b + cSE.b <= bL) color.b -= Q;
-
+    float factor = 5.5 +
+        2.0 * cos(uniTime * 0.014532) * sin(uniTime * 0.0094841);
+    color.r += cumul.r < 1.0 ? -Q * factor : +Q;
+    color.g += cumul.g < 1.0 ? -Q * factor : +Q;
+    color.b += cumul.b < 1.0 ? -Q * factor : +Q;
+    
     gl_FragColor = vec4(color, 1);
 }

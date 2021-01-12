@@ -1,4 +1,5 @@
-import React, { Suspense } from 'react'
+import * as React from 'react'
+import { Suspense } from 'react'
 
 import './app.css'
 
@@ -26,6 +27,11 @@ const SECTIONS: {
                 title: "Dripping",
                 keywords: [],
                 content: React.lazy(() => import("../gallery/dripping"))
+            },
+            whirlCamera: {
+                title: "Camera",
+                keywords: [],
+                content: React.lazy(() => import("../gallery/whirl-camera"))
             }
         }
     },

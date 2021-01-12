@@ -1,6 +1,6 @@
 {
     "name": "tolo-game-dev",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Helper library for WebGL.",
     "license": "GPL-3.0",
     "main": "dist/umd/index.js",
@@ -43,6 +43,7 @@
         "jest": "^24.9.0",
         "raw-loader": "^4.0.2",
         "style-loader": "^2.0.0",
+        "tlkprj": "^0.5.0",
         "ts-jest": "^26.4.4",
         "ts-loader": "^6.2.2",
         "ts-node": "^8.10.2",
@@ -53,9 +54,8 @@
         "webpack-cli": "^4.2.0"
     },
     "scripts": {
-        "start": "watch 'npm run build' src/ --ignoreDotFiles --wait=2",
-        "prebuild": "tsc && node scripts/copy-assets.js",
-        "build": "webpack",
+        "start": "tlkprj --watch",
+        "build": "tlkprj",
         "lint": "tslint -p . --fix -t stylish -c tslint.json 'src/**/*.ts'",
         "test": "jest --watch"
     },

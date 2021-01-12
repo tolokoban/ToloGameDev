@@ -1,5 +1,7 @@
 import * as React from "react"
-import TGD from 'tolo-game-dev'
+import Color from 'tfw/color'
+import InputColor from 'tfw/view/input-color'
+import * as TGD from 'tolo-game-dev'
 import Scene from '../../view/scene'
 import Vert1 from './dripping1.vert'
 import Vert2 from './dripping2.vert'
@@ -8,21 +10,33 @@ import Frag2 from './dripping2.frag'
 
 import './dripping-gallery.css'
 
-class IScene extends TGD.Scene { }
-
 
 export interface IDrippingGalleryProps {
     className?: string
 }
 
 // tslint:disable-next-line: no-empty-interface
-interface IDrippingGalleryState { }
+interface IDrippingGalleryState {
+    colorA0: string
+    colorA1: string
+    colorB0: string
+    colorB1: string
+    colorC0: string
+    colorC1: string
+}
 
 const WIDTH = 2048
 const HEIGHT = 2048
 
 export default class DrippingGallery extends React.Component<IDrippingGalleryProps, IDrippingGalleryState> {
-    state: IDrippingGalleryState = {}
+    state: IDrippingGalleryState = {
+        colorA0: "#ccb07f",
+        colorA1: "#d9bb87",
+        colorB0: "#ccb07f",
+        colorB1: "#d9bb87",
+        colorC0: "#ccb07f",
+        colorC1: "#d9bb87"
+    }
 
     render() {
         const classNames = ['custom', 'gallery-DrippingGallery']
@@ -31,9 +45,41 @@ export default class DrippingGallery extends React.Component<IDrippingGalleryPro
         }
 
         return <div className={classNames.join(" ")}>
+            <div className="colors thm-bg1 thm-ele-button">
+                <InputColor
+                    label="Color A0"
+                    value={this.state.colorA0}
+                    onChange={v => this.setState({ colorA0: v })}
+                />
+                <InputColor
+                    label="Color A1"
+                    value={this.state.colorA1}
+                    onChange={v => this.setState({ colorA1: v })}
+                />
+                <InputColor
+                    label="Color B0"
+                    value={this.state.colorB0}
+                    onChange={v => this.setState({ colorB0: v })}
+                />
+                <InputColor
+                    label="Color B1"
+                    value={this.state.colorB1}
+                    onChange={v => this.setState({ colorB1: v })}
+                />
+                <InputColor
+                    label="Color C0"
+                    value={this.state.colorC0}
+                    onChange={v => this.setState({ colorC0: v })}
+                />
+                <InputColor
+                    label="Color C1"
+                    value={this.state.colorC1}
+                    onChange={v => this.setState({ colorC1: v })}
+                />
+            </div>
             <Scene
                 className="canvas"
-                onInit={init}
+                onInit={init(this)}
                 onAnim={anim}
                 width={1024}
                 height={1024}
@@ -48,6 +94,13 @@ interface IDripper {
     uniTextureView: WebGLUniformLocation | null
     uniTextureBuff: WebGLUniformLocation | null
     uniY: WebGLUniformLocation | null
+    uniColorA0: WebGLUniformLocation | null
+    uniColorA1: WebGLUniformLocation | null
+    uniColorB0: WebGLUniformLocation | null
+    uniColorB1: WebGLUniformLocation | null
+    uniColorC0: WebGLUniformLocation | null
+    uniColorC1: WebGLUniformLocation | null
+    uniTime: WebGLUniformLocation | null
     texView: WebGLTexture
     texBuff: WebGLTexture
     prgView: WebGLProgram
@@ -55,56 +108,78 @@ interface IDripper {
     dataView: Data
     framebuffer: WebGLFramebuffer
     y: number
+    view: DrippingGallery
 }
 
-function init(scene: IScene): IDripper {
-    const prgView = scene.program.create({
-        vert: Vert1,
-        frag: Frag1
-    })
-    const prgBuff = scene.program.create({
-        vert: Vert2,
-        frag: Frag2
-    })
-    const dataView = new Data(scene.gl, 4)
-    dataView.init(prgView)
-    dataView.init(prgBuff)
-    dataView.set(-1, +1, 0, 0)
-    dataView.set(+1, +1, 255, 0)
-    dataView.set(-1, -1, 0, 255)
-    dataView.set(+1, -1, 255, 255)
-    dataView.send()
-    const framebuffer = scene.gl.createFramebuffer()
-    if (!framebuffer) throw "Unable to create WebGL Framebuffer!"
+function init(view: DrippingGallery) {
+    return (scene: TGD.Scene): IDripper => {
+        const prgView = scene.program.create({
+            vert: Vert1,
+            frag: Frag1
+        })
+        const prgBuff = scene.program.create({
+            vert: Vert2,
+            frag: Frag2
+        })
+        const dataView = new Data(scene.gl, 4)
+        dataView.init(prgView)
+        dataView.init(prgBuff)
+        dataView.set(-1, +1, 0, 0)
+        dataView.set(+1, +1, 255, 0)
+        dataView.set(-1, -1, 0, 255)
+        dataView.set(+1, -1, 255, 255)
+        dataView.send()
+        const framebuffer = scene.gl.createFramebuffer()
+        if (!framebuffer) throw "Unable to create WebGL Framebuffer!"
 
-    const dripper = {
-        uniAspectRatioView: scene.gl.getUniformLocation(prgView, "uniAspectRatio"),
-        uniTextureView: scene.gl.getUniformLocation(prgView, "uniTexture"),
-        uniTextureBuff: scene.gl.getUniformLocation(prgBuff, "uniTexture"),
-        uniY: scene.gl.getUniformLocation(prgBuff, "uniY"),
-        prgView,
-        prgBuff,
-        texView: scene.texture.fromData(WIDTH, HEIGHT, cellularAtomata(), { linear: false }),
-        texBuff: scene.texture.fromData(WIDTH, HEIGHT, cellularAtomata(), { linear: false }),
-        dataView,
-        framebuffer,
-        y: 0
+        const dripper = {
+            uniAspectRatioView: scene.gl.getUniformLocation(prgView, "uniAspectRatio"),
+            uniTextureView: scene.gl.getUniformLocation(prgView, "uniTexture"),
+            uniColorA0: scene.gl.getUniformLocation(prgView, "uniColorA0"),
+            uniColorA1: scene.gl.getUniformLocation(prgView, "uniColorA1"),
+            uniColorB0: scene.gl.getUniformLocation(prgView, "uniColorB0"),
+            uniColorB1: scene.gl.getUniformLocation(prgView, "uniColorB1"),
+            uniColorC0: scene.gl.getUniformLocation(prgView, "uniColorC0"),
+            uniColorC1: scene.gl.getUniformLocation(prgView, "uniColorC1"),
+            uniTime: scene.gl.getUniformLocation(prgBuff, "uniTime"),
+            uniTextureBuff: scene.gl.getUniformLocation(prgBuff, "uniTexture"),
+            uniY: scene.gl.getUniformLocation(prgBuff, "uniY"),
+            prgView,
+            prgBuff,
+            texView: scene.texture.fromData(WIDTH, HEIGHT, cellularAtomata(), { linear: false }),
+            texBuff: scene.texture.fromData(WIDTH, HEIGHT, cellularAtomata(), { linear: false }),
+            dataView,
+            framebuffer,
+            y: 0,
+            view
+        }
+
+        return dripper
     }
-
-    return dripper
 }
 
 function anim(
     time: number,
-    scene: IScene,
+    scene: TGD.Scene,
     dripper: IDripper
 ) {
     const { gl } = scene
+    const { 
+        colorA0, colorA1,
+        colorB0, colorB1,
+        colorC0, colorC1
+    } = dripper.view.state
     scene.resize()
     gl.bindFramebuffer(gl.FRAMEBUFFER, null)
     gl.useProgram(dripper.prgView)
     gl.uniform1f(dripper.uniAspectRatioView, scene.aspectRatio)
     gl.uniform1f(dripper.uniTextureView, 0)
+    gl.uniform4fv(dripper.uniColorA0, Color.fromColorOrString(colorA0).toArrayRGBA())
+    gl.uniform4fv(dripper.uniColorA1, Color.fromColorOrString(colorA1).toArrayRGBA())
+    gl.uniform4fv(dripper.uniColorB0, Color.fromColorOrString(colorB0).toArrayRGBA())
+    gl.uniform4fv(dripper.uniColorB1, Color.fromColorOrString(colorB1).toArrayRGBA())
+    gl.uniform4fv(dripper.uniColorC0, Color.fromColorOrString(colorC0).toArrayRGBA())
+    gl.uniform4fv(dripper.uniColorC1, Color.fromColorOrString(colorC1).toArrayRGBA())
     gl.activeTexture(gl.TEXTURE0)
     gl.bindTexture(gl.TEXTURE_2D, dripper.texView)
     dripper.dataView.bind()
@@ -119,6 +194,7 @@ function anim(
     gl.viewport(0, 0, WIDTH, HEIGHT)
     gl.useProgram(dripper.prgBuff)
     gl.uniform1f(dripper.uniTextureBuff, 0)
+    gl.uniform1f(dripper.uniTime, time)
     gl.activeTexture(gl.TEXTURE0)
     gl.bindTexture(gl.TEXTURE_2D, dripper.texView)
     dripper.dataView.bind()
@@ -159,10 +235,10 @@ function cellularAtomata(): Uint8Array {
     let ptrIn = size >> 1 + 1
     for (let y = 0; y < HEIGHT; y++) {
         for (let x = 0; x < WIDTH - 1; x++) {
-            output[ptrOut++] = data[ptrIn]
-            output[ptrOut++] = data[ptrIn]
-            output[ptrOut++] = data[ptrIn]
-            output[ptrOut++] = data[ptrIn]
+            output[ptrOut++] = 255 - data[ptrIn]
+            output[ptrOut++] = 255 - data[ptrIn]
+            output[ptrOut++] = 255 - data[ptrIn]
+            output[ptrOut++] = 255 - data[ptrIn]
             ptrIn++
         }
         //ptrIn += WIDTH

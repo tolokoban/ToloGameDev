@@ -3,7 +3,7 @@
  */
 
 import * as React from "react"
-import TGD from 'tolo-game-dev'
+import * as TGD from 'tolo-game-dev'
 
 import './scene-view.css'
 
