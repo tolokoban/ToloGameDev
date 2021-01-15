@@ -10,7 +10,7 @@ export default abstract class Painter<TCommonAssets = any> {
 
     constructor(public readonly scene: Scene) { }
 
-    private get key() { return `${this.scene.id}/${this.id}` }
+    protected get key() { return `${this.scene.id}/${this.id}` }
 
     getCommonAsset(): TCommonAssets | undefined {
         return Painter.instancesCommonAssets

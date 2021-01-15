@@ -157,8 +157,8 @@
         "affectsGlobalScope": false
       },
       "../src/texture/texture-common.ts": {
-        "version": "1fa04530fc51e7b53c8e810796b9c3cb26dbd203469406db97fd7d2233e6496a",
-        "signature": "35980a92ae08a260e4d06e86c6b4741a7ed42b45f0d1b4e9a93ec96a53c4706f",
+        "version": "3a8d520c1b57d7df0ec133bbfe11794b43e925bd049817e3bea02e984a5ac544",
+        "signature": "768212515ecfd9bf6c89c8c273b23995b1867875a4be11ff5534e0b1131a48ed",
         "affectsGlobalScope": false
       },
       "../src/texture/texture.ts": {
@@ -182,8 +182,8 @@
         "affectsGlobalScope": false
       },
       "../src/painter/painter.ts": {
-        "version": "012c7f4db0a368db27e37babcd1257928e218701a177c85dd5158ccca49ef9dd",
-        "signature": "e60003ce06274c58547313f9b96056ff786175c9442d06306ec25b0a2e5d22d8",
+        "version": "c45b6e9fe16700d81e56316ef27ddc9976ac226649af0ad25d3ad06900d41acd",
+        "signature": "86075d90c61ab5a381a7b59aab54fc9877d3eba7d7a696c85202c9c5f6643aae",
         "affectsGlobalScope": false
       },
       "../src/painter/index.ts": {
@@ -202,8 +202,8 @@
         "affectsGlobalScope": false
       },
       "../src/scene/scene.ts": {
-        "version": "1a3f4273e709b2dcda5241fc96c17ce6064ba180fd2b93476b2e9c74cef96464",
-        "signature": "0847a05d01a1d7d1a87f2a9e9aee7ae10130dff38b0bb791826c1278541eaf2c",
+        "version": "412a38fedb932ea7c75b726a548bcad73c451fe356b5981a1fd9a7820b5f6def",
+        "signature": "3fbc547ebdf34f5333dadc9c0fc80ebd21e1607e059674a8a4f499ce50f32f97",
         "affectsGlobalScope": false
       },
       "../src/scene/index.ts": {
@@ -221,9 +221,29 @@
         "signature": "bb701690352b42f8e17b00949af552bad00efeeb76ba97e4f64e53d34d9b8bb1",
         "affectsGlobalScope": false
       },
+      "../src/transformation/matrix-2d/matrix-2d.ts": {
+        "version": "a9c2ce8865f0c205e8be5a76b6244425e401b4ce9ccbbb5432a0837fec19b03e",
+        "signature": "d0ee461c0d7ecf56be8d9a5f3ae87335d192c41230ac0a07e36838073165c3c1",
+        "affectsGlobalScope": false
+      },
+      "../src/transformation/matrix-2d/index.ts": {
+        "version": "a9b3021fe7d95ef1921d952ea8852ba3e9154687e36ed534ed49af940c20d770",
+        "signature": "fb5acd5036e4667f31d4fda49f77833226797cb5477034f0fa21e7c7b5e68e5c",
+        "affectsGlobalScope": false
+      },
+      "../src/painter/background/texture/texture-background.ts": {
+        "version": "334ea97228fe20c9d81550437aa8b2f98e2e99e7518c44b0b7f22851f32e2760",
+        "signature": "619abf715cd615f66a418994ef8c0fb679834f878d94cd1c584debfe11a1898c",
+        "affectsGlobalScope": false
+      },
+      "../src/painter/background/texture/index.ts": {
+        "version": "a306c83681d0841bb60a0f16d2552650e5ec818aaca97e84952c26225a4c77f4",
+        "signature": "12a87172e0aad9c06b35b6cbd4716e882b0b9559300f9414e76744f4f1f3b1e6",
+        "affectsGlobalScope": false
+      },
       "../src/painter/shape/shape-painter.ts": {
-        "version": "43cfc6bcaf599835df82fa45f80e0ac5133e8e2c3ae02e3d304a278160c20b2e",
-        "signature": "5738ea02a86ae6a6cf170a8b892baf4082bf4c540fb2e2ba044118d8b77c5415",
+        "version": "a22323a9a98098d51b3fd234cbf95c4bd9dbdeb0ec1e24bcd9edf71fc9f1d68c",
+        "signature": "0386c58888141cdb5264eb753a0e36f41d7140389027105ec3d0f3c3961d2e26",
         "affectsGlobalScope": false
       },
       "../src/painter/shape/index.ts": {
@@ -232,8 +252,8 @@
         "affectsGlobalScope": false
       },
       "../src/index.ts": {
-        "version": "81bcbe597e8b63b3ed6f737045ffd00a1f6b77c44bd87a8a1d403418e7b61af7",
-        "signature": "80d85a77da544042685d0a86b45145541ddc0c0b57ec0b754953563b829940bb",
+        "version": "f075a73c63d41c1768ae01ef8ec61e31684c931262df32cf2a49c9b7c2124037",
+        "signature": "c9ad1f243645c6e9ca627e28abe0d06ed989f2f0041d94357ec13f8c5bf8c282",
         "affectsGlobalScope": false
       },
       "../src/custom.d.ts": {
@@ -1048,6 +1068,7 @@
       ],
       "../src/index.ts": [
         "../src/painter/background/clear/index.ts",
+        "../src/painter/background/texture/index.ts",
         "../src/painter/index.ts",
         "../src/painter/shape/index.ts",
         "../src/scene/index.ts",
@@ -1059,6 +1080,17 @@
       ],
       "../src/painter/background/clear/index.ts": [
         "../src/painter/background/clear/clear-background.ts"
+      ],
+      "../src/painter/background/texture/index.ts": [
+        "../src/painter/background/texture/texture-background.ts"
+      ],
+      "../src/painter/background/texture/texture-background.ts": [
+        "../src/custom.d.ts",
+        "../src/painter/painter.ts",
+        "../src/scene/index.ts",
+        "../src/texture/texture-common.ts",
+        "../src/transformation/matrix-2d/index.ts",
+        "../src/types.ts"
       ],
       "../src/painter/index.ts": [
         "../src/painter/painter.ts"
@@ -1079,6 +1111,8 @@
       "../src/painter/shape/shape-painter.ts": [
         "../src/custom.d.ts",
         "../src/painter/painter.ts",
+        "../src/scene/index.ts",
+        "../src/transformation/matrix-2d/index.ts",
         "../src/types.ts"
       ],
       "../src/program/index.ts": [
@@ -1115,6 +1149,9 @@
       "../src/texture/texture.ts": [
         "../src/texture/texture-common.ts",
         "../src/types.ts"
+      ],
+      "../src/transformation/matrix-2d/index.ts": [
+        "../src/transformation/matrix-2d/matrix-2d.ts"
       ]
     },
     "exportedModulesMap": {
@@ -1416,6 +1453,7 @@
       ],
       "../src/index.ts": [
         "../src/painter/background/clear/index.ts",
+        "../src/painter/background/texture/index.ts",
         "../src/painter/index.ts",
         "../src/painter/shape/index.ts",
         "../src/scene/index.ts",
@@ -1427,6 +1465,10 @@
       ],
       "../src/painter/background/clear/index.ts": [
         "../src/painter/background/clear/clear-background.ts"
+      ],
+      "../src/painter/background/texture/texture-background.ts": [
+        "../src/painter/painter.ts",
+        "../src/transformation/matrix-2d/index.ts"
       ],
       "../src/painter/index.ts": [
         "../src/painter/painter.ts"
@@ -1445,7 +1487,9 @@
         "../src/painter/shape/shape-painter.ts"
       ],
       "../src/painter/shape/shape-painter.ts": [
-        "../src/painter/painter.ts"
+        "../src/painter/painter.ts",
+        "../src/scene/index.ts",
+        "../src/transformation/matrix-2d/index.ts"
       ],
       "../src/program/index.ts": [
         "../src/program/program.ts"
@@ -1608,6 +1652,8 @@
       "../src/index.ts",
       "../src/painter/background/clear/clear-background.ts",
       "../src/painter/background/clear/index.ts",
+      "../src/painter/background/texture/index.ts",
+      "../src/painter/background/texture/texture-background.ts",
       "../src/painter/index.ts",
       "../src/painter/list/index.ts",
       "../src/painter/list/list-painter.ts",
@@ -1623,6 +1669,8 @@
       "../src/texture/texture-manager.ts",
       "../src/texture/texture-video.ts",
       "../src/texture/texture.ts",
+      "../src/transformation/matrix-2d/index.ts",
+      "../src/transformation/matrix-2d/matrix-2d.ts",
       "../src/types.ts"
     ]
   },

@@ -1,30 +1,44 @@
 import AbstractSceneView from '../../view/abstract-scene'
 import * as TGD from 'tolo-game-dev'
-import { timingSafeEqual } from 'crypto'
+
+import Landscape from './landscape.webp'
+
+import "./whirl-camera-view.css"
+
 
 export default class WhirlCameraView extends AbstractSceneView {
     //private texCamera: TGD.TextureVideo
+    private shapeOut: TGD.ShapePainter
+    private shapeIn: TGD.ShapePainter
 
     async initialize(scene: TGD.Scene): Promise<boolean> {
         // const tex = await scene.texture.fromCamera(
-        //     256, 512
+        //     640, 480
         // )
-        // if (!tex) {
-        //     console.error("Unable to get Camera!")
-        //     return false
-        // }
+        const tex = await scene.texture.fromURL(Landscape)
+        if (!tex) {
+            console.error("Unable to get Camera!")
+            return false
+        }        
 
-        // this.texCamera = tex
-        const clear = new TGD.ClearBackgroundPainter(scene)
-        scene.addPainter(clear)
-        const shape = new TGD.ShapePainter(scene)
-        scene.addPainter(shape)
-        shape.makeDisk(0.9)
+        const clear = new TGD.TextureBackgroundPainter(scene, tex)
+        const shapeIn = TGD.ShapePainter.Disk(scene, 1, 9)
+        const arrow = TGD.ShapePainter.Arrow(scene, 1)
+        arrow.red = 0
+        arrow.green = 0.5
+        arrow.blue = 1
+        scene.addPainter(clear, shapeIn, arrow)
+        this.shapeIn = shapeIn
+
         return true
     }
 
     anim(scene: TGD.Scene, time: number) {
         scene.paintAll(time)
+        this.shapeIn.transfo.rotate = -0.00075123 * time
     }
 
+    get className() {
+        return "view-WhirlCamera"
+    }
 }

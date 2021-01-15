@@ -6,12 +6,6 @@
     height: 100%;
     overflow: hidden;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
-}
-
-.gallery-WhirlCameraGallery > canvas {
-    width: 256px;
-    height: 512px;
-    box-shadow: 0 8px 16px #000a;
 }

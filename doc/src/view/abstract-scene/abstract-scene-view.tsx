@@ -35,6 +35,7 @@ export default abstract class AbstractSceneView extends React.Component<IAbstrac
     private readonly paintNextFrame = (time: number) => {
         if (this.animating) window.requestAnimationFrame(this.paintNextFrame)
         try {
+            this.scene.resize()
             this.anim(this.scene, time)
         } catch (ex) {
             console.error("Animation has thrown an exception, therefore it has been stopped!")
@@ -60,8 +61,12 @@ export default abstract class AbstractSceneView extends React.Component<IAbstrac
      */
     abstract anim(scene: TGD.Scene, time: number)
 
+    protected get className() {
+        return 'view-AbstractSceneView'
+    }
+
     render() {
-        const classNames = ['custom', 'view-AbstractSceneView']
+        const classNames = ['custom', this.className]
         if (typeof this.props.className === 'string') {
             classNames.push(this.props.className)
         }

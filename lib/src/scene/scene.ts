@@ -40,6 +40,7 @@ export default class Scene {
     private lastWidth = 0
     private lastHeight = 0
     private readonly painterList: ListPainter
+    private constantsNames?: Map<number, string>
 
     constructor(
         public readonly canvas: HTMLCanvasElement,
@@ -71,12 +72,34 @@ export default class Scene {
         this.painterList = new ListPainter(this)
     }
 
-    addPainter(painter: Painter) {
-        this.painterList.add(painter)
+    getConstantName(value: number): string {
+        if (!this.constantsNames) {
+            this.constantsNames = new Map<number, string>()
+            for (const key in this.gl) {
+                const val = this.gl[key]
+                if (typeof val === 'number') {
+                    this.constantsNames.set(val, key)
+                }
+            }
+        }
+
+        const map = this.constantsNames
+        if (map.has(value)) {
+            return map.get(value) ?? ""
+        }
+        return ""
     }
 
-    removePainter(painter: Painter) {
-        this.painterList.remove(painter)
+    addPainter(...painters: Painter[]) {
+        for (const painter of painters) {
+            this.painterList.add(painter)
+        }
+    }
+
+    removePainter(...painters: Painter[]) {
+        for (const painter of painters) {
+            this.painterList.remove(painter)
+        }
     }
 
     paintAll(time: number) {
@@ -90,7 +113,7 @@ export default class Scene {
     }
 
     public readonly texture = {
-        fromCamera: (width: number=0, height: number=0) =>
+        fromCamera: (width: number = 0, height: number = 0) =>
             Texture.fromCamera(this.gl, width, height),
         fromURL: (url: string, options?: Partial<ITextureOptions>) =>
             Texture.fromURL(this.gl, url, options),

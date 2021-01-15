@@ -20,9 +20,11 @@ export default class Scene {
     private lastWidth;
     private lastHeight;
     private readonly painterList;
+    private constantsNames?;
     constructor(canvas: HTMLCanvasElement, settings?: Partial<IWebGLSettings>);
-    addPainter(painter: Painter): void;
-    removePainter(painter: Painter): void;
+    getConstantName(value: number): string;
+    addPainter(...painters: Painter[]): void;
+    removePainter(...painters: Painter[]): void;
     paintAll(time: number): void;
     readonly program: {
         create: (shaders: IShaders) => WebGLProgram;

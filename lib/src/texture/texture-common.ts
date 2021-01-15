@@ -63,6 +63,14 @@ export default class TextureCommon {
     setVerticalWrapRepeat = () => this.setWrapping(false, 1)
     setVerticalWrapRepeatMirror = () => this.setWrapping(false, -1)
     
+    /**
+     * Activate the texture in a slot.
+     */
+    activate(slot = 0) {
+        const { gl, texture } = this
+        gl.activeTexture(gl.TEXTURE0 + slot)
+        gl.bindTexture(gl.TEXTURE_2D, texture)
+    }
    /**
      * Remove texture from GPU memory.
      * Once this function is called, this object is of no use.

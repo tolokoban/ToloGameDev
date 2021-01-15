@@ -1,0 +1,1 @@
+{"version":3,"file":"matrix-2d.d.ts","sourceRoot":"","sources":["../../../src/transformation/matrix-2d/matrix-2d.ts"],"names":[],"mappings":"AAUA;;;GAGG;AACH,MAAM,CAAC,OAAO,OAAO,QAAQ;IACzB,SAAgB,MAAM,eAAsB;IACrC,CAAC,SAAI;IACL,CAAC,SAAI;IACL,CAAC,SAAM;IACP,KAAK,SAAI;IACT,MAAM,SAAI;IACV,KAAK,UAAQ;IAEpB;;;;;OAKG;IACH,IAAI,CAAC,KAAK,EAAE,MAAM,EAAE,MAAM,EAAE,MAAM,GAAG,YAAY;CA4BpD"}

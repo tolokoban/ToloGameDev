@@ -25,6 +25,10 @@ export default class TextureCommon {
     setVerticalWrapRepeat: () => void;
     setVerticalWrapRepeatMirror: () => void;
     /**
+     * Activate the texture in a slot.
+     */
+    activate(slot?: number): void;
+    /**
       * Remove texture from GPU memory.
       * Once this function is called, this object is of no use.
       */

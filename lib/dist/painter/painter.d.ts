@@ -5,7 +5,7 @@ export default abstract class Painter<TCommonAssets = any> {
     static readonly instancesCounter: Map<string, number>;
     static readonly instancesCommonAssets: Map<string, any>;
     constructor(scene: Scene);
-    private get key();
+    protected get key(): string;
     getCommonAsset(): TCommonAssets | undefined;
     setCommonAsset(asset: TCommonAssets): void;
     countInstances(): number;
