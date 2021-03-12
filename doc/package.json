@@ -30,7 +30,7 @@
         "html-webpack-plugin": "^4.5.0",
         "jest": "^26.6.3",
         "raw-loader": "^4.0.2",
-        "react-dev-utils": "^10.2.1",
+        "react-dev-utils": "^11.0.4",
         "redux-devtools-extension": "^2.13.8",
         "style-loader": "^2.0.0",
         "tfw": "^0.59.0",
