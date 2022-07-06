@@ -1,15 +1,22 @@
-import Context from "./context"
+export type InstrType =
+    | "i32"
+    | "i64"
+    | "f32"
+    | "f64"
+    | "void"
+    | "bool"
+    | "func"
+    | "module"
 
-export const VOID = 0
-export const I32 = 1
-export const I64 = 2
-export const F32 = 3
-export const F64 = 4
-export const BOOL = 5
+export type InstrCode =
+    | string
+    | Instruction<InstrType>
+    | (() => InstrCode)
+    | InstrCode[]
 
-export type InstrVoid = (ctx: Context) => typeof VOID
-export type InstrI32 = (ctx: Context) => typeof I32
-export type InstrI64 = (ctx: Context) => typeof I64
-export type InstrF32 = (ctx: Context) => typeof F32
-export type InstrF64 = (ctx: Context) => typeof F64
-export type InstrBool = (ctx: Context) => typeof BOOL
+export interface Instruction<T extends InstrType> {
+    type: T
+    code: InstrCode
+}
+
+export type LocalType = "i32" | "i64" | "f32" | "f64"

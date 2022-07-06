@@ -1,6 +1,6 @@
 import * as React from "react"
-import Code from "../wasm/code"
-import { makeImageDataPainter } from "../wasm/factory"
+import { makeSourceCode } from "../wasm/factory"
+import Program from "../wasm/program"
 import "./app.css"
 
 export default function App() {
@@ -20,17 +20,34 @@ async function onCanvasReady(canvas: HTMLCanvasElement) {
     const { width, height } = canvas
     ctx.clearRect(0, 0, width, height)
 
-    const paint = await makeImageDataPainter(
-        [width, height],
-        Code.poke_i32(
-            Code.mod_i32(Code.param_i32("time"), Code.i32(width * height)),
-            Code.i32(0xff0088ff)
+    const p = new Program()
+    const source = makeSourceCode(
+        p.flow.module(
+            p.flow.func.i32(
+                "main",
+                { count: "i32" },
+                p.set.i32("accu"),
+                p.set.i32("loop", p.param.i32("count")),
+                p.flow.repeat("loop", p.inc.i32("accu", p.get.i32("loop"))),
+                p.get.i32("accu")
+            )
         )
     )
 
-    function animate(time: number) {
-        if (ctx) ctx.putImageData(paint(time), 0, 0)
-        requestAnimationFrame(animate)
-    }
-    requestAnimationFrame(animate)
+    console.log("Source...")
+    console.log(source)
+
+    // const paint = await makeImageDataPainter(
+    //     [width, height],
+    //     Code.poke_i32(
+    //         Code.mod_i32(Code.param_i32("time"), Code.i32(width * height)),
+    //         Code.i32(0xff0088ff)
+    //     )
+    // )
+
+    // function animate(time: number) {
+    //     if (ctx) ctx.putImageData(paint(time), 0, 0)
+    //     requestAnimationFrame(animate)
+    // }
+    // requestAnimationFrame(animate)
 }
