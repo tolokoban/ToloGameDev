@@ -1,147 +1,41 @@
 import Program from "."
-import { makeInstr } from "../deps"
-import {
-    Code,
-    InstrF32,
-    InstrF64,
-    InstrI32,
-    InstrI64,
-    InstrVoid,
-    VOID,
-} from "../types"
+import { InstrType, Instruction, LocalType } from "../types"
 
-/**
- * Decrement a local.
- */
-export default class Dec {
-    constructor(private readonly prg: Program) {}
+type DecAndGetFunc<T extends LocalType> = (
+    name: string,
+    delta?: Instruction<T> | number
+) => Instruction<"void">
 
-    i32(local: string, delta: InstrI32 | number = 1): InstrVoid {
-        if (typeof delta === "number") {
-            return makeInstr(
-                (code: Code) => {
-                    code.push(
-                        this.prg.set.i32(
-                            local,
-                            this.prg.sub.i32(
-                                this.prg.get.i32(local),
-                                this.prg.const.i32(delta)
-                            )
-                        )
-                    )
-                    return VOID
-                },
-                { local: { i32: [local] } }
-            )
-        }
-        return makeInstr(
-            (code: Code) => {
-                code.push(
-                    this.prg.set.i32(
-                        local,
-                        this.prg.sub.i32(this.prg.get.i32(local), delta)
-                    )
-                )
-                return VOID
-            },
-            delta.deps,
-            { local: { i32: [local] } }
-        )
+export default class DecAndGet {
+    readonly i32: DecAndGetFunc<"i32">
+    readonly i64: DecAndGetFunc<"i64">
+    readonly f32: DecAndGetFunc<"f32">
+    readonly f64: DecAndGetFunc<"f64">
+
+    constructor(prg: Program) {
+        this.i32 = make("i32", prg)
+        this.i64 = make("i64", prg)
+        this.f32 = make("f32", prg)
+        this.f64 = make("f64", prg)
     }
-    i64(local: string, delta: InstrI64 | number = 1): InstrVoid {
-        if (typeof delta === "number") {
-            return makeInstr(
-                (code: Code) => {
-                    code.push(
-                        this.prg.set.i64(
-                            local,
-                            this.prg.sub.i64(
-                                this.prg.get.i64(local),
-                                this.prg.const.i64(delta)
-                            )
-                        )
-                    )
-                    return VOID
-                },
-                { local: { i64: [local] } }
-            )
+}
+
+function make<T extends LocalType>(type: T, prg: Program) {
+    return (
+        local: string,
+        delta: Instruction<T> | number = 1
+    ): Instruction<"void"> => {
+        prg.$declareLocal(local, type)
+        const value =
+            typeof delta === "number" ? `${type}.const ${delta}` : delta
+        return {
+            type: "void",
+            code: [
+                `local.get $${local}_${type}`,
+                value,
+                `${type}.sub`,
+                `local.set $${local}_${type}`,
+            ],
         }
-        return makeInstr(
-            (code: Code) => {
-                code.push(
-                    this.prg.set.i64(
-                        local,
-                        this.prg.sub.i64(this.prg.get.i64(local), delta)
-                    )
-                )
-                return VOID
-            },
-            delta.deps,
-            { local: { i64: [local] } }
-        )
-    }
-    f32(local: string, delta: InstrF32 | number = 1): InstrVoid {
-        if (typeof delta === "number") {
-            return makeInstr(
-                (code: Code) => {
-                    code.push(
-                        this.prg.set.f32(
-                            local,
-                            this.prg.sub.f32(
-                                this.prg.get.f32(local),
-                                this.prg.const.f32(delta)
-                            )
-                        )
-                    )
-                    return VOID
-                },
-                { local: { f32: [local] } }
-            )
-        }
-        return makeInstr(
-            (code: Code) => {
-                code.push(
-                    this.prg.set.f32(
-                        local,
-                        this.prg.sub.f32(this.prg.get.f32(local), delta)
-                    )
-                )
-                return VOID
-            },
-            delta.deps,
-            { local: { f32: [local] } }
-        )
-    }
-    f64(local: string, delta: InstrF64 | number = 1): InstrVoid {
-        if (typeof delta === "number") {
-            return makeInstr(
-                (code: Code) => {
-                    code.push(
-                        this.prg.set.f64(
-                            local,
-                            this.prg.sub.f64(
-                                this.prg.get.f64(local),
-                                this.prg.const.f64(delta)
-                            )
-                        )
-                    )
-                    return VOID
-                },
-                { local: { f64: [local] } }
-            )
-        }
-        return makeInstr(
-            (code: Code) => {
-                code.push(
-                    this.prg.set.f64(
-                        local,
-                        this.prg.sub.f64(this.prg.get.f64(local), delta)
-                    )
-                )
-                return VOID
-            },
-            delta.deps,
-            { local: { f64: [local] } }
-        )
     }
 }

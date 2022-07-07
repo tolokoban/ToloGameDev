@@ -4,9 +4,9 @@ import { InstrType, Instruction, LocalType } from "../types"
 type DecAndGetFunc<T extends LocalType> = (
     name: string,
     delta: Instruction<T> | number
-) => Instruction<"void">
+) => Instruction<T>
 
-export default class DecAndGet {
+export default class IncAndGet {
     readonly i32: DecAndGetFunc<"i32">
     readonly i64: DecAndGetFunc<"i64">
     readonly f32: DecAndGetFunc<"f32">
@@ -24,17 +24,17 @@ function make<T extends LocalType>(type: T, prg: Program) {
     return (
         local: string,
         delta: Instruction<T> | number = 1
-    ): Instruction<"void"> => {
+    ): Instruction<T> => {
         prg.$declareLocal(local, type)
         const value =
             typeof delta === "number" ? `${type}.const ${delta}` : delta
         return {
-            type: "void",
+            type,
             code: [
                 `local.get $${local}_${type}`,
                 value,
                 `${type}.add`,
-                `local.set $${local}_${type}`,
+                `local.tee $${local}_${type}`,
             ],
         }
     }

@@ -1,5 +1,4 @@
 import * as React from "react"
-import { makeSourceCode } from "../wasm/factory"
 import Program from "../wasm/program"
 import "./app.css"
 
@@ -21,21 +20,23 @@ async function onCanvasReady(canvas: HTMLCanvasElement) {
     ctx.clearRect(0, 0, width, height)
 
     const p = new Program()
-    const source = makeSourceCode(
-        p.flow.module(
-            p.flow.func.i32(
+    const build = await p.compile<[count: number], number>(
+        p.flow.module({
+            main: p.flow.func.i32(
                 "main",
                 { count: "i32" },
                 p.set.i32("accu"),
                 p.set.i32("loop", p.param.i32("count")),
                 p.flow.repeat("loop", p.inc.i32("accu", p.get.i32("loop"))),
                 p.get.i32("accu")
-            )
-        )
+            ),
+        })
     )
 
-    console.log("Source...")
-    console.log(source)
+    console.log("🚀 [app] build.sourceCode = ", build.sourceCode) // @FIXME: Remove this line written on 2022-07-07 at 15:51
+
+    console.log("Runtime:", build.main(5))
+    console.log("Runtime:", build.main(6))
 
     // const paint = await makeImageDataPainter(
     //     [width, height],

@@ -1,70 +1,28 @@
-import {
-    Code,
-    F32,
-    F64,
-    I32,
-    I64,
-    InstrF32,
-    InstrF64,
-    InstrI32,
-    InstrI64,
-} from "../types"
+import Program from "."
+import { Instruction, LocalType } from "./../types"
+
+type GetFunc<T extends LocalType> = (name: string) => Instruction<T>
 
 export default class Get {
-    i32(name: string): InstrI32 {
-        const fullname = `${name}_i32`
-        return {
-            exec(code: Code) {
-                code.push(`local.get $${fullname}`)
-                return I32
-            },
-            deps: {
-                local: {
-                    i32: [fullname],
-                },
-            },
-        }
+    readonly i32: GetFunc<"i32">
+    readonly i64: GetFunc<"i64">
+    readonly f32: GetFunc<"f32">
+    readonly f64: GetFunc<"f64">
+
+    constructor(prg: Program) {
+        this.i32 = make("i32", prg)
+        this.i64 = make("i64", prg)
+        this.f32 = make("f32", prg)
+        this.f64 = make("f64", prg)
     }
-    i64(name: string): InstrI64 {
-        const fullname = `${name}_i64`
+}
+
+function make<T extends LocalType>(type: T, prg: Program) {
+    return (name: string): Instruction<T> => {
+        prg.$declareLocal(name, type)
         return {
-            exec(code: Code) {
-                code.push(`local.get $${fullname}`)
-                return I64
-            },
-            deps: {
-                local: {
-                    i64: [fullname],
-                },
-            },
-        }
-    }
-    f32(name: string): InstrF32 {
-        const fullname = `${name}_f32`
-        return {
-            exec(code: Code) {
-                code.push(`local.get $${fullname}`)
-                return F32
-            },
-            deps: {
-                local: {
-                    f32: [fullname],
-                },
-            },
-        }
-    }
-    f64(name: string): InstrF64 {
-        const fullname = `${name}_f64`
-        return {
-            exec(code: Code) {
-                code.push(`local.get $${fullname}`)
-                return F64
-            },
-            deps: {
-                local: {
-                    f64: [fullname],
-                },
-            },
+            type,
+            code: `local.get $${name}_${type}`,
         }
     }
 }

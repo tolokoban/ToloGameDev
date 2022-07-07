@@ -11,7 +11,11 @@ function make<T extends InstrType>(type: T, extension: "" | "_s" = "") {
     return (a: Instruction<T>): Instruction<"bool"> => {
         return {
             type: "bool",
-            code: [a, `${type}.const 0`, `${type}.lt${extension}`],
+            code: [
+                a,
+                `${type}.const 0`,
+                `${type}.lt${extension} ;; Is strictly negative?`,
+            ],
         }
     }
 }

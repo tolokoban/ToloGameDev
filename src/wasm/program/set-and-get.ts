@@ -1,75 +1,33 @@
-import {
-    Code,
-    F32,
-    F64,
-    I32,
-    I64,
-    InstrF32,
-    InstrF64,
-    InstrI32,
-    InstrI64,
-} from "../types"
-import { makeInstr } from "../deps"
+import Program from "."
+import { Instruction, LocalType } from "./../types"
 
-export default class SetAndGet {
-    i32(name: string, value: InstrI32): InstrI32 {
-        const fullname = `${name}_i32`
-        return makeInstr(
-            (code: Code) => {
-                code.push(value, `local.tee $${fullname}`)
-                return I32
-            },
-            {
-                local: {
-                    i32: [fullname],
-                },
-            },
-            value.deps
-        )
+type GetFunc<T extends LocalType> = (name: string) => Instruction<T>
+
+export default class Get {
+    readonly i32: GetFunc<"i32">
+    readonly i64: GetFunc<"i64">
+    readonly f32: GetFunc<"f32">
+    readonly f64: GetFunc<"f64">
+
+    constructor(prg: Program) {
+        this.i32 = make("i32", prg)
+        this.i64 = make("i64", prg)
+        this.f32 = make("f32", prg)
+        this.f64 = make("f64", prg)
     }
-    i64(name: string, value: InstrI64): InstrI64 {
-        const fullname = `${name}_i64`
-        return makeInstr(
-            (code: Code) => {
-                code.push(value, `local.tee $${fullname}`)
-                return I64
-            },
-            {
-                local: {
-                    i64: [fullname],
-                },
-            },
-            value.deps
-        )
-    }
-    f32(name: string, value: InstrF32): InstrF32 {
-        const fullname = `${name}_f32`
-        return makeInstr(
-            (code: Code) => {
-                code.push(value, `local.tee $${fullname}`)
-                return F32
-            },
-            {
-                local: {
-                    f32: [fullname],
-                },
-            },
-            value.deps
-        )
-    }
-    f64(name: string, value: InstrF64): InstrF64 {
-        const fullname = `${name}_f64`
-        return makeInstr(
-            (code: Code) => {
-                code.push(value, `local.tee $${fullname}`)
-                return F64
-            },
-            {
-                local: {
-                    f64: [fullname],
-                },
-            },
-            value.deps
-        )
+}
+
+function make<T extends LocalType>(type: T, prg: Program) {
+    return (
+        name: string,
+        value: Instruction<T> | number = 0
+    ): Instruction<T> => {
+        const realValue =
+            typeof value === "number" ? `${type}.const ${value}` : value
+        prg.$declareLocal(name, type)
+        return {
+            type,
+            code: [realValue, `(local.tee $${name}_${type})`],
+        }
     }
 }

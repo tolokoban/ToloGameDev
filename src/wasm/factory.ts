@@ -1,21 +1,7 @@
 import Program from "./program"
 import Wabt from "wabt"
-import { InstrVoid, Code, CodeItem } from "./types"
 
 const INDENT = "  "
-
-export function makeSourceCode(code: CodeItem, indent = ""): string {
-    if (typeof code === "string") return `${indent}${code}\n`
-
-    if (Array.isArray(code)) {
-        const subIndent = `${INDENT}${indent}`
-        return code.map((x) => makeSourceCode(x, subIndent)).join("")
-    }
-
-    const subCode: Code = []
-    code.exec(subCode)
-    return makeSourceCode(subCode, indent)
-}
 
 // export async function makeImageDataPainter(
 //     [width, height]: [number, number],

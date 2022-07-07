@@ -1,77 +1,36 @@
-import { InstrVoid, VOID } from "./../types"
-import { Code, InstrF32, InstrF64, InstrI32, InstrI64 } from "../types"
-import { makeInstr } from "../deps"
 import Program from "."
+import { Instruction, LocalType } from "./../types"
+
+type SetFunc<T extends LocalType> = (
+    name: string,
+    value?: Instruction<T> | number
+) => Instruction<"void">
 
 export default class Set {
-    constructor(private readonly prg: Program) {}
+    readonly i32: SetFunc<"i32" | "bool">
+    readonly i64: SetFunc<"i64">
+    readonly f32: SetFunc<"f32">
+    readonly f64: SetFunc<"f64">
 
-    i32(name: string, value: InstrI32 | number = 0): InstrVoid {
-        const realValue =
-            typeof value === "number" ? this.prg.const.i32(value) : value
-        const fullname = `${name}_i32`
-        return makeInstr(
-            (code: Code) => {
-                code.push(realValue, `local.set $${fullname}`)
-                return VOID
-            },
-            {
-                local: {
-                    i32: [fullname],
-                },
-            },
-            realValue.deps
-        )
+    constructor(prg: Program) {
+        this.i32 = make("i32", prg)
+        this.i64 = make("i64", prg)
+        this.f32 = make("f32", prg)
+        this.f64 = make("f64", prg)
     }
-    i64(name: string, value: InstrI64 | number = 0): InstrVoid {
+}
+
+function make<T extends LocalType>(type: T, prg: Program) {
+    return (
+        name: string,
+        value: Instruction<T> | number = 0
+    ): Instruction<"void"> => {
         const realValue =
-            typeof value === "number" ? this.prg.const.i64(value) : value
-        const fullname = `${name}_i64`
-        return makeInstr(
-            (code: Code) => {
-                code.push(realValue, `local.set $${fullname}`)
-                return VOID
-            },
-            {
-                local: {
-                    i64: [fullname],
-                },
-            },
-            realValue.deps
-        )
-    }
-    f32(name: string, value: InstrF32 | number = 0): InstrVoid {
-        const realValue =
-            typeof value === "number" ? this.prg.const.f32(value) : value
-        const fullname = `${name}_f32`
-        return makeInstr(
-            (code: Code) => {
-                code.push(realValue, `local.set $${fullname}`)
-                return VOID
-            },
-            {
-                local: {
-                    f32: [fullname],
-                },
-            },
-            realValue.deps
-        )
-    }
-    f64(name: string, value: InstrF64 | number = 0): InstrVoid {
-        const realValue =
-            typeof value === "number" ? this.prg.const.f64(value) : value
-        const fullname = `${name}_f64`
-        return makeInstr(
-            (code: Code) => {
-                code.push(realValue, `local.set $${fullname}`)
-                return VOID
-            },
-            {
-                local: {
-                    f64: [fullname],
-                },
-            },
-            realValue.deps
-        )
+            typeof value === "number" ? `${type}.const ${value}` : value
+        prg.$declareLocal(name, type)
+        return {
+            type: "void",
+            code: [realValue, `local.set $${name}_${type}`],
+        }
     }
 }
