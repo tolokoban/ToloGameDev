@@ -1,4 +1,4 @@
-import Program from "."
+import Program from "./program"
 import { InstrType, Instruction, LocalType } from "../types"
 
 type DecAndGetFunc<T extends LocalType> = (

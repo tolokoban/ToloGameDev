@@ -1,4 +1,4 @@
-import Program from "."
+import Program from "./program"
 import { InstrType, Instruction, LocalType } from "../types"
 
 export default class Log {
@@ -19,7 +19,7 @@ export default class Log {
     }
 
     param(name: string): Instruction<"void"> {
-        const type = this.prg.$getParamType(name)
+        const type = this.prg.$params.get(name)
         const text = `Param $${name} (${type}) ==`
         const textId = this.prg.$addTextResource(text)
         return {

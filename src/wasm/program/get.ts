@@ -1,4 +1,4 @@
-import Program from "."
+import Program from "./program"
 import { Instruction, LocalType } from "./../types"
 
 type GetFunc<T extends LocalType> = (name: string) => Instruction<T>

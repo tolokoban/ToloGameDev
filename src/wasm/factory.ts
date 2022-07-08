@@ -1,4 +1,4 @@
-import Program from "./program"
+import Program from "./program/program"
 import Wabt from "wabt"
 
 const INDENT = "  "

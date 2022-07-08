@@ -1,17 +1,24 @@
-import { InstrType, Instruction } from "../types"
+import Program from "."
+import { InstrOrConst, Instruction, LocalType } from "../types"
 
 export default class Mul {
-    readonly i32 = make("i32")
-    readonly i64 = make("i64")
-    readonly f32 = make("f32")
-    readonly f64 = make("f64")
+    constructor(private readonly prg: Program) {}
+
+    readonly i32 = make("i32", this.prg)
+    readonly i64 = make("i64", this.prg)
+    readonly f32 = make("f32", this.prg)
+    readonly f64 = make("f64", this.prg)
 }
 
-function make<T extends InstrType>(type: T) {
-    return (a: Instruction<T>, b: Instruction<T>): Instruction<T> => {
+function make<T extends LocalType>(type: T, prg: Program) {
+    return (a: InstrOrConst<T>, b: InstrOrConst<T>): Instruction<T> => {
         return {
             type,
-            code: [a, b, `${type}.mul`],
+            code: [
+                prg.ensureInstr(a, type),
+                prg.ensureInstr(b, type),
+                `${type}.mul`,
+            ],
         }
     }
 }

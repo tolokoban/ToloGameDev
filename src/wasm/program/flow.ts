@@ -1,21 +1,16 @@
-import Program from "."
-import { InstrCode, InstrType, LocalType } from "./../types"
+import Program from "./program"
+import {
+    FuncOptions,
+    InstrCode,
+    InstrType,
+    LocalType
+    } from "./../types"
 import { Instruction } from "../types"
-
-export interface ModuleOptions {
-    main: Instruction<"func">
-    memory: boolean
-}
 
 export default class Flow {
     constructor(private readonly prg: Program) {}
 
-    module(options: Partial<ModuleOptions>): Instruction<"module"> {
-        const opts: ModuleOptions = {
-            main: { type: "func", code: "(; Undefined main function ;)" },
-            memory: false,
-            ...options,
-        }
+    module(...functions: Instruction<"func">[]): Instruction<"module"> {
         const code: InstrCode = [
             "(module",
             '(import "log" "i32" (func $_log_i32 (param i32 i32)))',
@@ -24,8 +19,9 @@ export default class Flow {
             '(import "log" "f64" (func $_log_f64 (param i32 f64)))',
             '(import "log" "text" (func $_log_text (param i32)))',
         ]
-        if (options.memory) code.push('(import "env" "mem" (memory 1))')
-        code.push(opts.main, '(export "main" (func $main))', ")")
+        if (this.prg.$memory.enabled)
+            code.push('(import "env" "mem" (memory 1))')
+        code.push(...functions, ")")
         return {
             type: "module",
             code,
@@ -82,21 +78,29 @@ export default class Flow {
 
 function makeFunc<T extends InstrType>(type: T, prg: Program) {
     return (
-        name: string,
-        params: { [name: string]: LocalType },
-        ...instructions: [...Instruction<"void">[], Instruction<T>]
+        options: Partial<FuncOptions>,
+        params: Instruction<"declaration">,
+        ...body: [...body: Instruction<"void">[], result: Instruction<T>]
     ): Instruction<"func"> => {
-        const paramsCode = Object.keys(params).map(
-            (paramName) => `(param $${paramName} ${params[paramName]})`
-        )
+        const opts: FuncOptions = {
+            name: "main",
+            export: false,
+            ...options,
+            params: prg.$params.current,
+            type,
+        }
+        prg.$functions.add(opts)
+        if (opts.name === "main") opts.export = true
+        const paramsCode = params.code
         return {
             type: "func",
             code: [
-                `(func $${name} ${paramsCode.join(" ")} (result ${type})`,
-                [prg.$getLocals(), instructions],
+                `(func $${opts.name}${
+                    opts.export ? ` (export "${opts.name}")` : ""
+                } ${paramsCode} (result ${type})`,
+                [prg.$getLocals(), ...body],
                 ")",
             ],
-            before: () => prg.$declareParams(params),
         }
     }
 }
