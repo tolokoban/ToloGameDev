@@ -25,16 +25,16 @@ function make<T extends LocalType>(type: T, prg: Program) {
         local: string,
         delta: Instruction<T> | number = 1
     ): Instruction<"void"> => {
-        prg.$declareLocal(local, type)
+        prg.$locals.add(local, type)
         const value =
             typeof delta === "number" ? `${type}.const ${delta}` : delta
         return {
             type: "void",
             code: [
-                `local.get $${local}_${type}`,
+                `local.get $${local}`,
                 value,
                 `${type}.add`,
-                `local.set $${local}_${type}`,
+                `local.set $${local}`,
             ],
         }
     }

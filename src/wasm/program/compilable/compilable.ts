@@ -189,16 +189,20 @@ function exportMemory(
         const item = memory[id]
         switch (item.type) {
             case "Float32":
+                if (item.data) item.size = item.data.byteLength
                 output.Float32[id] = arrayFloat32.subarray(
                     offset >> 2,
                     (offset + item.size) >> 2
                 )
+                if (item.data) output.Float32[id].set(item.data)
                 break
             case "Uint8Clamped":
+                if (item.data) item.size = item.data.byteLength
                 output.Uint8Clamped[id] = arrayUint8Clamped.subarray(
                     offset,
                     offset + item.size
                 )
+                if (item.data) output.Uint8Clamped[id].set(item.data)
                 break
             default:
                 throw Error(

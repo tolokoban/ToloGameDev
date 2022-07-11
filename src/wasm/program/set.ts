@@ -26,10 +26,10 @@ function make<T extends LocalType>(type: T, prg: Program) {
         value: Instruction<T> | number | string = 0
     ): Instruction<"void"> => {
         const realValue = prg.ensureInstr(value, type)
-        prg.$declareLocal(name, type)
+        prg.$locals.add(name, type)
         return {
             type: "void",
-            code: [realValue, `local.set $${name}_${type}`],
+            code: [realValue, `local.set $${name}`],
         }
     }
 }

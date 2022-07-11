@@ -79,8 +79,10 @@ export default class Flow {
 function makeFunc<T extends InstrType>(type: T, prg: Program) {
     return (
         options: Partial<FuncOptions>,
-        params: Instruction<"declaration">,
-        ...body: [...body: Instruction<"void">[], result: Instruction<T>]
+        ...body: [
+            ...body: Instruction<"void" | "declaration">[],
+            result: Instruction<T>
+        ]
     ): Instruction<"func"> => {
         const opts: FuncOptions = {
             name: "main",
@@ -91,14 +93,25 @@ function makeFunc<T extends InstrType>(type: T, prg: Program) {
         }
         prg.$functions.add(opts)
         if (opts.name === "main") opts.export = true
-        const paramsCode = params.code
+        const paramsCode = body
+            .filter((i) => i.type === "declaration")
+            .map((i) => i.code)
+            .join(" ")
         return {
             type: "func",
             code: [
                 `(func $${opts.name}${
                     opts.export ? ` (export "${opts.name}")` : ""
                 } ${paramsCode}${type === "void" ? "" : ` (result ${type})`}`,
-                [prg.$getLocals(), ...body],
+                [
+                    prg.$locals.all
+                        .map(
+                            (name) =>
+                                `(local $${name} ${prg.$locals.get(name)})`
+                        )
+                        .join(" "),
+                    ...body.filter((i) => i.type === "void"),
+                ],
                 ")",
             ],
         }

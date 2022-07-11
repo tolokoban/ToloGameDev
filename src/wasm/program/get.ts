@@ -19,10 +19,10 @@ export default class Get {
 
 function make<T extends LocalType>(type: T, prg: Program) {
     return (name: string): Instruction<T> => {
-        prg.$declareLocal(name, type)
+        prg.$locals.add(name, type)
         return {
             type,
-            code: `local.get $${name}_${type}`,
+            code: `local.get $${name}`,
         }
     }
 }

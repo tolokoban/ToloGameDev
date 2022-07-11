@@ -1,5 +1,6 @@
 import * as React from "react"
 import Program from "../wasm/program/program"
+import { Instruction } from "../wasm/types"
 import "./app.css"
 
 export default function App() {
@@ -26,6 +27,14 @@ async function onCanvasReady(canvas: HTMLCanvasElement) {
                 cols: 4 * width,
                 rows: height,
             },
+            pos: {
+                type: "Float32",
+                data: new Float32Array([0, 0]),
+            },
+            rnd: {
+                type: "Uint8Clamped",
+                data: makeRandomUint8(0x1000),
+            },
         },
     })
 
@@ -47,40 +56,44 @@ async function onCanvasReady(canvas: HTMLCanvasElement) {
                     p.get.i32("offset"),
                     p.add.i32(1, p.peek.i32For8u(p.get.i32("offset")))
                 )
+            ),
+            makeFunc(p, "f1", 0, 0, 0, 0.25, 0, -0.4),
+            makeFunc(p, "f2", 0.85, 0.04, -0.04, 0.85, 0, 1.6),
+            makeFunc(p, "f3", 0.2, -0.26, 0.23, 0.22, 0, 1.6),
+            makeFunc(p, "f4", -0.15, 0.28, 0.26, 0.24, 0, 0.44),
+            p.flow.func.i32(
+                {},
+                p.declare.params({
+                    x: "i32",
+                    y: "i32",
+                    width: "i32",
+                    height: "i32",
+                    color: "i32",
+                }),
+                p.set.i32(
+                    "offset",
+                    p.add.i32(
+                        p.mul.i32(4, p.param.i32("x")),
+                        p.mul.i32(p.param.i32("y"), cols)
+                    )
+                ),
+                p.set.i32(
+                    "stride",
+                    p.sub.i32(cols, p.mul.i32(4, p.param.i32("width")))
+                ),
+                p.set.i32("loopH", p.param.i32("height")),
+                p.flow.repeat(
+                    "loopH",
+                    p.set.i32("loopW", p.param.i32("width")),
+                    p.flow.repeat(
+                        "loopW",
+                        p.poke.i32(p.get.i32("offset"), p.param.i32("color")),
+                        p.inc.i32("offset", 4)
+                    ),
+                    p.inc.i32("offset", p.get.i32("stride"))
+                ),
+                p.get.i32("accu")
             )
-            // p.flow.func.i32(
-            //     {},
-            //     p.declare.params({
-            //         x: "i32",
-            //         y: "i32",
-            //         width: "i32",
-            //         height: "i32",
-            //         color: "i32",
-            //     }),
-            //     p.set.i32(
-            //         "offset",
-            //         p.add.i32(
-            //             p.mul.i32(4, p.param.i32("x")),
-            //             p.mul.i32(p.param.i32("y"), cols)
-            //         )
-            //     ),
-            //     p.set.i32(
-            //         "stride",
-            //         p.sub.i32(cols, p.mul.i32(4, p.param.i32("width")))
-            //     ),
-            //     p.set.i32("loopH", p.param.i32("height")),
-            //     p.flow.repeat(
-            //         "loopH",
-            //         p.set.i32("loopW", p.param.i32("width")),
-            //         p.flow.repeat(
-            //             "loopW",
-            //             p.poke.i32(p.get.i32("offset"), p.param.i32("color")),
-            //             p.inc.i32("offset", 4)
-            //         ),
-            //         p.inc.i32("offset", p.get.i32("stride"))
-            //     ),
-            //     p.get.i32("accu")
-            // )
         )
     )
 
@@ -110,4 +123,34 @@ async function onCanvasReady(canvas: HTMLCanvasElement) {
 
 function rnd(min: number, max: number) {
     return Math.floor(min + Math.random() * (max - min))
+}
+
+function makeFunc(
+    p: Program,
+    name: string,
+    a: number,
+    b: number,
+    c: number,
+    d: number,
+    e: number,
+    f: number
+): Instruction<"func"> {
+    return p.flow.func.void(
+        { name },
+        p.set.f32("x", p.peek.f32("@pos")),
+        p.set.f32("y", p.peek.f32("@pos+1")),
+        p.poke.f32(p.$memory.get("pos").offset, `${a}*x + ${b}*y + ${c}`),
+        p.poke.f32(
+            p.add.i32(1, p.$memory.get("pos").offset),
+            `${d}*x + ${e}*y + ${f}`
+        )
+    )
+}
+
+function makeRandomUint8(count: number): Uint8ClampedArray {
+    const data: number[] = []
+    for (let i = 0; i < count; i++) {
+        data.push(rnd(0, 255))
+    }
+    return new Uint8ClampedArray(data)
 }

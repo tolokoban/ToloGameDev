@@ -24,10 +24,10 @@ function make<T extends LocalType>(type: T, prg: Program) {
     ): Instruction<T> => {
         const realValue =
             typeof value === "number" ? `${type}.const ${value}` : value
-        prg.$declareLocal(name, type)
+        prg.$locals.add(name, type)
         return {
             type,
-            code: [realValue, `(local.tee $${name}_${type})`],
+            code: [realValue, `(local.tee $${name})`],
         }
     }
 }

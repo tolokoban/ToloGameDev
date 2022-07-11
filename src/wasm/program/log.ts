@@ -5,8 +5,8 @@ export default class Log {
     constructor(private readonly prg: Program) {}
 
     local(name: string): Instruction<"void"> {
-        const type = this.prg.$getLocalType(name)
-        const text = `Local $${name}_${type} ==`
+        const type = this.prg.$locals.get(name)
+        const text = `Local $${name} (${type}) ==`
         const textId = this.prg.$addTextResource(text)
         return {
             type: "void",

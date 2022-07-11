@@ -15,7 +15,7 @@ export default class Calc {
 
 function make<T extends LocalType>(type: T, prg: Program) {
     return (source: string): Instruction<T> => {
-        const code: InstrCode[] = [`;; [Begin] Calc: ${source}`]
+        const code: InstrCode[] = [`;; Calc: ${source}`]
         const scanner = new Scanner(prg)
         const tree = scanner.buildTree(source)
         console.log("🚀 [calc] tree = ", tree) // @FIXME: Remove this line written on 2022-07-11 at 14:14
@@ -34,6 +34,9 @@ function generateCode(code: InstrCode[], tree: TreeNode) {
             throw Error(tree.message)
         case "num":
             code.push(`${tree.type}.const ${tree.value}`)
+            return
+        case "offset":
+            code.push(`i32.const ${tree.value}`)
             return
         case "var":
             code.push(`local.get ${tree.name}`)

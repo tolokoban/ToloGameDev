@@ -2,7 +2,12 @@ import Program from ".."
 import { LocalType } from "../../types"
 import { parseTokens, Token } from "./lexer"
 
-export type TreeNode = TreeNodeErr | TreeNodeOpe | TreeNodeVar | TreeNodeNum
+export type TreeNode =
+    | TreeNodeErr
+    | TreeNodeOpe
+    | TreeNodeVar
+    | TreeNodeNum
+    | TreeNodeOffset
 
 interface TreeNodeCommon {
     kind: string
@@ -33,6 +38,12 @@ interface TreeNodeNum extends TreeNodeCommon {
     value: number
 }
 
+interface TreeNodeOffset extends TreeNodeCommon {
+    kind: "offset"
+    value: number
+    bufferType: string
+}
+
 const OPE_CODES = {
     "+": "add",
     "-": "sub",
@@ -55,6 +66,8 @@ export default class Scanner {
             this.scanHex(tokens) ??
             this.scanMonoBloc(tokens) ??
             this.scanVar(tokens) ??
+            this.scanOffset(tokens) ??
+            this.scanMemory(tokens) ??
             makeErr("Unexpected token!", tokens[0])
         for (;;) {
             const ope = this.scanOpe(tokens)
@@ -94,6 +107,33 @@ export default class Scanner {
 
         const data: TreeNode[] = []
         while (!checkToken(tokens, "PAR_CLOSE")) data.push(this.scan(tokens))
+        return data
+    }
+
+    private scanOffset(tokens: Token[]): TreeNodeOffset | null {
+        const text = checkToken(tokens, "OFFSET")
+        if (!text) return null
+
+        const name = text.substring(1)
+        const memory = this.prg.$memory.get(name)
+        return {
+            kind: "offset",
+            abs: ["Uint8Clamped"].includes(memory.type),
+            bufferType: memory.type,
+            value: memory.offset,
+            type: memory.type === "Uint8Clamped" ? "i32" : "f32",
+        }
+    }
+
+    private scanMemory(tokens: Token[]): TreeNode[] | null {
+        const text = checkToken(tokens, "BRA_OPEN")
+        if (!text) return null
+
+        const data: TreeNode[] = []
+        while (!checkToken(tokens, "BRA_CLOSE")) data.push(this.scan(tokens))
+        if (data.length !== 1)
+            throw Error(`Only one expression is allowed in brackets!`)
+
         return data
     }
 
@@ -157,8 +197,16 @@ export default class Scanner {
                 name,
             }
         }
+        if (prg.$locals.has(name)) {
+            return {
+                kind: "var",
+                type: prg.$locals.get(name),
+                abs: false,
+                name,
+            }
+        }
         return makeErr(
-            `${name} is not a param nor a local!\n${prg.$params.available}`,
+            `${name} is not a param nor a local!\n${prg.$params.available}\n${prg.$locals.available}`,
             tokens[0]
         )
     }
