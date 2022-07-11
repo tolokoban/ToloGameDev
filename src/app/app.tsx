@@ -31,6 +31,10 @@ async function onCanvasReady(canvas: HTMLCanvasElement) {
                 type: "Float32",
                 data: new Float32Array([0, 0]),
             },
+            index: {
+                type: "Uint32",
+                data: new Uint32Array([0]),
+            },
             rnd: {
                 type: "Uint8Clamped",
                 data: makeRandomUint8(0x1000),
