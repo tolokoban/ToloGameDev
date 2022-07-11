@@ -97,7 +97,7 @@ function makeFunc<T extends InstrType>(type: T, prg: Program) {
             code: [
                 `(func $${opts.name}${
                     opts.export ? ` (export "${opts.name}")` : ""
-                } ${paramsCode} (result ${type})`,
+                } ${paramsCode}${type === "void" ? "" : ` (result ${type})`}`,
                 [prg.$getLocals(), ...body],
                 ")",
             ],

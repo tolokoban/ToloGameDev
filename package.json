@@ -28,6 +28,7 @@
         "postbuild": "rm -rf ~/www/TP/edit/ && mkdir -p ~/www/TP/edit/ && cp -rf build/* ~/www/TP/edit/",
         "deploy": "npm run build && cd .. && node _script_/deploy.js edit && cd edit",
         "test": "jest",
+        "test:watch": "jest --watch",
         "intl": "node ./scripts/preprocessor.js"
     },
     "eslintConfig": {
@@ -70,6 +71,7 @@
         "file-loader": "^6.2.0",
         "html-webpack-plugin": "^5.5.0",
         "jest": "^28.1.2",
+        "jest-environment-jsdom": "^28.1.2",
         "markdown-to-jsx": "^7.1.7",
         "mini-css-extract-plugin": "^2.6.1",
         "style-loader": "^3.3.1",
@@ -85,6 +87,50 @@
         "webpack-shell-plugin-next": "^2.2.2",
         "workbox-webpack-plugin": "^6.5.3",
         "yaml-loader": "^0.6.0"
+    },
+    "jest": {
+        "testEnvironment": "jsdom",
+        "moduleFileExtensions": [
+            "tsx",
+            "ts",
+            "js",
+            "jsx",
+            "wasm"
+        ],
+        "transform": {
+            "^.+\\.tsx?$": "ts-jest"
+        },
+        "testMatch": [
+            "**/*.(test|spec).(ts|tsx)"
+        ],
+        "globals": {
+            "ENV_VARIABLES": {}
+        },
+        "moduleNameMapper": {
+            "^@/constants$": "<rootDir>/src/constants.ts",
+            "^@/contract/(.*)$": "<rootDir>/src/contract/$1",
+            "^@/mock/(.*)$": "<rootDir>/src/mock/$1",
+            "^@/tool/(.*)$": "<rootDir>/src/tool/$1",
+            "^@/ui/(.*)$": "<rootDir>/src/ui/$1",
+            "^@/view/(.*)$": "<rootDir>/src/view/$1",
+            "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/__mocks__/mocks.js",
+            "\\.(css|less)$": "<rootDir>/__mocks__/mocks.js",
+            "\\.(py|sh|txt|bin)$": "<rootDir>/__mocks__/mocks.js"
+        },
+        "verbose": true,
+        "collectCoverage": true,
+        "coverageReporters": [
+            "lcov"
+        ],
+        "coverageDirectory": "test-coverage",
+        "coverageThreshold": {
+            "global": {
+                "branches": 0,
+                "functions": 0,
+                "lines": 0,
+                "statements": 0
+            }
+        }
     },
     "port": 44000
 }

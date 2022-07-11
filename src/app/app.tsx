@@ -5,7 +5,7 @@ import "./app.css"
 export default function App() {
     return (
         <div>
-            <canvas ref={onCanvasReady} width={512} height={512}></canvas>
+            <canvas ref={onCanvasReady} width={1024} height={1024}></canvas>
             <br />
             <button>Start</button>
         </div>
@@ -28,44 +28,59 @@ async function onCanvasReady(canvas: HTMLCanvasElement) {
             },
         },
     })
+
     const cols = width * 4
     const build = await p.compile<
         [x: number, y: number, width: number, height: number, color: number]
     >(
         p.flow.module(
-            p.flow.func.i32(
-                {},
+            p.flow.func.void(
+                { name: "plot" },
                 p.declare.params({
-                    x: "i32",
-                    y: "i32",
-                    width: "i32",
-                    height: "i32",
-                    color: "i32",
+                    x: "f32",
+                    y: "f32",
                 }),
-                p.set.i32(
-                    "offset",
-                    p.add.i32(
-                        p.mul.i32(4, p.param.i32("x")),
-                        p.mul.i32(p.param.i32("y"), cols)
-                    )
-                ),
-                p.set.i32(
-                    "stride",
-                    p.sub.i32(cols, p.mul.i32(4, p.param.i32("width")))
-                ),
-                p.set.i32("loopH", p.param.i32("height")),
-                p.flow.repeat(
-                    "loopH",
-                    p.set.i32("loopW", p.param.i32("width")),
-                    p.flow.repeat(
-                        "loopW",
-                        p.poke.i32(p.get.i32("offset"), p.param.i32("color")),
-                        p.inc.i32("offset", 4)
-                    ),
-                    p.inc.i32("offset", p.get.i32("stride"))
-                ),
-                p.get.i32("accu")
+                p.set.i32("X", `(2.1821 + $x) * ${(width - 1) / 4.8379}`),
+                p.set.i32("Y", `$y + ${(height - 1) / 9.9984}`),
+                p.set.i32("offset", `(4 * $X) + (${cols} * $Y)`),
+                p.poke.i32For8(
+                    p.get.i32("offset"),
+                    p.add.i32(1, p.peek.i32For8u(p.get.i32("offset")))
+                )
             )
+            // p.flow.func.i32(
+            //     {},
+            //     p.declare.params({
+            //         x: "i32",
+            //         y: "i32",
+            //         width: "i32",
+            //         height: "i32",
+            //         color: "i32",
+            //     }),
+            //     p.set.i32(
+            //         "offset",
+            //         p.add.i32(
+            //             p.mul.i32(4, p.param.i32("x")),
+            //             p.mul.i32(p.param.i32("y"), cols)
+            //         )
+            //     ),
+            //     p.set.i32(
+            //         "stride",
+            //         p.sub.i32(cols, p.mul.i32(4, p.param.i32("width")))
+            //     ),
+            //     p.set.i32("loopH", p.param.i32("height")),
+            //     p.flow.repeat(
+            //         "loopH",
+            //         p.set.i32("loopW", p.param.i32("width")),
+            //         p.flow.repeat(
+            //             "loopW",
+            //             p.poke.i32(p.get.i32("offset"), p.param.i32("color")),
+            //             p.inc.i32("offset", 4)
+            //         ),
+            //         p.inc.i32("offset", p.get.i32("stride"))
+            //     ),
+            //     p.get.i32("accu")
+            // )
         )
     )
 

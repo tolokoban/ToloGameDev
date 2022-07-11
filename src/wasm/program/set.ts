@@ -3,7 +3,7 @@ import { Instruction, LocalType } from "./../types"
 
 type SetFunc<T extends LocalType> = (
     name: string,
-    value?: Instruction<T> | number
+    value?: Instruction<T> | number | string
 ) => Instruction<"void">
 
 export default class Set {
@@ -23,10 +23,9 @@ export default class Set {
 function make<T extends LocalType>(type: T, prg: Program) {
     return (
         name: string,
-        value: Instruction<T> | number = 0
+        value: Instruction<T> | number | string = 0
     ): Instruction<"void"> => {
-        const realValue =
-            typeof value === "number" ? `${type}.const ${value}` : value
+        const realValue = prg.ensureInstr(value, type)
         prg.$declareLocal(name, type)
         return {
             type: "void",

@@ -11,7 +11,7 @@ export type InstrType =
 
 export type InstrCode = string | Instruction<InstrType> | InstrCode[]
 
-export type InstrOrConst<T extends LocalType> = Instruction<T> | number
+export type InstrOrConst<T extends LocalType> = Instruction<T> | number | string
 
 export interface Instruction<T extends InstrType> {
     type: T
