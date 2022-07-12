@@ -1,5 +1,5 @@
 import Program from ".."
-import { LocalType } from "../../types"
+import { LocalType, MemoryItem } from "../../types"
 import { parseTokens, Token } from "./lexer"
 
 export type TreeNode =
@@ -8,6 +8,7 @@ export type TreeNode =
     | TreeNodeVar
     | TreeNodeNum
     | TreeNodeOffset
+    | TreeNodeMemory
 
 interface TreeNodeCommon {
     kind: string
@@ -40,8 +41,17 @@ interface TreeNodeNum extends TreeNodeCommon {
 
 interface TreeNodeOffset extends TreeNodeCommon {
     kind: "offset"
+    /** Name of the buffer. */
+    name: string
+    /** Offset in bytes. */
     value: number
     bufferType: string
+}
+
+interface TreeNodeMemory extends TreeNodeCommon {
+    kind: "memory"
+    buffer: MemoryItem
+    offset: TreeNode
 }
 
 const OPE_CODES = {
@@ -61,7 +71,7 @@ export default class Scanner {
     }
 
     private scan(tokens: Token[]): TreeNode {
-        let root =
+        let root: TreeNode =
             this.scanNum(tokens) ??
             this.scanHex(tokens) ??
             this.scanMonoBloc(tokens) ??
@@ -120,12 +130,13 @@ export default class Scanner {
             kind: "offset",
             abs: ["Uint8Clamped"].includes(memory.type),
             bufferType: memory.type,
+            name,
             value: memory.offset,
-            type: memory.type === "Uint8Clamped" ? "i32" : "f32",
+            type: getMemoryType(memory),
         }
     }
 
-    private scanMemory(tokens: Token[]): TreeNode[] | null {
+    private scanMemory(tokens: Token[]): TreeNodeMemory | null {
         const text = checkToken(tokens, "BRA_OPEN")
         if (!text) return null
 
@@ -134,7 +145,15 @@ export default class Scanner {
         if (data.length !== 1)
             throw Error(`Only one expression is allowed in brackets!`)
 
-        return data
+        const [body] = data
+        const buffer: MemoryItem = findMemoryItem(body, this.prg.$memory)
+        return {
+            kind: "memory",
+            buffer,
+            offset: body,
+            abs: buffer.type === "Uint8Clamped",
+            type: getMemoryType(buffer),
+        }
     }
 
     private scanOpe(
@@ -226,6 +245,7 @@ function checkToken(tokens: Token[], ...names: string[]): string | null {
 }
 
 function makeErr(message: string, token: Token): TreeNodeErr {
+    console.error(message, token)
     return {
         kind: "err",
         type: "bool",
@@ -291,4 +311,51 @@ function getTokens(source: string) {
     }
     if (blocLevel !== 0) throw Error(`Unbalanced parenthesis!\n"${source}"`)
     return tokens
+}
+
+function getMemoryType(memory: MemoryItem): LocalType {
+    switch (memory.type) {
+        case "Float32":
+            return "f32"
+        case "Uint32":
+        case "Uint8Clamped":
+            return "i32"
+        default:
+            throw Error(
+                `Memory type "${memory.type}" has not been implemented yet!`
+            )
+    }
+}
+
+function findMemoryItem(
+    body: TreeNode,
+    memory: { get(name?: string): MemoryItem }
+): MemoryItem {
+    const offsets: TreeNodeOffset[] = []
+    lookForOffsets(offsets, body)
+    const set = new Set(offsets)
+    if (set.size > 1)
+        throw Error(`Which offset should I use? ${Array.from(set).join(", ")}`)
+    const [offset] = offsets
+    return memory.get(offset?.name)
+}
+
+function lookForOffsets(offsets: TreeNodeOffset[], node: TreeNode) {
+    switch (node.kind) {
+        case "err":
+        case "num":
+        case "var":
+        case "memory":
+            return
+        case "offset":
+            offsets.push(node)
+            return
+        case "ope":
+            lookForOffsets(offsets, node.a)
+            lookForOffsets(offsets, node.b)
+        default:
+            throw Error(
+                `Type "${node.kind}" has not yet been implemented for lookForOffsets()!`
+            )
+    }
 }

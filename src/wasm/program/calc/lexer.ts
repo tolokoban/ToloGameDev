@@ -5,7 +5,7 @@ const TOKENS: { [id: string]: RegExp } = {
     PAR_CLOSE: /^[)]/g,
     BRA_OPEN: /^\[/g,
     BRA_CLOSE: /^\]/g,
-    OFFSET: /^@[a-z][a-z0-9_]/gi,
+    OFFSET: /^@[a-z][a-z0-9_]*/gi,
     ADD: /^\+/g,
     SUB: /^\-/g,
     MUL: /^\*/g,
@@ -42,7 +42,9 @@ function nextToken(code: string, index: number): Token {
         return [key, text, index]
     }
     throw Error(
-        `Unexpected token at position ${index}: "${code.substring(index)}"`
+        `Unexpected token at position ${index}: "${code.substring(
+            index
+        )}"\n"${code}"`
     )
 }
 

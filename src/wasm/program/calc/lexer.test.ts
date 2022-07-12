@@ -15,6 +15,7 @@ describe("wasm/program/calc/lexer.ts", () => {
             ["AND", "&"],
             ["OR", "|"],
             ["XOR", "^"],
+            ["OFFSET", "@a", "@ab", "@abc", "@ab_cd", "@h54gg_e24__"],
             ["HEX", "0x0", "0x0123456789abcdefABCDEF"],
             [
                 "NUM",

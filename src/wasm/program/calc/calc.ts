@@ -19,7 +19,7 @@ function make<T extends LocalType>(type: T, prg: Program) {
         const scanner = new Scanner(prg)
         const tree = scanner.buildTree(source)
         console.log("🚀 [calc] tree = ", tree) // @FIXME: Remove this line written on 2022-07-11 at 14:14
-        generateCode(code, tree)
+        generateCode(code, tree, source)
         generateConvert(code, tree.type, type, tree.abs)
         return {
             type,
@@ -28,25 +28,33 @@ function make<T extends LocalType>(type: T, prg: Program) {
     }
 }
 
-function generateCode(code: InstrCode[], tree: TreeNode) {
-    switch (tree.kind) {
+function generateCode(code: InstrCode[], node: TreeNode, source: string) {
+    switch (node.kind) {
         case "err":
-            throw Error(tree.message)
+            throw Error(
+                `${node.message}\nError occured at position ${
+                    node.index
+                } in\n"${source}"\n ${spc(node.index)}^`
+            )
         case "num":
-            code.push(`${tree.type}.const ${tree.value}`)
+            code.push(`${node.type}.const ${node.value}`)
             return
         case "offset":
-            code.push(`i32.const ${tree.value}`)
+            code.push(`i32.const ${node.value}`)
             return
         case "var":
-            code.push(`local.get ${tree.name}`)
+            code.push(`local.get ${node.name}`)
             return
         case "ope":
-            generateCode(code, tree.a)
-            generateConvert(code, tree.a.type, tree.type, tree.abs)
-            generateCode(code, tree.b)
-            generateConvert(code, tree.b.type, tree.type, tree.abs)
-            code.push(`${tree.type}.${tree.code}`)
+            generateCode(code, node.a, source)
+            generateConvert(code, node.a.type, node.type, node.abs)
+            generateCode(code, node.b, source)
+            generateConvert(code, node.b.type, node.type, node.abs)
+            code.push(`${node.type}.${node.code}`)
+            return
+        case "memory":
+            generateCode(code, node.offset, source)
+            code.push(`${node.type}.load`)
             return
     }
 }
@@ -92,19 +100,6 @@ function generateConvert(
         case "f32":
             switch (toType) {
                 case "i32":
-                    code.push(`i32.trunc_f32_${sign}`)
-                    return
-                case "i64":
-                    code.push(`i64.trunc_f32_${sign}`)
-                    return
-                case "f64":
-                    code.push(`f64.promote_f32`)
-                    return
-            }
-            return
-        case "f64":
-            switch (toType) {
-                case "i32":
                     code.push(`i32.trunc_f64_${sign}`)
                     return
                 case "i64":
@@ -116,4 +111,10 @@ function generateConvert(
             }
             return
     }
+}
+
+function spc(count: number): string {
+    let txt = ""
+    for (let i = 0; i < count; i++) txt = `${txt} `
+    return txt
 }

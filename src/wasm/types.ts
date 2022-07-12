@@ -25,8 +25,8 @@ export interface Instruction<T extends InstrType> {
 export type LocalType = "i32" | "i64" | "f32" | "f64" | "bool"
 
 export interface MemoryItem {
-    type: "Uint8Clamped" | "Float32"
-    data?: Uint8ClampedArray | Float32Array
+    type: "Uint8Clamped" | "Float32" | "Uint32"
+    data?: Uint8ClampedArray | Float32Array | Uint32Array
     size: number
     cols: number
     rows: number
@@ -42,8 +42,8 @@ export interface ProgramOptions {
 }
 
 type Buffer<
-    T extends "Uint8Clamped" | "Float32",
-    D extends Uint8ClampedArray | Float32Array
+    T extends "Uint8Clamped" | "Float32" | "Uint32",
+    D extends Uint8ClampedArray | Float32Array | Uint32Array
 > =
     | { type: T; data: D }
     | { type: T; size: number }
@@ -54,6 +54,7 @@ export interface PartialProgramOptions {
         [bufferName: string]:
             | Buffer<"Uint8Clamped", Uint8ClampedArray>
             | Buffer<"Float32", Float32Array>
+            | Buffer<"Uint32", Uint32Array>
     }
 }
 
@@ -69,6 +70,7 @@ export interface MapOf<T> {
 export interface ProgramBuildMemory {
     Uint8Clamped: MapOf<Uint8ClampedArray>
     Float32: MapOf<Float32Array>
+    Uint32: MapOf<Uint32Array>
 }
 
 export interface ProgramBuild<

@@ -143,10 +143,10 @@ function makeFunc(
         { name },
         p.set.f32("x", p.peek.f32("@pos")),
         p.set.f32("y", p.peek.f32("@pos+1")),
-        p.poke.f32(p.$memory.get("pos").offset, `${a}*x + ${b}*y + ${c}`),
+        p.poke.f32(p.$memory.get("pos").offset, `(${a}*$x) + (${b}*$y) + ${c}`),
         p.poke.f32(
             p.add.i32(1, p.$memory.get("pos").offset),
-            `${d}*x + ${e}*y + ${f}`
+            `(${d}*$x) + (${e}*$y) + ${f}`
         )
     )
 }

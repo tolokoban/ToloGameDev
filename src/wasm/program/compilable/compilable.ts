@@ -17,7 +17,7 @@ export default class Compilable extends Internals {
     protected readonly _options: ProgramOptions
     public readonly $memory: {
         readonly enabled: boolean
-        get(name: string): MemoryItem
+        get(name?: string): MemoryItem
     }
 
     constructor(options: PartialProgramOptions) {
@@ -29,12 +29,19 @@ export default class Compilable extends Internals {
                 return typeof memory !== "undefined"
             },
 
-            get(name: string) {
+            get(name?: string) {
                 if (!memory)
                     throw Error(
                         `Trying to access memory "${name}", but none has been defined for this program!`
                     )
-
+                if (!name) {
+                    const firstItem = memory[Object.keys(memory)[0]]
+                    if (!firstItem)
+                        throw Error(
+                            `Trying to access memory "${name}", but none has been defined for this program!`
+                        )
+                    return firstItem
+                }
                 const item: MemoryItem | undefined = memory[name]
                 if (!item)
                     throw Error(
@@ -176,15 +183,18 @@ function exportMemory(
         return {
             Float32: {},
             Uint8Clamped: {},
+            Uint32: {},
         }
 
     let offset = 0
     const output: ProgramBuildMemory = {
         Float32: {},
         Uint8Clamped: {},
+        Uint32: {},
     }
     const arrayFloat32 = new Float32Array(buffer)
     const arrayUint8Clamped = new Uint8ClampedArray(buffer)
+    const arrayUint32 = new Uint32Array(buffer)
     for (const id of Object.keys(memory)) {
         const item = memory[id]
         switch (item.type) {
@@ -203,6 +213,14 @@ function exportMemory(
                     offset + item.size
                 )
                 if (item.data) output.Uint8Clamped[id].set(item.data)
+                break
+            case "Uint32":
+                if (item.data) item.size = item.data.byteLength
+                output.Uint32[id] = arrayUint32.subarray(
+                    offset,
+                    offset + item.size
+                )
+                if (item.data) output.Uint32[id].set(item.data)
                 break
             default:
                 throw Error(
