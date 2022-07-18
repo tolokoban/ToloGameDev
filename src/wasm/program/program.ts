@@ -1,4 +1,5 @@
 import Add from "./add"
+import Bloc from "./bloc"
 import Bool from "./bool"
 import Calc from "./calc"
 import Call from "./call"
@@ -40,6 +41,7 @@ export default class Program extends Compilable {
     }
 
     readonly add = new Add(this)
+    readonly bloc = new Bloc()
     readonly bool = new Bool()
     readonly calc = new Calc(this)
     readonly call = new Call(this)
@@ -51,8 +53,8 @@ export default class Program extends Compilable {
     readonly get = new Get(this)
     readonly inc = new Inc(this)
     readonly incAndGet = new IncAndGet(this)
-    readonly if = new If()
-    readonly is = new Is()
+    readonly if = new If(this)
+    readonly is = new Is(this)
     readonly log = new Log(this)
     readonly mul = new Mul(this)
     readonly nearest = new Nearest()

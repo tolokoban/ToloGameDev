@@ -1,7 +1,7 @@
 import Program from "./program"
-import { Instruction, LocalType } from "./../types"
+import { InstrOrConst, Instruction, LocalType } from "./../types"
 
-type GetFunc<T extends LocalType> = (name: string) => Instruction<T>
+type GetFunc<T extends LocalType> = (name: string) => InstrOrConst<T>
 
 export default class Get {
     readonly i32: GetFunc<"i32">
@@ -18,12 +18,8 @@ export default class Get {
 }
 
 function make<T extends LocalType>(type: T, prg: Program) {
-    return (
-        name: string,
-        value: Instruction<T> | number = 0
-    ): Instruction<T> => {
-        const realValue =
-            typeof value === "number" ? `${type}.const ${value}` : value
+    return (name: string, value: InstrOrConst<T> = 0): Instruction<T> => {
+        const realValue = prg.ensureInstr(value, type)
         prg.$locals.add(name, type)
         return {
             type,

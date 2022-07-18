@@ -107,8 +107,17 @@ export default class Compilable extends Internals {
                 sourceCode,
             }
         } catch (ex) {
-            console.error("Unable to compile following WAT code:", ex)
             console.log(sourceCode)
+            console.error("Unable to compile following WAT code:", ex)
+            console.log(
+                sourceCode
+                    .split("\n")
+                    .map(
+                        (line, num) =>
+                            `${`${num + 1}`.padStart(4, " ")} ${line}`
+                    )
+                    .join("\n")
+            )
             throw Error(ex)
         }
     }

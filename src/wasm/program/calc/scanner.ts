@@ -1,5 +1,6 @@
 import Program from ".."
 import { LocalType, MemoryItem } from "../../types"
+import { maxType } from "./max-type"
 import { parseTokens, Token } from "./lexer"
 
 export type TreeNode =
@@ -22,9 +23,28 @@ interface TreeNodeErr extends TreeNodeCommon {
     index: number
 }
 
-interface TreeNodeOpe extends TreeNodeCommon {
+export interface TreeNodeOpe extends TreeNodeCommon {
     kind: "ope"
-    code: "add" | "sub" | "mul" | "div"
+    code:
+        | "add"
+        | "sub"
+        | "mul"
+        | "div"
+        | "and"
+        | "or"
+        | "xor"
+        | "lt"
+        | "gt"
+        | "le"
+        | "ge"
+        | "lt_u"
+        | "gt_u"
+        | "le_u"
+        | "ge_u"
+        | "lt_s"
+        | "gt_s"
+        | "le_s"
+        | "ge_s"
     a: TreeNode
     b: TreeNode
 }
@@ -59,6 +79,11 @@ const OPE_CODES = {
     "-": "sub",
     "*": "mul",
     "/": "div",
+    "&": "and",
+    "|": "or",
+    "^": "xor",
+    "<": "lt",
+    ">": "gt",
 }
 
 export default class Scanner {
@@ -93,7 +118,11 @@ export default class Scanner {
             root = {
                 ...ope,
                 abs: firstArgument.abs || secondArgument.abs,
-                type: maxType(firstArgument.type, secondArgument.type),
+                type: maxType(
+                    ope.code,
+                    firstArgument.type,
+                    secondArgument.type
+                ),
                 a: firstArgument,
                 b: secondArgument,
             }
@@ -132,7 +161,7 @@ export default class Scanner {
             bufferType: memory.type,
             name,
             value: memory.offset,
-            type: getMemoryType(memory),
+            type: "i32",
         }
     }
 
@@ -161,6 +190,10 @@ export default class Scanner {
     ): Omit<TreeNodeOpe, "a" | "b" | "type" | "abs"> | null {
         const text = checkToken(
             tokens,
+            "LE",
+            "GE",
+            "LT",
+            "GT",
             "ADD",
             "SUB",
             "MUL",
@@ -255,20 +288,6 @@ function makeErr(message: string, token: Token): TreeNodeErr {
     }
 }
 
-function maxType(t1: LocalType, t2: LocalType): LocalType {
-    if (t1 === "bool" && t2 === "bool") return "bool"
-
-    const [t1Char, t1Num] = splitType(t1)
-    const [t2Char, t2Num] = splitType(t2)
-    const char = t1Char === "f" || t2Char === "f" ? "f" : "i"
-    return `${char}${Math.max(t1Num, t2Num)}` as LocalType
-}
-
-function splitType(type: string): [string, number] {
-    if (type === "bool") type = "i32"
-    return [type.charAt(0), parseInt(type.substring(1))]
-}
-
 export function optimizeTree(root: TreeNode): TreeNode {
     if (root.kind !== "ope") return root
 
@@ -341,6 +360,7 @@ function findMemoryItem(
 }
 
 function lookForOffsets(offsets: TreeNodeOffset[], node: TreeNode) {
+    const { kind } = node
     switch (node.kind) {
         case "err":
         case "num":
@@ -353,9 +373,10 @@ function lookForOffsets(offsets: TreeNodeOffset[], node: TreeNode) {
         case "ope":
             lookForOffsets(offsets, node.a)
             lookForOffsets(offsets, node.b)
+            return
         default:
             throw Error(
-                `Type "${node.kind}" has not yet been implemented for lookForOffsets()!`
+                `Type "${kind}" has not yet been implemented for lookForOffsets()!`
             )
     }
 }

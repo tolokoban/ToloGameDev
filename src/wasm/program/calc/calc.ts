@@ -1,5 +1,6 @@
 import Program from ".."
-import Scanner, { TreeNode } from "./scanner"
+import Scanner, { TreeNode, TreeNodeOpe } from "./scanner"
+import { generateConvert, generateConvertInteger } from "./convert"
 import { InstrCode, Instruction } from "./../../types"
 import { LocalType } from "../../types"
 import { parseTokens } from "./lexer"
@@ -15,15 +16,20 @@ export default class Calc {
 
 function make<T extends LocalType>(type: T, prg: Program) {
     return (source: string): Instruction<T> => {
-        const code: InstrCode[] = [`;; Calc: ${source}`]
-        const scanner = new Scanner(prg)
-        const tree = scanner.buildTree(source)
-        console.log("🚀 [calc] tree = ", tree) // @FIXME: Remove this line written on 2022-07-11 at 14:14
-        generateCode(code, tree, source)
-        generateConvert(code, tree.type, type, tree.abs)
-        return {
-            type,
-            code,
+        try {
+            const code: InstrCode[] = [`;; Calc: ${source}`]
+            const scanner = new Scanner(prg)
+            const tree = scanner.buildTree(source)
+            generateCode(code, tree, source)
+            generateConvert(code, tree.type, type, tree.abs)
+            return {
+                type,
+                code,
+            }
+        } catch (ex) {
+            console.log("Error in code: ", source)
+            console.error(ex)
+            throw ex
         }
     }
 }
@@ -46,10 +52,7 @@ function generateCode(code: InstrCode[], node: TreeNode, source: string) {
             code.push(`local.get ${node.name}`)
             return
         case "ope":
-            generateCode(code, node.a, source)
-            generateConvert(code, node.a.type, node.type, node.abs)
-            generateCode(code, node.b, source)
-            generateConvert(code, node.b.type, node.type, node.abs)
+            generateCodeForOpe(code, node, source)
             code.push(`${node.type}.${node.code}`)
             return
         case "memory":
@@ -59,62 +62,45 @@ function generateCode(code: InstrCode[], node: TreeNode, source: string) {
     }
 }
 
-function generateConvert(
-    code: InstrCode[],
-    fromType: LocalType,
-    toType: LocalType,
-    abs: boolean
-) {
-    if (fromType === "bool") fromType = "i32"
-    if (toType === "bool") toType = "i32"
-    if (fromType === toType) return
-
-    const sign = abs ? "u" : "s"
-    switch (fromType) {
-        case "i32":
-            switch (toType) {
-                case "i64":
-                    code.push(`i64.extend_i32_${sign}`)
-                    return
-                case "f32":
-                    code.push(`f32.convert_i32_${sign}`)
-                    return
-                case "f64":
-                    code.push(`f64.convert_i32_${sign}`)
-                    return
-            }
-            return
-        case "i64":
-            switch (toType) {
-                case "i32":
-                    code.push(`i32.wrap_i32`)
-                    return
-                case "f32":
-                    code.push(`f32.convert_i64_${sign}`)
-                    return
-                case "f64":
-                    code.push(`f64.convert_i64_${sign}`)
-                    return
-            }
-            return
-        case "f32":
-            switch (toType) {
-                case "i32":
-                    code.push(`i32.trunc_f64_${sign}`)
-                    return
-                case "i64":
-                    code.push(`i64.trunc_f64_${sign}`)
-                    return
-                case "f32":
-                    code.push(`f32.promote_f32`)
-                    return
-            }
-            return
-    }
-}
-
 function spc(count: number): string {
     let txt = ""
     for (let i = 0; i < count; i++) txt = `${txt} `
     return txt
+}
+
+function generateCodeForOpe(
+    code: InstrCode[],
+    node: TreeNodeOpe,
+    source: string
+) {
+    switch (node.code) {
+        case "add":
+        case "div":
+        case "mul":
+        case "sub":
+            generateCode(code, node.a, source)
+            generateConvert(code, node.a.type, node.type, node.abs)
+            generateCode(code, node.b, source)
+            generateConvert(code, node.b.type, node.type, node.abs)
+            break
+        case "and":
+        case "or":
+        case "xor":
+            generateCode(code, node.a, source)
+            generateConvertInteger(code, node.a.type, node.type, node.abs)
+            generateCode(code, node.b, source)
+            generateConvertInteger(code, node.b.type, node.type, node.abs)
+            break
+        case "le":
+        case "ge":
+        case "lt":
+        case "gt":
+            node.type = "i32"
+            generateCode(code, node.a, source)
+            generateConvert(code, node.a.type, "i32", node.abs)
+            generateCode(code, node.b, source)
+            generateConvert(code, node.b.type, "i32", node.abs)
+            node.code = `${node.code}_${node.a.abs && node.b.abs ? "u" : "s"}`
+            break
+    }
 }

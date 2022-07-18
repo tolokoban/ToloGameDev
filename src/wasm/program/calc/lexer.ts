@@ -6,6 +6,10 @@ const TOKENS: { [id: string]: RegExp } = {
     BRA_OPEN: /^\[/g,
     BRA_CLOSE: /^\]/g,
     OFFSET: /^@[a-z][a-z0-9_]*/gi,
+    LE: /^\<\=/g,
+    GE: /^\>\=/g,
+    LT: /^\</g,
+    GT: /^\>/g,
     ADD: /^\+/g,
     SUB: /^\-/g,
     MUL: /^\*/g,
@@ -31,7 +35,7 @@ export function parseTokens(code: string): Token[] {
 
         tokens.push([tkn, txt, cursor])
     }
-    return tokens
+    return detectNumbersSigns(tokens)
 }
 
 function nextToken(code: string, index: number): Token {
@@ -61,4 +65,44 @@ export function checkToken(
     if (!match) return null
 
     return match[0]
+}
+
+const EXPRESSIONS: string[] = [
+    "VAR",
+    "PAR_CLOSE",
+    "BRA_CLOSE",
+    "OFFSET",
+    "HEX",
+    "NUM",
+]
+
+/**
+ * "-5" is parsed as `["SUB", "NUM:5"].
+ * But we want to get a négative number instead: ["NUM:-5"]
+ */
+function detectNumbersSigns(tokens: Token[]): Token[] {
+    const out: Token[] = []
+    let previousTokenIsExpression = true
+    let previousTokenIsSub = false
+    for (const [tkn, txt, idx] of tokens) {
+        if (tkn === "SUB") {
+            if (previousTokenIsExpression) {
+                out.push([tkn, txt, idx])
+                previousTokenIsExpression = false
+            } else {
+                previousTokenIsSub = true
+            }
+        } else {
+            if (previousTokenIsSub && tkn === "NUM") {
+                out.push(["NUM", `${-parseFloat(txt)}`, idx])
+            } else if (previousTokenIsSub && tkn === "HEX") {
+                out.push(["NUM", `${-parseInt(txt)}`, idx])
+            } else {
+                out.push([tkn, txt, idx])
+            }
+            previousTokenIsSub = tkn === "SUB"
+        }
+        previousTokenIsExpression = EXPRESSIONS.includes(tkn)
+    }
+    return out
 }

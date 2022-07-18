@@ -12,7 +12,7 @@ export default class Log {
             type: "void",
             code: [
                 `i32.const ${textId} ;; "${text}"`,
-                `local.get $${name}_${type}`,
+                `local.get $${name}`,
                 `call $_log_${type}`,
             ],
         }
@@ -34,6 +34,7 @@ export default class Log {
 
     text(text: string): Instruction<"void"> {
         const textId = this.prg.$addTextResource(text)
+        console.log(textId, text)
         return {
             type: "void",
             code: [`i32.const ${textId} ;; "${text}"`, `call $_log_text`],

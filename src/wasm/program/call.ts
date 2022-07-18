@@ -45,7 +45,7 @@ function make<T extends LocalType | "void">(type: T, prg: Program) {
         }
         return {
             type,
-            code: [...params],
+            code: [`;; Call ${funcName}()`, ...params, `call $${funcName}`],
         }
     }
 }

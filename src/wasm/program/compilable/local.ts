@@ -23,6 +23,10 @@ export default class Locals {
         return Object.keys(this._locals).map(sanitize)
     }
 
+    clear() {
+        this._locals = {}
+    }
+
     add(name: string, type: LocalType) {
         name = sanitize(name)
         const currentType = this._locals[name]
