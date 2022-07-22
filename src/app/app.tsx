@@ -3,8 +3,8 @@ import Program from "../wasm/program/program"
 import { Instruction } from "../wasm/types"
 import "./app.css"
 
-const CANVAS_W = 512
-const CANVAS_H = 512
+const CANVAS_W = 1024
+const CANVAS_H = 1024
 
 export default function App() {
     return (
@@ -49,12 +49,16 @@ async function onCanvasReady(canvas: HTMLCanvasElement) {
             data: new Uint8ClampedArray(4 * width * height),
             pos: new Float32Array([0, 0]),
             index: new Int32Array([0, 1]),
-            rnd: makeRandomUint8(0x1000),
+            rnd: makeRandomUint8(0x10000),
         },
     })
 
     const cols = width * 4
     const STEP = 1
+    const XMIN = -2.18
+    const XMAX = 2.64
+    const YMIN = 0
+    const YMAX = 10
     const build = await p.compile<[loops: number]>(
         p.flow.module(
             p.flow.func.void(
@@ -65,17 +69,24 @@ async function onCanvasReady(canvas: HTMLCanvasElement) {
                 }),
                 p.if.void(
                     p.and.bool(
-                        p.is.greater.f32("$x", -2.18),
-                        p.is.lesser.f32("$x", 2.64),
-                        p.is.greater.f32("$y", 0),
-                        p.is.lesser.f32("$y", 1)
+                        p.is.greater.f32("$x", XMIN),
+                        p.is.lesser.f32("$x", XMAX),
+                        p.is.greater.f32("$y", YMIN),
+                        p.is.lesser.f32("$y", YMAX)
                     ),
                     [
                         p.set.i32(
                             "X",
-                            `(2.1821 + $x) * ${(width - 1) / 4.8379}`
+                            `($x ${XMIN < 0 ? `+` : `-`}${Math.abs(XMIN)}) * ${
+                                width / (XMAX - XMIN)
+                            }`
                         ),
-                        p.set.i32("Y", `$y * ${height}`),
+                        p.set.i32(
+                            "Y",
+                            `($y ${YMIN < 0 ? `+` : `-`}${Math.abs(YMIN)}) * ${
+                                height / (YMAX - YMIN)
+                            }`
+                        ),
                         p.set.i32("offset", `(4 * $X) + (${cols} * $Y)`),
                         p.set.i32("current", "@[$offset + 1]"),
                         p.if.void(p.is.lesser.ui32("$current", 256 - STEP), [
@@ -97,34 +108,23 @@ async function onCanvasReady(canvas: HTMLCanvasElement) {
                 p.set.i32("idx2", "@index[1]"),
                 p.flow.repeat(
                     "loop",
-                    p.set.i32("idx1", "($idx1 + 3) & 0xfff"),
-                    p.set.i32("idx2", "($idx2 + 7) & 0xfff"),
+                    p.set.i32("idx1", "($idx1 + 31) & 0xffff"),
+                    p.set.i32("idx2", "($idx2 + 71) & 0xffff"),
                     p.set.i32("rnd", "@rnd[$idx1] ^ @rnd[$idx2]"),
                     p.if.void(
                         p.is.lesser.ui32("$rnd", 220),
                         [
                             p.if.void(
                                 p.is.lesser.ui32("$rnd", 2),
-                                [
-                                    makeInnerFunc(
-                                        p,
-                                        0,
-                                        0,
-                                        0,
-                                        0.25,
-                                        0,
-                                        -0.4,
-                                        "f1"
-                                    ),
-                                ],
+                                [makeInnerFunc(p, 0, 0, 0, 0, 0.16, 0, "f1")],
                                 [
                                     makeInnerFunc(
                                         p,
                                         0.85,
                                         0.04,
+                                        0,
                                         -0.04,
                                         0.85,
-                                        0,
                                         1.6,
                                         "f2"
                                     ),
@@ -139,9 +139,9 @@ async function onCanvasReady(canvas: HTMLCanvasElement) {
                                         p,
                                         0.2,
                                         -0.26,
+                                        0,
                                         0.23,
                                         0.22,
-                                        0,
                                         1.6,
                                         "f3"
                                     ),
@@ -151,9 +151,9 @@ async function onCanvasReady(canvas: HTMLCanvasElement) {
                                         p,
                                         -0.15,
                                         0.28,
+                                        0,
                                         0.26,
                                         0.24,
-                                        0,
                                         0.44,
                                         "f4"
                                     ),
@@ -163,17 +163,16 @@ async function onCanvasReady(canvas: HTMLCanvasElement) {
                     ),
                     p.call.void("plot", p.get.f32("x"), p.get.f32("y"))
                 ),
-                p.log.text("============================================="),
                 p.poke.f32(0, "$x", "pos"),
                 p.poke.f32(1, "$y", "pos"),
-                p.poke.f32(0, "$idx1", "index"),
-                p.poke.f32(1, "$idx2", "index"),
-                p.log.local("f1"),
-                p.log.local("f2"),
-                p.log.local("f3"),
-                p.log.local("f4"),
-                p.log.local("idx1"),
-                p.log.local("idx2")
+                p.poke.i32(0, "$idx1", "index"),
+                p.poke.i32(1, "$idx2", "index")
+                // p.log.local("f1"),
+                // p.log.local("f2"),
+                // p.log.local("f3"),
+                // p.log.local("f4"),
+                // p.log.local("idx1"),
+                // p.log.local("idx2")
             )
         )
     )
@@ -187,11 +186,11 @@ async function onCanvasReady(canvas: HTMLCanvasElement) {
 
     const anim = () => {
         build.main(1000000)
-        console.log("🚀 [app] build.memory = ", build.memory) // @FIXME: Remove this line written on 2022-07-22 at 11:35
-        console.log("🚀 [app] build.memory.index = ", build.memory.index) // @FIXME: Remove this line written on 2022-07-22 at 11:35
-        console.log("🚀 [app] build.memory.pos = ", build.memory.pos) // @FIXME: Remove this line written on 2022-07-22 at 11:35
+        // console.log("🚀 [app] build.memory = ", build.memory) // @FIXME: Remove this line written on 2022-07-22 at 11:35
+        // console.log("🚀 [app] build.memory.index = ", build.memory.index) // @FIXME: Remove this line written on 2022-07-22 at 11:35
+        // console.log("🚀 [app] build.memory.pos = ", build.memory.pos) // @FIXME: Remove this line written on 2022-07-22 at 11:35
         if (ctx) ctx.putImageData(imageData, 0, 0)
-        // window.requestAnimationFrame(anim)
+        window.requestAnimationFrame(anim)
     }
     window.requestAnimationFrame(anim)
 }
