@@ -1,12 +1,12 @@
-import { LocalType } from "../../types"
+import { WasmType } from "../../types"
 
 export default class Locals {
-    private _locals: { [name: string]: LocalType } = {}
+    private _locals: { [name: string]: WasmType } = {}
 
     get current() {
         return { ...this._locals }
     }
-    set current(locals: { [name: string]: LocalType }) {
+    set current(locals: { [name: string]: WasmType }) {
         this._locals = { ...locals }
     }
 
@@ -27,7 +27,7 @@ export default class Locals {
         this._locals = {}
     }
 
-    add(name: string, type: LocalType) {
+    add(name: string, type: WasmType) {
         name = sanitize(name)
         const currentType = this._locals[name]
         if (!currentType) {
@@ -49,7 +49,7 @@ export default class Locals {
     /**
      * @returns Type of the local or an exception if not exist.
      */
-    get(name: string): LocalType {
+    get(name: string): WasmType {
         name = sanitize(name)
         const type = this._locals[name]
         if (!type)

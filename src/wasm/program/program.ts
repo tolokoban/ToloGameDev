@@ -1,33 +1,35 @@
-import Add from "./add"
-import Bloc from "./bloc"
-import Bool from "./bool"
-import Calc from "./calc"
-import Call from "./call"
+import Add from "./instruction/add"
+import And from "./instruction/and"
+import Bloc from "./instruction/bloc"
+import Bool from "./instruction/bool"
+import Calc from "./instruction/calc"
+import Call from "./instruction/call"
 import Compilable from "./compilable"
-import Const from "./const"
-import Dec from "./dec"
-import DecAndGet from "./dec-and-get"
-import Declare from "./declare"
-import Flow from "./flow"
-import Get from "./get"
-import If from "./if"
-import Inc from "./inc"
-import IncAndGet from "./inc-and-get"
-import Is from "./is"
-import Log from "./log"
-import Mul from "./mul"
-import Nearest from "./nearest"
-import Param from "./param"
-import Peek from "./peek"
-import Poke from "./poke"
-import Set from "./set"
-import SetAndGet from "./set-and-get"
-import Sub from "./sub"
+import Const from "./instruction/const"
+import Dec from "./instruction/dec"
+import DecAndGet from "./instruction/dec-and-get"
+import Declare from "./instruction/declare"
+import Flow from "./instruction/flow"
+import Get from "./instruction/get"
+import If from "./instruction/if"
+import Inc from "./instruction/inc"
+import IncAndGet from "./instruction/inc-and-get"
+import Is from "./instruction/is"
+import Log from "./instruction/log"
+import Mul from "./instruction/mul"
+import Nearest from "./instruction/nearest"
+import Param from "./instruction/param"
+import Peek from "./instruction/peek"
+import Poke from "./instruction/poke"
+import Set from "./instruction/set"
+import SetAndGet from "./instruction/set-and-get"
+import Shl from "./instruction/shl"
+import Sub from "./instruction/sub"
 import {
     InstrType,
     InstrOrConst,
     Instruction,
-    LocalType,
+    WasmType,
     PartialProgramOptions,
 } from "../types"
 
@@ -38,9 +40,11 @@ import {
 export default class Program extends Compilable {
     constructor(options: PartialProgramOptions = {}) {
         super(options)
+        // console.log("Memory size (in bytes):", this.$memory.sizeInBytes)
     }
 
     readonly add = new Add(this)
+    readonly and = new And(this)
     readonly bloc = new Bloc()
     readonly bool = new Bool()
     readonly calc = new Calc(this)
@@ -63,6 +67,7 @@ export default class Program extends Compilable {
     readonly poke = new Poke(this)
     readonly set = new Set(this)
     readonly setAndGet = new SetAndGet(this)
+    readonly shl = new Shl(this)
     readonly sub = new Sub(this)
 
     comment(...instructions: Instruction<InstrType>[]): Instruction<"void"> {
@@ -72,7 +77,7 @@ export default class Program extends Compilable {
         }
     }
 
-    ensureInstr<T extends LocalType>(
+    ensureInstr<T extends WasmType>(
         value: InstrOrConst<T>,
         type: T
     ): Instruction<T> {

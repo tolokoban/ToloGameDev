@@ -1,11 +1,11 @@
-import { LocalType } from "./../../types"
+import { WasmType } from "./../../types"
 export default class Params {
-    private _params: { [name: string]: LocalType } = {}
+    private _params: { [name: string]: WasmType } = {}
 
     get current() {
         return { ...this._params }
     }
-    set current(params: { [name: string]: LocalType }) {
+    set current(params: { [name: string]: WasmType }) {
         this._params = { ...params }
     }
 
@@ -26,7 +26,7 @@ export default class Params {
     /**
      * @returns Type of the param or an exception if not exist.
      */
-    get(name: string): LocalType {
+    get(name: string): WasmType {
         name = sanitize(name)
         const type = this._params[name]
         if (!type)

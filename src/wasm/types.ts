@@ -11,7 +11,7 @@ export type InstrType =
 
 export type InstrCode = string | Instruction<InstrType> | InstrCode[]
 
-export type InstrOrConst<T extends LocalType> = Instruction<T> | number | string
+export type InstrOrConst<T extends WasmType> = Instruction<T> | number | string
 
 export interface Instruction<T extends InstrType> {
     type: T
@@ -22,40 +22,20 @@ export interface Instruction<T extends InstrType> {
     after?: () => void
 }
 
-export type LocalType = "i32" | "i64" | "f32" | "f64" | "bool"
+export type WasmType = "i32" | "i64" | "f32" | "f64" | "bool"
 
-export interface MemoryItem {
-    type: "Uint8Clamped" | "Float32" | "Uint32"
-    data?: Uint8ClampedArray | Float32Array | Uint32Array
-    size: number
-    cols: number
-    rows: number
-    offset: number
-}
+export type MemoryArray = Uint8ClampedArray | Float32Array | Int32Array
 
 export interface ProgramOptionsMemory {
-    [bufferName: string]: MemoryItem
+    [bufferName: string]: MemoryArray
 }
 
 export interface ProgramOptions {
     memory?: ProgramOptionsMemory
 }
 
-type Buffer<
-    T extends "Uint8Clamped" | "Float32" | "Uint32",
-    D extends Uint8ClampedArray | Float32Array | Uint32Array
-> =
-    | { type: T; data: D }
-    | { type: T; size: number }
-    | { type: T; cols: number; rows: number }
-
 export interface PartialProgramOptions {
-    memory?: {
-        [bufferName: string]:
-            | Buffer<"Uint8Clamped", Uint8ClampedArray>
-            | Buffer<"Float32", Float32Array>
-            | Buffer<"Uint32", Uint32Array>
-    }
+    memory?: { [bufferName: string]: MemoryArray }
 }
 
 export type ProgramMainFunction<
@@ -68,9 +48,7 @@ export interface MapOf<T> {
 }
 
 export interface ProgramBuildMemory {
-    Uint8Clamped: MapOf<Uint8ClampedArray>
-    Float32: MapOf<Float32Array>
-    Uint32: MapOf<Uint32Array>
+    [name: string]: MemoryArray
 }
 
 export interface ProgramBuild<
@@ -85,7 +63,7 @@ export interface ProgramBuild<
 export interface FuncOptions {
     /** Default to "main" */
     name: string
-    params: { [name: string]: LocalType }
+    params: { [name: string]: WasmType }
     /**
      * If `true` this function is exported.
      * A function called "main" is always exported.

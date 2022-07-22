@@ -1,7 +1,6 @@
 import Functions from "./functions"
 import Locals from "./local"
 import Params from "./params"
-import { LocalType } from "../../types"
 
 export default class Internals {
     private _id = 1
