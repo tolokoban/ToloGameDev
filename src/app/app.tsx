@@ -3,19 +3,10 @@ import Program from "../wasm/program/program"
 import { Instruction } from "../wasm/types"
 import "./app.css"
 
-const CANVAS_W = 1024
-const CANVAS_H = 1024
-
 export default function App() {
     return (
         <div>
-            <canvas
-                ref={onCanvasReady}
-                width={CANVAS_W}
-                height={CANVAS_H}
-            ></canvas>
-            <br />
-            <button>Start</button>
+            <canvas ref={onCanvasReady}></canvas>
         </div>
     )
 }
@@ -27,7 +18,6 @@ async function test(canvas: HTMLCanvasElement) {
             more: new Uint8ClampedArray([0, 11, 22, 33, 44]),
         },
     })
-    console.log("🚀 ", new Float32Array(p.$memory.wasmMemory.buffer)) // @FIXME: Remove this line written on 2022-07-22 at 12:41
     const build = await p.compile(
         p.flow.module(p.flow.func.f32({}, p.calc.f32("@more[2]")))
     )
@@ -39,9 +29,13 @@ async function onCanvasReady(canvas: HTMLCanvasElement) {
     const ctx = canvas.getContext("2d")
     if (!ctx) throw Error("Unable to creater Canvas 2D context!")
 
-    const { width, height } = canvas
+    const { clientWidth, clientHeight } = canvas
+    const width = clientWidth
+    const height = clientHeight
     canvas.style.width = `${width}px`
     canvas.style.height = `${height}px`
+    canvas.width = width
+    canvas.height = height
     ctx.clearRect(0, 0, width, height)
 
     const p = new Program({
@@ -89,10 +83,30 @@ async function onCanvasReady(canvas: HTMLCanvasElement) {
                         ),
                         p.set.i32("offset", `(4 * $X) + (${cols} * $Y)`),
                         p.set.i32("current", "@[$offset + 1]"),
-                        p.if.void(p.is.lesser.ui32("$current", 256 - STEP), [
-                            p.poke.i32For8("$offset + 3", 255),
-                            p.poke.i32For8("$offset + 1", `${STEP} + $current`),
-                        ]),
+                        p.if.void(
+                            p.is.lesser.ui32("$current", 256 - STEP),
+                            [
+                                p.poke.i32For8("$offset + 3", 255),
+                                p.poke.i32For8(
+                                    "$offset + 1",
+                                    `${STEP} + $current`
+                                ),
+                            ],
+                            [
+                                p.set.i32("current", "@[$offset]"),
+                                p.if.void(
+                                    p.is.lesser.ui32("$current", 256 - STEP),
+                                    [
+                                        p.inc.i32("current", STEP),
+                                        p.poke.i32For8("$offset", "$current"),
+                                        p.poke.i32For8(
+                                            "$offset + 2",
+                                            "$current"
+                                        ),
+                                    ]
+                                ),
+                            ]
+                        ),
                     ]
                 )
             ),
@@ -108,8 +122,11 @@ async function onCanvasReady(canvas: HTMLCanvasElement) {
                 p.set.i32("idx2", "@index[1]"),
                 p.flow.repeat(
                     "loop",
-                    p.set.i32("idx1", "($idx1 + 31) & 0xffff"),
-                    p.set.i32("idx2", "($idx2 + 71) & 0xffff"),
+                    p.set.i32("idx1", "$idx1 + 1"),
+                    p.if.void(p.is.greater.ui32("$idx1", 0xffff), [
+                        p.set.i32("idx1", 0),
+                        p.set.i32("idx2", "($idx2 + 1) & 0xffff"),
+                    ]),
                     p.set.i32("rnd", "@rnd[$idx1] ^ @rnd[$idx2]"),
                     p.if.void(
                         p.is.lesser.ui32("$rnd", 220),
@@ -184,11 +201,12 @@ async function onCanvasReady(canvas: HTMLCanvasElement) {
         height
     )
 
+    let loops = Math.ceil((width * height) / 10000)
     const anim = () => {
+        if (loops === 0) return
+
+        loops--
         build.main(1000000)
-        // console.log("🚀 [app] build.memory = ", build.memory) // @FIXME: Remove this line written on 2022-07-22 at 11:35
-        // console.log("🚀 [app] build.memory.index = ", build.memory.index) // @FIXME: Remove this line written on 2022-07-22 at 11:35
-        // console.log("🚀 [app] build.memory.pos = ", build.memory.pos) // @FIXME: Remove this line written on 2022-07-22 at 11:35
         if (ctx) ctx.putImageData(imageData, 0, 0)
         window.requestAnimationFrame(anim)
     }
