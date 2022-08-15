@@ -162,6 +162,10 @@ module.exports = {
                 type: "json",
                 use: "yaml-loader",
             },
+            {
+                test: /\.(md|vert|frag|code)$/,
+                type: "asset/source",
+            },
         ],
     },
 }

@@ -1,0 +1,32 @@
+div.ui-view-List {
+    position: relative;
+    padding: 0;
+    overflow: auto;
+     max-height: 100vh;
+    /* To prevent a bug in Google Chrome */
+    overflow-anchor: none;
+   /* To remove... */
+    margin: 2rem;
+    height: 50vh;
+    box-shadow: 0 .25rem .5rem #0008;
+}
+
+div.ui-view-List > div.invisible-item {
+    content: ".";
+    background: orange;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    pointer-events: none;
+}
+
+div.ui-view-List > div {
+    position: relative;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    box-sizing: border-box;
+    border-bottom: 1px solid #0005;
+}
+

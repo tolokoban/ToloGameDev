@@ -1,0 +1,40 @@
+.ui-view-RatingView {
+    vertical-align: middle;
+}
+
+.ui-view-RatingView.read-only {
+    pointer-events: none;
+}
+
+.ui-view-RatingView > label {
+    position: relative;
+    display: inline-block;
+    transition: transform 0.2s;
+    transform: scale(1);
+    cursor: pointer;
+    vertical-align: inherit;
+}
+
+.ui-view-RatingView > label:hover,
+.ui-view-RatingView > label:focus {
+    transform: scale(1.2);
+}
+
+.ui-view-RatingView .hidden {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+}
+
+.ui-view-RatingView .absolute {
+    position: absolute;
+    left: 0;
+    top: 0;
+    overflow: hidden;
+}

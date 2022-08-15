@@ -1,0 +1,17 @@
+.view-page-MainPage {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 0;
+}
+
+.view-page-MainPage > header > div.version {
+    opacity: 0.5;
+}
+
+.view-page-MainPage > main {
+    flex: 1 1 auto;
+    padding: 1em;
+    overflow: auto;
+}

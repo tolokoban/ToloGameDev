@@ -1,7 +1,7 @@
 import Internals from "./internals"
 import MemoryManager from "../manager/memory-manager"
 import Wabt from "wabt"
-import { isNumber, isObject } from "../../../tools/guards"
+import { isNumber, isObject } from "../../../tools/type-guards"
 import { stringifyCode } from "../../stringify"
 import {
     InstrCode,

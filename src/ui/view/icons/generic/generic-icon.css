@@ -1,0 +1,29 @@
+.ui-view-icons-GenericIcon {
+    --animation: ui-view-icons-GenericIcon-anim-rotate;
+    display: inline-block;
+    width: 1.5em;
+    height: 1.5em;
+    transition: all 0.2s;
+}
+
+.ui-view-icons-GenericIcon.clickable {
+    cursor: pointer;
+}
+
+.ui-view-icons-GenericIcon.clickable:active {
+    filter: brightness(150%);
+    transform: scale(1.1);
+}
+
+.ui-view-icons-GenericIcon.animate {
+    animation: var(--animation) 1s linear infinite;
+}
+
+@keyframes ui-view-icons-GenericIcon-anim-rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(-360deg);
+    }
+}

@@ -1,0 +1,7 @@
+.ui-view-OkCancelView {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    padding: .25rem;
+}
