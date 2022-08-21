@@ -10,7 +10,8 @@ class Database {
         storeName: string,
         data: Omit<T, "id">
     ): Promise<number> {
-        const result = this.exec(storeName, "readwrite", (store) =>
+        if ("id" in data) delete data["id"]
+        const result = await this.exec(storeName, "readwrite", (store) =>
             store.add(data)
         )
         if (isNumber(result)) return result
@@ -62,6 +63,7 @@ class Database {
                 return true
             }
         )
+        console.log("🚀 [database] result = ", result) // @FIXME: Remove this line written on 2022-08-21 at 11:46
         return result
     }
 
@@ -135,7 +137,7 @@ Error: `,
             }
             request.onupgradeneeded = () => {
                 const db = request.result
-                db.createObjectStore("shaders", {
+                db.createObjectStore("painter", {
                     keyPath: "id",
                     autoIncrement: true,
                 })

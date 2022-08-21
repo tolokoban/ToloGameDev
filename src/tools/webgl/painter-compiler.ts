@@ -1,4 +1,5 @@
-import { TGDShaders } from "./../../types"
+import { getConstName } from "./get-const-name"
+import { TGDPainter, TGDPainterAttribute } from "../../types"
 export default class ShadersCompiler {
     private readonly gl: WebGL2RenderingContext
 
@@ -11,19 +12,21 @@ export default class ShadersCompiler {
     }
 
     /**
+     * Compiles the shaders and fill the `painter.attributes` array.
      * @returns `null` in case of success. The error message otherwise.
      */
-    compile(shaders: TGDShaders): null | string {
+    compile(painter: TGDPainter): null | string {
         const { gl } = this
         try {
             const prg = createProgram(gl)
-            linkVertShader(gl, prg, shaders.vertexShader)
-            linkFragShader(gl, prg, shaders.fragmentShader)
+            linkVertShader(gl, prg, painter.vertexShader)
+            linkFragShader(gl, prg, painter.fragmentShader)
             gl.linkProgram(prg)
             if (!gl.getProgramParameter(prg, gl.LINK_STATUS)) {
                 var info = gl.getProgramInfoLog(prg)
                 throw new Error("Could NOT link WebGL2 program!\n" + info)
             }
+            painter.attributes = extractAttributes(gl, prg)
             return null
         } catch (ex) {
             if (ex instanceof Error) return ex.message
@@ -126,4 +129,44 @@ function getShader(
     }
 
     return shader
+}
+
+function extractAttributes(
+    gl: WebGL2RenderingContext,
+    prg: WebGLProgram
+): TGDPainterAttribute[] {
+    const attributes: TGDPainterAttribute[] = []
+    const count = gl.getProgramParameter(prg, gl.ACTIVE_ATTRIBUTES) as number
+    for (let index = 0; index < count; index++) {
+        const att = gl.getActiveAttrib(prg, index)
+        if (!att) continue
+        // if (!att || ["gl_InstanceID"].includes(att.name)) continue
+
+        attributes.push({
+            name: att?.name,
+            divisor: 0,
+            dynamicGroup: 0,
+            type: "float",
+            size: att.size,
+            dim: getDimension(gl, att.type),
+        })
+    }
+    return attributes
+}
+
+function getDimension(gl: WebGLRenderingContext, type: number) {
+    switch (type) {
+        case gl.FLOAT:
+            return 1
+        case gl.FLOAT_VEC2:
+            return 2
+        case gl.FLOAT_VEC3:
+            return 3
+        case gl.FLOAT_VEC4:
+            return 4
+        default:
+            throw Error(
+                `Don't know how to deal with type "${getConstName(gl, type)}"!`
+            )
+    }
 }

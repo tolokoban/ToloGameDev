@@ -21,14 +21,17 @@ export default function OptionsView<T extends string>(
         <div className={getClassNames(props)}>
             <Label value={label} />
             <div className="options theme-shadow-button">
-                {Object.keys(options).map(key =>
+                {Object.keys(options).map((key) =>
                     key === value ? (
-                        <div className="button theme-color-primary" key={key}>
+                        <div
+                            className="button selected theme-color-accent-light"
+                            key={key}
+                        >
                             {options[key]}
                         </div>
                     ) : (
                         <Touchable
-                            className="button theme-color-section"
+                            className="button not-selected theme-color-primary"
                             key={key}
                             onClick={() => setValue(key as T)}
                         >

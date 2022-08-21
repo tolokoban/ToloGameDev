@@ -1,26 +1,24 @@
 import * as React from "react"
 import Button from "@/ui/view/button"
-import DefaultFragmentShader from "./default.frag"
-import DefaultVertexShader from "./default.vert"
 import IconAdd from "@/ui/view/icons/add"
-import ListProgram from "../../shaders/list"
-import { DEFAULT_SHADERS } from "@/constants"
-import { makeDataService } from "@/factory/data-service"
+import PaintersList from "../../painters/list"
+import { getDataService } from "@/factory/data-service"
+import { makeTGDPainter } from "../../../factory/painter"
 import { TGDObject } from "@/types"
 import "./main-page.css"
 
 export interface MainPageProps {
     className?: string
-    onShadersEdit(this: void, shaders: TGDObject): void
+    onPainterEdit(this: void, painter: TGDObject): void
 }
 
 export default function MainPages(props: MainPageProps) {
-    const handleNewShaders = async () => {
-        const svc = makeDataService()
-        const newShaders = DEFAULT_SHADERS
-        newShaders.name = `Shaders ${Date.now()}`
-        const id = await svc.shaders.add(newShaders)
-        props.onShadersEdit({ id, name: newShaders.name })
+    const handleNewPainter = async () => {
+        const svc = getDataService()
+        const newPainter = makeTGDPainter()
+        newPainter.name = `Painter ${Date.now()}`
+        const id = await svc.painter.add(newPainter)
+        props.onPainterEdit({ id, name: newPainter.name })
     }
     return (
         <div className={getClassNames(props)}>
@@ -32,20 +30,20 @@ export default function MainPages(props: MainPageProps) {
                     />
                 </svg>
                 <div>ToloGameDev</div>
-                <div className="version">v0.1.0</div>
+                <div className="version">v0.2.0</div>
             </header>
             <main>
                 <fieldset>
                     <legend>
                         <Button
                             icon={IconAdd}
-                            label="Shaders"
+                            label="Painters"
                             color="accent"
                             flat={false}
-                            onClick={handleNewShaders}
+                            onClick={handleNewPainter}
                         />
                     </legend>
-                    <ListProgram onClick={props.onShadersEdit} />
+                    <PaintersList onClick={props.onPainterEdit} />
                 </fieldset>
             </main>
         </div>

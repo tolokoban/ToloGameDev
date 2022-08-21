@@ -1,0 +1,23 @@
+.view-page-painter-PainterAttributeView.data {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5em;
+    background: transparent;
+    color: #000;
+}
+
+.view-page-painter-PainterAttributeView.data:hover {
+    background: var(--theme-color-accent);
+    color: var(--theme-color-on-accent);
+}
+
+.view-page-painter-PainterAttributeView.data div.data-view {
+    font-size: 80%;
+    opacity: 0.5;
+    max-height: 3em;
+    overflow: hidden;
+    text-align: left;
+    line-height: 0.8;
+}

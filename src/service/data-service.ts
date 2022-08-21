@@ -1,15 +1,15 @@
 import DataStore from "./datastore"
 import { isObject, isString } from "../tools/type-guards"
-import { TGDShaders } from "./../types"
+import { TGDPainter } from "./../types"
 
 export default class DataService {
-    public readonly shaders = new DataStore<TGDShaders>(
-        "shaders",
-        isProgramType
+    public readonly painter = new DataStore<TGDPainter>(
+        "painter",
+        isPainterType
     )
 }
 
-function isProgramType(data: unknown): data is TGDShaders {
+function isPainterType(data: unknown): data is TGDPainter {
     return (
         isObject(data) &&
         isString(data.name) &&

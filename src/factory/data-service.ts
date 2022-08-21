@@ -2,7 +2,7 @@ import DataService from "../service/data-service"
 
 let globalDataService: null | DataService = null
 
-export function makeDataService() {
+export function getDataService() {
     if (!globalDataService) {
         globalDataService = new DataService()
     }

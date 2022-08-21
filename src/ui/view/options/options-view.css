@@ -27,3 +27,11 @@
     display: grid;
     place-items: center;
 }
+
+.ui-view-OptionsView > div.options > .button.selected {
+    font-weight: 900;
+}
+
+.ui-view-OptionsView > div.options > .button.not-selected {
+    color: var(--theme-color-on-primary-opacity-50);
+}

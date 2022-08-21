@@ -1,0 +1,66 @@
+.view-page-painter-AttributeDataEditorView {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: #000a;
+    z-index: 999;
+}
+
+.view-page-painter-AttributeDataEditorView > div.dialog {
+    position: static;
+    width: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 0;
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.view-page-painter-AttributeDataEditorView > div.dialog > header,
+.view-page-painter-AttributeDataEditorView > div.dialog > footer {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.5em;
+}
+
+.view-page-painter-AttributeDataEditorView > div.dialog > main {
+    display: block;
+    box-sizing: border-box;
+    flex: 1 1 auto;
+    padding: 1em;
+}
+
+.view-page-painter-AttributeDataEditorView > div.dialog > main > textarea {
+    box-sizing: border-box;
+    border: none;
+    box-shadow: 0 0.125em 0.25em #000;
+    width: 50vw;
+    height: 70vh;
+    resize: none;
+}
+
+.view-page-painter-AttributeDataEditorView header > div {
+    opacity: 0.5;
+}
+
+.view-page-painter-AttributeDataEditorView header > div.name {
+    opacity: 1;
+    font-weight: 900;
+}
+
+.view-page-painter-AttributeDataEditorView footer div.theme-color-error {
+    padding: 0.125em 0.5em;
+}

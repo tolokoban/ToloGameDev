@@ -5,7 +5,7 @@ import "./object-button.css"
 
 export interface ButtonProgramProps {
     className?: string
-    type: "program"
+    type: "painter"
     value: TGDObject
     onClick(value: TGDObject): void
 }

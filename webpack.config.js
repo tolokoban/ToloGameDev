@@ -41,7 +41,7 @@ module.exports = {
         },
         fallback: { path: false, fs: false },
     },
-    devtool: "inline-source-map",
+    devtool: devMode ? "inline-source-map" : false,
     devServer: {
         compress: true,
         static: {
