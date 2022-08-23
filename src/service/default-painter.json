@@ -1,0 +1,52 @@
+{
+    "name": "Painter Fou",
+    "description": "",
+    "vertexShader": "#version 300 es\n\nuniform float uniTime;\nuniform vec2 uniAspectRatioContain;\nin vec2 attPoint;\nin vec3 attColor;\nout vec3 varColor;\n\nvoid main() {\n    float t = uniTime + attPoint.y * 1000.0;\n    float strength = 0.8 + 0.8 * cos(t * 0.002);\n    varColor = attColor * strength;\n    gl_Position = vec4(attPoint * uniAspectRatioContain, 0.0, 1.0);    \n}\n\n/**\n * out vec4 gl_Position\n * out float gl_PointSize\n * out float gl_ClipDistance[] \n * in int gl_VertexID\n * in int gl_InstanceID\n */\n ",
+    "fragmentShader": "#version 300 es\n\nprecision mediump float;\n\nin vec3 varColor;\nout vec4 FragColor;\n\nvoid main() {\n    FragColor = vec4(varColor, 1.0);\n}\n\n/**\n * in vec4 gl_FragCoord\n * in bool gl_FrontFacing\n * in vec2 gl_PointCoord\n */\n",
+    "mode": 7,
+    "attributes": [
+        {
+            "name": "attColor",
+            "divisor": 0,
+            "dynamicGroup": 0,
+            "type": "float",
+            "size": 1,
+            "dim": 3
+        },
+        {
+            "name": "attPoint",
+            "divisor": 0,
+            "dynamicGroup": 0,
+            "type": "float",
+            "size": 1,
+            "dim": 2
+        }
+    ],
+    "preview": {
+        "data": {
+            "elementCount": 51,
+            "vertexCount": 14,
+            "instanceCount": 0,
+            "elements": [
+                0, 1, 13, 1, 2, 13, 2, 3, 15, 2, 15, 14, 3, 4, 15, 4, 16, 15, 4,
+                5, 16, 5, 17, 16, 8, 9, 13, 9, 12, 13, 9, 11, 12, 9, 10, 11, 5,
+                6, 7, 5, 7, 8, 2, 14, 13, 5, 8, 14, 8, 13, 14
+            ],
+            "attributes": {
+                "attPoint": [
+                    -0.4, 0.5, -0.3, 0.5, -0.2, 0.3, 0, 0.3, 0, -0.1, -0.2,
+                    -0.1, -0.1, -0.3, -0.2, -0.3, -0.3, -0.1, -0.4, -0.15, -0.3,
+                    -0.4, -0.5, -0.2, -0.6, 0.1, -0.3, 0.3, -0.2, 0.2, -0.1,
+                    0.2, -0.1, 0.1, -0.2, 0.1
+                ],
+                "attColor": [
+                    0, 0.7, 1, 0, 0.7, 1, 0, 0.7, 1, 0, 0.7, 1, 0, 0.7, 1, 0,
+                    0.7, 1, 1, 1, 1, 0, 0.7, 1, 0, 0.7, 1, 0, 0.7, 1, 0, 0.2,
+                    0.4, 0, 0.7, 1, 0, 0.7, 1, 0, 0.7, 1, 1, 0.7, 0, 1, 0.7, 0,
+                    1, 0.7, 0, 1, 0.7, 0
+                ]
+            }
+        }
+    },
+    "valid": true
+}

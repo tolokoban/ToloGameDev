@@ -1,3 +1,4 @@
+import DefaultPainter from "./default-painter.json"
 import { isNumber, isObject, isString } from "@/tools/type-guards"
 
 const DB_NAME = "TGD-Database"
@@ -141,6 +142,7 @@ Error: `,
                     keyPath: "id",
                     autoIncrement: true,
                 })
+                void this.add("painter", DefaultPainter)
             }
         })
     }

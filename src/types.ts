@@ -24,6 +24,8 @@ export interface TGDPainterData {
 }
 
 export interface TGDPainter extends TGDObject {
+    /** Valid if it compiles without error. */
+    valid: boolean
     description: string
     vertexShader: string
     fragmentShader: string

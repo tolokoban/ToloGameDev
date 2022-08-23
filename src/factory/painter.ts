@@ -7,6 +7,7 @@ export function makeTGDPainter(name?: string): TGDPainter {
     const compiler = new PainterCompiler()
     const painter: TGDPainter = {
         id: -1,
+        valid: true,
         name: name ?? makeName("Painter"),
         description: "",
         vertexShader: VertexShader,

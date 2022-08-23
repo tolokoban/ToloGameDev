@@ -29,11 +29,11 @@ export default function FlexView(props: FlexViewProps) {
         <div
             className={getClassNames(props)}
             style={{
-                flexDirection: props.dir,
-                justifyContent: props.justifyContent,
-                alignItems: props.alignItems,
+                flexDirection: props.dir ?? "row",
+                justifyContent: props.justifyContent ?? "flex-start",
+                alignItems: props.alignItems ?? "center",
                 flexWrap: props.wrap,
-                gap: props.gap ?? "1rem"
+                gap: props.gap ?? "1rem",
             }}
         >
             {props.children}

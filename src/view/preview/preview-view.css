@@ -1,0 +1,17 @@
+.view-PreviewView {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.view-PreviewView > canvas {
+    flex: 0 0 auto;
+    width: 50vw;
+    height: 50vh;
+    background-color: #000;
+    margin: 0;
+    box-sizing: border-box;
+}

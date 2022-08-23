@@ -1,4 +1,4 @@
-.view-page-painter-AttributeDataEditorView {
+.view-page-painter-ElementsEditorView {
     position: fixed;
     left: 0;
     right: 0;
@@ -13,7 +13,7 @@
     z-index: 999;
 }
 
-.view-page-painter-AttributeDataEditorView > div.dialog {
+.view-page-painter-ElementsEditorView > div.dialog {
     position: static;
     width: auto;
     display: flex;
@@ -26,8 +26,8 @@
     padding: 0;
 }
 
-.view-page-painter-AttributeDataEditorView > div.dialog > header,
-.view-page-painter-AttributeDataEditorView > div.dialog > footer {
+.view-page-painter-ElementsEditorView > div.dialog > header,
+.view-page-painter-ElementsEditorView > div.dialog > footer {
     flex: 0 0 auto;
     display: flex;
     justify-content: space-between;
@@ -36,14 +36,14 @@
     padding: 0.5em;
 }
 
-.view-page-painter-AttributeDataEditorView > div.dialog > main {
+.view-page-painter-ElementsEditorView > div.dialog > main {
     display: block;
     box-sizing: border-box;
     flex: 1 1 auto;
     padding: 1em;
 }
 
-.view-page-painter-AttributeDataEditorView > div.dialog > main > textarea {
+.view-page-painter-ElementsEditorView > div.dialog > main > textarea {
     box-sizing: border-box;
     border: none;
     box-shadow: 0 0.125em 0.25em #000;
@@ -52,15 +52,15 @@
     resize: none;
 }
 
-.view-page-painter-AttributeDataEditorView header > div {
+.view-page-painter-ElementsEditorView header > div {
     opacity: 0.5;
 }
 
-.view-page-painter-AttributeDataEditorView header > div.name {
+.view-page-painter-ElementsEditorView header > div.name {
     opacity: 1;
     font-weight: 900;
 }
 
-.view-page-painter-AttributeDataEditorView footer div.theme-color-error {
+.view-page-painter-ElementsEditorView footer div.theme-color-error {
     padding: 0.125em 0.5em;
 }

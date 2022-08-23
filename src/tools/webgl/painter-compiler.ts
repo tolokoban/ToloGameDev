@@ -18,6 +18,23 @@ export default class ShadersCompiler {
     compile(painter: TGDPainter): null | string {
         const { gl } = this
         try {
+            painter.valid = false
+            if (painter.preview.data.elementCount > 0) {
+                // Check elements.
+                if (!Array.isArray(painter.preview.data.elements)) {
+                    throw Error(
+                        `You want to draw ${painter.preview.data.elementCount} elements but you did not set an array yet!`
+                    )
+                }
+                if (
+                    painter.preview.data.elements.length <
+                    painter.preview.data.elementCount
+                ) {
+                    throw Error(
+                        `You want to draw ${painter.preview.data.elementCount} elements but your array has only ${painter.preview.data.elements.length} elements!`
+                    )
+                }
+            }
             const prg = createProgram(gl)
             linkVertShader(gl, prg, painter.vertexShader)
             linkFragShader(gl, prg, painter.fragmentShader)
@@ -27,8 +44,10 @@ export default class ShadersCompiler {
                 throw new Error("Could NOT link WebGL2 program!\n" + info)
             }
             painter.attributes = extractAttributes(gl, prg)
+            painter.valid = true
             return null
         } catch (ex) {
+            painter.valid = false
             if (ex instanceof Error) return ex.message
             return `${ex}`
         }
@@ -141,6 +160,12 @@ function extractAttributes(
         const att = gl.getActiveAttrib(prg, index)
         if (!att) continue
         // if (!att || ["gl_InstanceID"].includes(att.name)) continue
+
+        const location = gl.getAttribLocation(prg, att.name)
+        if (location < 0) {
+            console.warn("Unused attribute:", att.name)
+            continue
+        }
 
         attributes.push({
             name: att?.name,

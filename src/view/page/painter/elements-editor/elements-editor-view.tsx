@@ -1,34 +1,33 @@
 import * as React from "react"
 import Button from "@/ui/view/button"
-import { TGDPainterAttribute } from "@/types"
-import "./attribute-data-editor-view.css"
+import "./elements-editor-view.css"
 
-export interface AttributeDataEditorViewProps {
+export interface ElementsEditorViewProps {
     className?: string
-    attribute: TGDPainterAttribute
     value: number[]
     onChange(this: void, value: number[]): void
     onClose(this: void): void
 }
 
-export default function AttributeDataEditorView(
-    props: AttributeDataEditorViewProps
-) {
+export default function ElementsEditorView(props: ElementsEditorViewProps) {
     const [error, setError] = React.useState<null | string>(null)
-    const [content, setContent] = React.useState<string>(
-        stringify(props.value, props.attribute.dim)
-    )
+    const [content, setContent] = React.useState<string>(stringify(props.value))
     React.useEffect(() => setError(null), [content])
-    const att = props.attribute
     const handleValidate = () => {
         try {
             const data = JSON.parse(`[${content}]`) as number[]
-            const mod = att.dim * att.size
-            if (data.length % mod !== 0) {
-                setError(`${data.length} is no multiple of ${mod}!`)
-            } else {
-                props.onChange(data)
+            if (!Array.isArray(data)) throw Error("Array syntax is invalid!")
+
+            for (const element of data) {
+                if (typeof element !== "number")
+                    throw Error(`This index is not a number: ${element}`)
+                if (element < 0)
+                    throw Error("No index can be lesser than zero!")
+                if (Math.floor(element) !== element) {
+                    throw Error("Indexes must be integers!")
+                }
             }
+            props.onChange(data)
         } catch (ex) {
             setError("Invalid syntax!")
         }
@@ -37,9 +36,8 @@ export default function AttributeDataEditorView(
         <div className={getClassNames(props)}>
             <div className="dialog theme-color-frame">
                 <header className="theme-color-primary-dark">
-                    <div className="name">{att.name}</div>
-                    <div>dimension = {att.dim}</div>
-                    <div>array size = {att.size}</div>
+                    <div className="name">Elements</div>
+                    <div>(attributes' indexes)</div>
                 </header>
                 <main>
                     <textarea
@@ -67,8 +65,8 @@ export default function AttributeDataEditorView(
     )
 }
 
-function getClassNames(props: AttributeDataEditorViewProps): string {
-    const classNames = ["custom", "view-page-painter-AttributeDataEditorView"]
+function getClassNames(props: ElementsEditorViewProps): string {
+    const classNames = ["custom", "view-page-painter-ElementsEditorView"]
     if (typeof props.className === "string") {
         classNames.push(props.className)
     }
@@ -76,7 +74,7 @@ function getClassNames(props: AttributeDataEditorViewProps): string {
     return classNames.join(" ")
 }
 
-function stringify(data: number[], dim: number): string {
+function stringify(data: number[], dim = 3): string {
     const pieces: string[] = []
     for (let idx = 0; idx < data.length; idx++) {
         if (idx > 0) {
@@ -84,7 +82,7 @@ function stringify(data: number[], dim: number): string {
             if (idx % dim === 0) pieces.push("\n")
         }
         const value = data[idx]
-        pieces.push(`${value}`.padStart(12, " "))
+        pieces.push(`${value}`.padStart(5, " "))
     }
     return pieces.join("")
 }

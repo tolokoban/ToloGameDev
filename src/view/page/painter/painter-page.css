@@ -39,3 +39,22 @@
     grid-template-columns: auto auto 1fr;
     place-items: center stretch;
 }
+
+.view-page-PainterPage main div.uniforms-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1em;
+}
+
+.view-page-PainterPage main div.help p {
+    all: initial;
+    color: inherit;
+}
+
+.view-page-PainterPage main div.uniforms-grid > code {
+    font-family: monospace;
+}
+
+.view-page-PainterPage main div.uniforms-grid > div {
+    opacity: 0.5;
+}
