@@ -7,6 +7,8 @@ import { createVertexArray } from "@/tools/webgl/create-vertex-array"
 import { createWebGL2Context } from "./create-webgl2-context"
 import { getDrawMode } from "./get-draw-mode"
 import { TGDPainter } from "@/types"
+import { divideAttributes } from "./divide-attributes"
+import { getConstName } from "../../../tools/webgl/get-const-name"
 
 let globalId = 1
 
@@ -14,7 +16,7 @@ export default class Renderer {
     public readonly ID = globalId++
     private readonly gl: WebGL2RenderingContext
     private readonly prg: WebGLProgram
-    private readonly arrayBuffer: WebGLBuffer
+    private readonly arrayBuffers: WebGLBuffer[] = []
     private readonly elementArrayBuffer: WebGLBuffer
     private readonly vertexArray: WebGLVertexArrayObject
     private readonly uniTime: WebGLUniformLocation | null
@@ -43,8 +45,17 @@ export default class Renderer {
         this.vertexArray = createVertexArray(gl)
         gl.bindVertexArray(this.vertexArray)
         this.elementArrayBuffer = createAndFillElementArrayBuffer(gl, painter)
-        this.arrayBuffer = createAndFillArrayBuffer(gl, painter)
-        attachAttributes(gl, this.prg, painter.attributes)
+        const groups = divideAttributes(painter.attributes)
+        for (const grp of groups) {
+            this.arrayBuffers.push(
+                createAndFillArrayBuffer(
+                    gl,
+                    grp.attributes,
+                    painter.preview.data.attributes
+                )
+            )
+            attachAttributes(gl, this.prg, grp.attributes)
+        }
         gl.bindVertexArray(null)
         this.uniTime = gl.getUniformLocation(this.prg, "uniTime")
         this.uniInverseAspectRatio = gl.getUniformLocation(
@@ -67,7 +78,9 @@ export default class Renderer {
         console.log("destroy ", this.ID)
         const { gl, prg } = this
         gl.deleteBuffer(this.elementArrayBuffer)
-        gl.deleteBuffer(this.arrayBuffer)
+        for (const arrayBuffer of this.arrayBuffers) {
+            gl.deleteBuffer(arrayBuffer)
+        }
         gl.deleteProgram(prg)
         gl.deleteVertexArray(this.vertexArray)
         this.playing = false
@@ -92,11 +105,32 @@ export default class Renderer {
         if (this.uniAspectRatioCover)
             gl.uniform2fv(this.uniAspectRatioCover, resizer.cover)
         gl.bindVertexArray(vertexArray)
-        const { elementCount } = painter.preview.data
-        if (elementCount > 0) {
-            gl.drawElements(this.mode, elementCount, gl.UNSIGNED_SHORT, 0)
+        const { elementCount, instanceCount, vertexCount } =
+            painter.preview.data
+        if (instanceCount > 0) {
+            if (elementCount > 0) {
+                console.log(
+                    `gl.drawElementsInstanced(gl.${getConstName(
+                        gl,
+                        this.mode
+                    )}, ${elementCount}, gl.UNSIGNED_SHORT, 0, ${instanceCount})`
+                )
+                gl.drawElementsInstanced(
+                    this.mode,
+                    elementCount,
+                    gl.UNSIGNED_SHORT,
+                    0,
+                    instanceCount
+                )
+            } else {
+                gl.drawArraysInstanced(this.mode, 0, vertexCount, instanceCount)
+            }
         } else {
-            gl.drawArrays(this.mode, 0, painter.preview.data.vertexCount)
+            if (elementCount > 0) {
+                gl.drawElements(this.mode, elementCount, gl.UNSIGNED_SHORT, 0)
+            } else {
+                gl.drawArrays(this.mode, 0, vertexCount)
+            }
         }
         gl.bindVertexArray(null)
     }

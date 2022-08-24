@@ -17,7 +17,7 @@ import Runnable from "@/ui/view/runnable"
 import { getDataService } from "@/factory/data-service"
 import { renderHeader } from "./render/header"
 import { renderHelp } from "./render/help"
-import { TGDPainter, TGDPainterData } from "@/types"
+import { TGDPainter, TGDPainterAttribute, TGDPainterData } from "@/types"
 import { usePainterLoader } from "./hooks/use-painter-loader"
 import "./painter-page.css"
 
@@ -100,6 +100,17 @@ export default function PainterPage(props: PainterPageProps) {
         const newPainter = { ...painter }
         newPainter.preview.data.elements = data
         setPainter(newPainter)
+    }
+    const handleUpdateAttribute = (attribute: TGDPainterAttribute) => {
+        if (!painter) return
+
+        const idx = painter.attributes.findIndex(
+            (att) => att.name === attribute.name
+        )
+        if (idx === -1) return
+
+        painter.attributes[idx] = attribute
+        setPainter({ ...painter })
     }
     return (
         <Runnable running={busy || !painter}>
@@ -212,7 +223,7 @@ export default function PainterPage(props: PainterPageProps) {
                                                         .attributes[att.name] ??
                                                     []
                                                 }
-                                                onChange={() => {}}
+                                                onChange={handleUpdateAttribute}
                                                 onClick={(att) =>
                                                     setEditAttributeData(
                                                         att.name
