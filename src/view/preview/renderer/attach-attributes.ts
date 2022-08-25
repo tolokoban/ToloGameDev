@@ -12,7 +12,6 @@ export function attachAttributes(
     let offset = 0
     for (const att of attributes) {
         const location = gl.getAttribLocation(prg, att.name)
-        console.log("Attribute: ", att.name)
         gl.enableVertexAttribArray(location)
         gl.vertexAttribPointer(
             location,
@@ -23,17 +22,16 @@ export function attachAttributes(
             offset
         )
         gl.vertexAttribDivisor(location, att.divisor)
-        console.log(`gl.enableVertexAttribArray(${location})`)
-        console.log(`gl.vertexAttribPointer(
-                ${location},
-                ${att.dim * att.size},
-                gl.FLOAT,
-                false,
-                ${stride},
-                ${offset}
-                )
-                `)
-        console.log(`gl.vertexAttribDivisor(${location}, ${att.divisor})`)
+        console.log(
+            `const _${att.name} = gl.getAttribLocation(prg, "${att.name}")`
+        )
+        console.log(`gl.enableVertexAttribArray(_${att.name})`)
+        console.log(
+            `gl.vertexAttribPointer(_${att.name}, ${
+                att.dim * att.size
+            }, gl.FLOAT, false, ${stride}, ${offset})`
+        )
+        console.log(`gl.vertexAttribDivisor(_${att.name}, ${att.divisor})`)
         offset += BPE * att.dim * att.size
     }
 }
