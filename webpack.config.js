@@ -7,7 +7,7 @@ const WebpackShellPlugin = require("webpack-shell-plugin-next")
 const CopyPlugin = require("copy-webpack-plugin")
 const { CleanWebpackPlugin } = require("clean-webpack-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
-const devMode = process.env.NODE_ENV !== "production"
+const devMode = process.env.MODE !== "production"
 
 if (typeof package.port !== "number") {
     // Define a random port number for dev server.
@@ -130,7 +130,7 @@ module.exports = {
                 test: /\.css$/,
                 use: [
                     {
-                        loader: devMode ? "style-loader" : MiniCssExtractPlugin,
+                        loader: "style-loader",
                         options: {
                             injectType: "styleTag",
                         },
