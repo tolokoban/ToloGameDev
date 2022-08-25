@@ -1,10 +1,10 @@
 import AbstractModal from "./abstract-modal"
 import Dialog from "../view/dialog"
+import IconGear from "../view/icons/gear"
 import JSON5 from "json5"
 import React from "react"
-import ReactDOM from "react-dom"
-import RefreshIcon from "../view/icons/refresh"
 import Translate from "../../translate"
+import { createRoot } from "react-dom/client"
 import { ThemeColorName } from "../view/types"
 import "./modal.css"
 
@@ -143,7 +143,9 @@ export default class Modal extends AbstractModal {
         window.clearTimeout(this.detachScreenTimeoutId)
         const { screen, frame } = this
         const { content } = this.options
-        if (content) ReactDOM.render(<>{content}</>, frame)
+        if (content) {
+            createRoot(frame).render(<>{content}</>)
+        }
         // Closing a modal takes the time of the transition.
         // The screen is actually detached only at the end of this transition.
         // So if you show the modal before the end of the transition, you will
@@ -196,7 +198,7 @@ export default class Modal extends AbstractModal {
         content: ConfirmOptions | ModalContent
     ): Promise<boolean> {
         const options = normalizeContent(content)
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             const modal = new Modal({
                 autoClosable: true,
                 ...options,
@@ -225,7 +227,7 @@ export default class Modal extends AbstractModal {
 
     static async info(content: ModalContent | InfoOptions): Promise<void> {
         const options = normalizeContent(content)
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             const hide = () => {
                 modal.hide()
                 resolve()
@@ -249,7 +251,7 @@ export default class Modal extends AbstractModal {
 
     static async error(content: ModalContent | ModalOptions): Promise<void> {
         const options = normalizeContent(content)
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             const hide = () => {
                 modal.hide()
                 resolve()
@@ -291,8 +293,10 @@ export default class Modal extends AbstractModal {
                 ...options,
                 content: (
                     <div className="ui-Modal-promise-waiter">
-                        <RefreshIcon />
-                        {getHumanFriendlyErrorContent(options.content)}
+                        <IconGear />
+                        <div>
+                            {getHumanFriendlyErrorContent(options.content)}
+                        </div>
                     </div>
                 ),
                 /** This modal can only close itself when the promise resolves or rejects */
@@ -303,7 +307,7 @@ export default class Modal extends AbstractModal {
                 modal.hide()
                 resolve(arg)
             }
-            promise.then(hide).catch(ex => {
+            promise.then(hide).catch((ex) => {
                 modal.hide()
                 reject(ex)
             })
@@ -372,8 +376,8 @@ function isModalContent(
  * ```
  */
 function getHumanFriendlyErrorContent(content: unknown): JSX.Element {
-    if (typeof content === "string") return <p>{content}</p>
-    if (content instanceof Error) return <p>{content.message}</p>
+    if (typeof content === "string") return <span>{content}</span>
+    if (content instanceof Error) return <span>{content.message}</span>
     if (typeof content === "object" && React.isValidElement(content))
         return content
     return <pre>{JSON5.stringify(content, null, "  ")}</pre>

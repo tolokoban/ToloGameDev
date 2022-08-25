@@ -1,5 +1,6 @@
-import { getConstName } from "./get-const-name"
-import { TGDPainter, TGDPainterAttribute } from "../../types"
+import { getConstName } from "@/tools/webgl/get-const-name"
+import { PainterUpdater } from "./hooks/painter-updater"
+import { TGDPainter, TGDPainterAttribute, TGDShaderAttribute } from "@/types"
 export default class ShadersCompiler {
     private readonly gl: WebGL2RenderingContext
 
@@ -15,41 +16,41 @@ export default class ShadersCompiler {
      * Compiles the shaders and fill the `painter.attributes` array.
      * @returns `null` in case of success. The error message otherwise.
      */
-    compile(painter: TGDPainter): null | string {
+    async compile(updater: PainterUpdater): Promise<void> {
         const { gl } = this
+        const painter = updater.currentPainter
+        updater.clearError()
         try {
-            painter.valid = false
-            if (painter.preview.data.elementCount > 0) {
+            if (painter.count.element > 0) {
                 // Check elements.
-                if (!Array.isArray(painter.preview.data.elements)) {
+                if (painter.elements.length < painter.count.element) {
                     throw Error(
-                        `You want to draw ${painter.preview.data.elementCount} elements but you did not set an array yet!`
-                    )
-                }
-                if (
-                    painter.preview.data.elements.length <
-                    painter.preview.data.elementCount
-                ) {
-                    throw Error(
-                        `You want to draw ${painter.preview.data.elementCount} elements but your array has only ${painter.preview.data.elements.length} elements!`
+                        `You want to draw ${painter.count.element} elements but your array has only ${painter.elements.length} elements!`
                     )
                 }
             }
             const prg = createProgram(gl)
-            linkVertShader(gl, prg, painter.vertexShader)
-            linkFragShader(gl, prg, painter.fragmentShader)
+            linkVertShader(gl, prg, painter.shader.vert)
+            linkFragShader(gl, prg, painter.shader.frag)
             gl.linkProgram(prg)
             if (!gl.getProgramParameter(prg, gl.LINK_STATUS)) {
                 var info = gl.getProgramInfoLog(prg)
                 throw new Error("Could NOT link WebGL2 program!\n" + info)
             }
-            painter.attributes = extractAttributes(gl, prg)
-            painter.valid = true
-            return null
+            updater.deactivateAttributes()
+            extractAttributes(gl, prg).forEach((att: TGDShaderAttribute) => {
+                const { name } = att
+                updater.updateAttribute(name, {
+                    type: att.type,
+                    dim: att.dim,
+                    size: att.size,
+                    active: true,
+                })
+            })
+            await updater.validate()
         } catch (ex) {
-            painter.valid = false
-            if (ex instanceof Error) return ex.message
-            return `${ex}`
+            if (ex instanceof Error) updater.setError(ex.message)
+            updater.setError(`${ex}`)
         }
     }
 }
@@ -153,13 +154,13 @@ function getShader(
 function extractAttributes(
     gl: WebGL2RenderingContext,
     prg: WebGLProgram
-): TGDPainterAttribute[] {
-    const attributes: TGDPainterAttribute[] = []
+): TGDShaderAttribute[] {
+    const attributes: TGDShaderAttribute[] = []
     const count = gl.getProgramParameter(prg, gl.ACTIVE_ATTRIBUTES) as number
     for (let index = 0; index < count; index++) {
         const att = gl.getActiveAttrib(prg, index)
         if (!att) continue
-        // if (!att || ["gl_InstanceID"].includes(att.name)) continue
+        if (["gl_InstanceID", "gl_VertexID"].includes(att.name)) continue
 
         const location = gl.getAttribLocation(prg, att.name)
         if (location < 0) {
@@ -169,8 +170,6 @@ function extractAttributes(
 
         attributes.push({
             name: att?.name,
-            divisor: 0,
-            dynamicGroup: 0,
             type: "float",
             size: att.size,
             dim: getDimension(gl, att.type),
@@ -188,7 +187,12 @@ function getDimension(gl: WebGLRenderingContext, type: number) {
         case gl.FLOAT_VEC3:
             return 3
         case gl.FLOAT_VEC4:
+        case gl.FLOAT_MAT2:
             return 4
+        case gl.FLOAT_MAT3:
+            return 9
+        case gl.FLOAT_MAT4:
+            return 16
         default:
             throw Error(
                 `Don't know how to deal with type "${getConstName(gl, type)}"!`

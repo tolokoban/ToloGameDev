@@ -1,7 +1,10 @@
 import * as React from "react"
 import App from "./app"
+import Modal from "@/ui/modal"
 import Theme from "@/ui/theme"
 import { createRoot } from "react-dom/client"
+import { getDataService } from "./factory/data-service"
+import { isTGDPainter } from "./guards"
 import "./index.css"
 
 async function start() {
@@ -26,6 +29,7 @@ async function start() {
             input: "hsl(210, 20%, 80%)",
         },
     })
+    await Modal.wait("Initializing Database...", initDatabase())
     const container = document.getElementById("app")
     if (!container) throw Error(`No element with id "app"!`)
 
@@ -34,3 +38,35 @@ async function start() {
 }
 
 void start()
+
+async function initDatabase() {
+    const svc = getDataService()
+    if (await svc.painter.isEmpty()) {
+        console.log("Painter is empty!")
+        await initPainterStorage()
+    }
+}
+
+async function initPainterStorage() {
+    const svc = getDataService()
+    const items = ["1"]
+    for (const item of items) {
+        const url = `default/painter/${item}.json`
+        const data = await loadJSON(url)
+        console.log("🚀 [index] data = ", data) // @FIXME: Remove this line written on 2022-08-25 at 15:11
+        if (isTGDPainter(data)) {
+            await svc.painter.store(data)
+        }
+    }
+}
+
+async function loadJSON(url: string) {
+    try {
+        const response = await fetch(url)
+        return await response.json()
+    } catch (ex) {
+        console.error("Bad JSON at:", url)
+        console.error(ex)
+        return null
+    }
+}

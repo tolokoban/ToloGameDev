@@ -17,7 +17,7 @@ export default function MainPages(props: MainPageProps) {
         const svc = getDataService()
         const newPainter = makeTGDPainter()
         newPainter.name = `Painter ${Date.now()}`
-        const id = await svc.painter.add(newPainter)
+        const id = await svc.painter.store(newPainter)
         props.onPainterEdit({ id, name: newPainter.name })
     }
     return (

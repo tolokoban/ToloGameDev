@@ -11,7 +11,7 @@ export function usePaintersList(): TGDObject[] | null {
     const data = useDataService()
     const [painters, setPainters] = React.useState<TGDObject[] | null>(null)
     React.useEffect(() => {
-        const update = () => data.painter.list().then(setPainters)
+        const update = () => data.painter.listItems().then(setPainters)
         update()
         data.painter.eventChange.add(update)
         return () => data.painter.eventChange.remove(update)

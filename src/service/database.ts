@@ -1,4 +1,3 @@
-import DefaultPainter from "./default-painter.json"
 import { isNumber, isObject, isString } from "@/tools/type-guards"
 
 const DB_NAME = "TGD-Database"
@@ -42,7 +41,6 @@ class Database {
         const result = await this.exec(storeName, "readwrite", (store) =>
             store.delete(id)
         )
-        console.log("🚀 [database::delete] result = ", result) // @FIXME: Remove this line written on 2022-08-14 at 19:32
     }
 
     public async list(
@@ -64,7 +62,6 @@ class Database {
                 return true
             }
         )
-        console.log("🚀 [database] result = ", result) // @FIXME: Remove this line written on 2022-08-21 at 11:46
         return result
     }
 
@@ -75,7 +72,29 @@ class Database {
         const result = await this.exec(storeName, "readwrite", (store) =>
             store.put(data)
         )
-        console.log("🚀 [database] result = ", result) // @FIXME: Remove this line written on 2022-08-14 at 19:08
+    }
+
+    public async count(storeName: string): Promise<number> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const db = await this.getDB()
+                const transaction = db.transaction([storeName], "readonly")
+                const store = transaction.objectStore(storeName)
+                const index = store.index("id")
+                const countRequest = index.count()
+                countRequest.onsuccess = () => {
+                    console.log("Success")
+                    resolve(countRequest.result as number)
+                }
+                countRequest.onerror = (err) => {
+                    console.error(`Unable to count items in ${storeName}:`, err)
+                    resolve(0)
+                }
+            } catch (ex) {
+                console.error("ERROR de Folie:", ex)
+                resolve(0)
+            }
+        })
     }
 
     private async exec<T>(
@@ -142,7 +161,6 @@ Error: `,
                     keyPath: "id",
                     autoIncrement: true,
                 })
-                void this.add("painter", DefaultPainter)
             }
         })
     }

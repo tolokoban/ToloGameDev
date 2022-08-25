@@ -1,55 +1,48 @@
 import FragmentShader from "./painter.frag"
-import PainterCompiler from "@/tools/webgl/painter-compiler"
 import VertexShader from "./painter.vert"
-import { TGDPainter, TGDPainterMode } from "./../types"
+import { TGDPainter, TGDPainterMode } from "@/types"
 
 export function makeTGDPainter(name?: string): TGDPainter {
-    const compiler = new PainterCompiler()
+    const A = Math.sqrt(3) / 2
     const painter: TGDPainter = {
         id: -1,
-        valid: true,
-        name: name ?? makeName("Painter"),
+        error: null,
+        name: name ?? makeName("Triangle"),
         description: "",
-        vertexShader: VertexShader,
-        fragmentShader: FragmentShader,
-        mode: TGDPainterMode.TRIANGLES,
-        attributes: [],
-        preview: {
-            data: {
-                elementCount: 12,
-                vertexCount: 5,
-                instanceCount: 0,
-                // prettier-ignore
-                elements: [
-                    0, 1, 5,
-                    1, 2, 3,
-                    3, 4, 5,
-                    1, 3, 5
-                ],
-                attributes: {
-                    // prettier-ignore
-                    attPoint: [
-                        -0.5, +1.0,
-                        +0.0, +0.5,
-                        +0.5, +1.0,
-                        +0.5, -0.5,
-                        +0.0, -1.0,
-                        -0.5, -0.5
-                    ],
-                    // prettier-ignore
-                    attColor: [
-                        1.0, 0.5, 0.0,
-                        0.0, 1.0, 1.0,
-                        1.0, 0.5, 0.0,
-                        0.0, 0.5, 1.0,
-                        0.0, 0.2, 0.4,
-                        0.0, 0.5, 1.0,
-                    ],
-                },
-            },
+        shader: {
+            vert: VertexShader,
+            frag: FragmentShader,
         },
+        mode: TGDPainterMode.TRIANGLES,
+        elements: [],
+        count: {
+            instance: 0,
+            element: 0,
+            vertex: 3,
+        },
+        attributes: [
+            {
+                name: "attPoint",
+                type: "float",
+                active: false,
+                dim: 2,
+                size: 1,
+                divisor: 0,
+                dynamicGroup: 0,
+                data: [0, 1, A, -0.5, -A, -0.5],
+            },
+            {
+                name: "attColor",
+                type: "float",
+                active: false,
+                dim: 3,
+                size: 1,
+                divisor: 0,
+                dynamicGroup: 0,
+                data: [1, 0, 0, 0, 1, 0, 0, 0, 1],
+            },
+        ],
     }
-    compiler.compile(painter)
     return painter
 }
 

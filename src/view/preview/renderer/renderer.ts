@@ -5,10 +5,10 @@ import { createAndFillElementArrayBuffer } from "./create-and-fill-element-array
 import { createProgram } from "@/tools/webgl/create-program"
 import { createVertexArray } from "@/tools/webgl/create-vertex-array"
 import { createWebGL2Context } from "./create-webgl2-context"
-import { getDrawMode } from "./get-draw-mode"
-import { TGDPainter } from "@/types"
 import { divideAttributes } from "./divide-attributes"
 import { getConstName } from "../../../tools/webgl/get-const-name"
+import { getDrawMode } from "./get-draw-mode"
+import { TGDPainter } from "@/types"
 
 let globalId = 1
 
@@ -39,21 +39,15 @@ export default class Renderer {
         this.gl = gl
         this.mode = getDrawMode(gl, painter.mode)
         this.prg = createProgram(gl, {
-            vert: painter.vertexShader,
-            frag: painter.fragmentShader,
+            vert: painter.shader.vert,
+            frag: painter.shader.frag,
         })
         this.vertexArray = createVertexArray(gl)
         gl.bindVertexArray(this.vertexArray)
         this.elementArrayBuffer = createAndFillElementArrayBuffer(gl, painter)
         const groups = divideAttributes(painter.attributes)
         for (const grp of groups) {
-            this.arrayBuffers.push(
-                createAndFillArrayBuffer(
-                    gl,
-                    grp.attributes,
-                    painter.preview.data.attributes
-                )
-            )
+            this.arrayBuffers.push(createAndFillArrayBuffer(gl, grp.attributes))
             attachAttributes(gl, this.prg, grp.attributes)
         }
         gl.bindVertexArray(null)
@@ -105,31 +99,41 @@ export default class Renderer {
         if (this.uniAspectRatioCover)
             gl.uniform2fv(this.uniAspectRatioCover, resizer.cover)
         gl.bindVertexArray(vertexArray)
-        const { elementCount, instanceCount, vertexCount } =
-            painter.preview.data
-        if (instanceCount > 0) {
-            if (elementCount > 0) {
+        if (painter.count.instance > 0) {
+            if (painter.count.element > 0) {
                 console.log(
                     `gl.drawElementsInstanced(gl.${getConstName(
                         gl,
                         this.mode
-                    )}, ${elementCount}, gl.UNSIGNED_SHORT, 0, ${instanceCount})`
+                    )}, ${painter.count.element}, gl.UNSIGNED_SHORT, 0, ${
+                        painter.count.instance
+                    })`
                 )
                 gl.drawElementsInstanced(
                     this.mode,
-                    elementCount,
+                    painter.count.element,
                     gl.UNSIGNED_SHORT,
                     0,
-                    instanceCount
+                    painter.count.instance
                 )
             } else {
-                gl.drawArraysInstanced(this.mode, 0, vertexCount, instanceCount)
+                gl.drawArraysInstanced(
+                    this.mode,
+                    0,
+                    painter.count.vertex,
+                    painter.count.instance
+                )
             }
         } else {
-            if (elementCount > 0) {
-                gl.drawElements(this.mode, elementCount, gl.UNSIGNED_SHORT, 0)
+            if (painter.count.element > 0) {
+                gl.drawElements(
+                    this.mode,
+                    painter.count.element,
+                    gl.UNSIGNED_SHORT,
+                    0
+                )
             } else {
-                gl.drawArrays(this.mode, 0, vertexCount)
+                gl.drawArrays(this.mode, 0, painter.count.vertex)
             }
         }
         gl.bindVertexArray(null)

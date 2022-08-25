@@ -79,7 +79,8 @@ div.ui-Modal-error pre {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    max-width: 300px;
+    max-width: 90vw;
+    gap: 1em;
 }
 
 .ui-Modal-promise-waiter > * {
@@ -87,13 +88,16 @@ div.ui-Modal-error pre {
 }
 
 .ui-Modal-promise-waiter > svg {
-    flex: 0 0 2rem;
+    flex: 0 0 auto;
     animation: ui-Modal-anim 1s linear infinite;
+    font-size: 2em;
 }
 
 @keyframes ui-Modal-anim {
-  0% {
-    transform: rotate(0deg); }
-  100% {
-    transform: rotate(-360deg); } 
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(-360deg);
+    }
 }

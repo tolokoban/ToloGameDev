@@ -3,17 +3,15 @@ import { TGDPainterAttribute } from "@/types"
 
 export function createAndFillArrayBuffer(
     gl: WebGL2RenderingContext,
-    attributes: TGDPainterAttribute[],
-    dataMap: { [attName: string]: number[] }
+    attributes: TGDPainterAttribute[]
 ): WebGLBuffer {
     const buffer = gl.createBuffer()
     if (!buffer) throw Error("Unable to create a WebGL32 Array Buffer!")
 
     const data = interleaveFloat32(
-        ...(attributes.map((att) => [
-            dataMap[att.name] ?? [],
-            att.dim * att.size,
-        ]) as Array<[data: number[], size: number]>)
+        ...(attributes.map((att) => [att.data, att.dim * att.size]) as Array<
+            [data: number[], size: number]
+        >)
     )
     console.log("🚀 [create-and-fill-array-buffer] data = ", data) // @FIXME: Remove this line written on 2022-08-23 at 19:16
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer)

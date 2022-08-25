@@ -10,7 +10,7 @@ export function createAndFillElementArrayBuffer(
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer)
     gl.bufferData(
         gl.ELEMENT_ARRAY_BUFFER,
-        new Uint16Array(painter.preview.data.elements ?? []),
+        new Uint16Array(painter.elements),
         gl.STATIC_DRAW
     )
     return buffer

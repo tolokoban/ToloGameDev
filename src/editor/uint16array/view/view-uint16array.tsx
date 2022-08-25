@@ -1,34 +1,45 @@
 import * as React from "react"
 import Button from "@/ui/view/button"
-import "./elements-editor-view.css"
+import { assertNumber } from "../../../guards"
+import "./view-uint16array.css"
 
-export interface ElementsEditorViewProps {
+export interface ViewUint16arrayProps {
     className?: string
+    caption: string
+    columns: number
     value: number[]
-    onChange(this: void, value: number[]): void
-    onClose(this: void): void
+    onValidate(value: number[]): void
+    onCancel(): void
 }
 
-export default function ElementsEditorView(props: ElementsEditorViewProps) {
+export default function ViewUint16array(props: ViewUint16arrayProps) {
     const [error, setError] = React.useState<null | string>(null)
-    const [content, setContent] = React.useState<string>(stringify(props.value))
+    const [content, setContent] = React.useState<string>(
+        stringify(props.value, props.columns)
+    )
     React.useEffect(() => setError(null), [content])
     const handleValidate = () => {
         try {
             const data = JSON.parse(`[${content}]`) as number[]
-            if (!Array.isArray(data)) throw Error("Array syntax is invalid!")
-
-            for (const element of data) {
-                if (typeof element !== "number")
-                    throw Error(`This index is not a number: ${element}`)
-                if (element < 0)
-                    throw Error("No index can be lesser than zero!")
-                if (Math.floor(element) !== element) {
-                    throw Error("Indexes must be integers!")
+            if (!Array.isArray(data)) throw Error("Not an array!")
+            for (const elem of data) {
+                try {
+                    assertNumber(elem, "Element")
+                    if (elem < 0) throw Error("Element cannot be negative!")
+                    if (Math.floor(elem) !== elem)
+                        throw Error("Element must be an integer!")
+                } catch (ex) {
+                    if (ex instanceof Error) {
+                        setError(ex.message)
+                        return
+                    } else {
+                        throw ex
+                    }
                 }
             }
-            props.onChange(data)
+            props.onValidate(data)
         } catch (ex) {
+            console.error(ex)
             setError("Invalid syntax!")
         }
     }
@@ -36,8 +47,8 @@ export default function ElementsEditorView(props: ElementsEditorViewProps) {
         <div className={getClassNames(props)}>
             <div className="dialog theme-color-frame">
                 <header className="theme-color-primary-dark">
-                    <div className="name">Elements</div>
-                    <div>(attributes' indexes)</div>
+                    <div className="name">{props.caption}</div>
+                    <div>Uint16[]</div>
                 </header>
                 <main>
                     <textarea
@@ -51,7 +62,7 @@ export default function ElementsEditorView(props: ElementsEditorViewProps) {
                     <Button
                         label="Cancel"
                         flat={true}
-                        onClick={props.onClose}
+                        onClick={props.onCancel}
                     />
                     {error && <div className="theme-color-error">{error}</div>}
                     <Button
@@ -65,8 +76,8 @@ export default function ElementsEditorView(props: ElementsEditorViewProps) {
     )
 }
 
-function getClassNames(props: ElementsEditorViewProps): string {
-    const classNames = ["custom", "view-page-painter-ElementsEditorView"]
+function getClassNames(props: ViewUint16arrayProps): string {
+    const classNames = ["custom", "editor-uint16array-ViewUInt16array"]
     if (typeof props.className === "string") {
         classNames.push(props.className)
     }
@@ -74,15 +85,15 @@ function getClassNames(props: ElementsEditorViewProps): string {
     return classNames.join(" ")
 }
 
-function stringify(data: number[], dim = 3): string {
+function stringify(data: number[], columns: number): string {
     const pieces: string[] = []
     for (let idx = 0; idx < data.length; idx++) {
         if (idx > 0) {
             pieces.push(", ")
-            if (idx % dim === 0) pieces.push("\n")
+            if (idx % columns === 0) pieces.push("\n")
         }
         const value = data[idx]
-        pieces.push(`${value}`.padStart(5, " "))
+        pieces.push(`${value}`.padStart(12, " "))
     }
     return pieces.join("")
 }

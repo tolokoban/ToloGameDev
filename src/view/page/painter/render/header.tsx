@@ -3,26 +3,17 @@ import Button from "@/ui/view/button"
 import Flex from "@/ui/view/flex"
 import IconCancel from "@/ui/view/icons/cancel"
 import IconDelete from "@/ui/view/icons/delete"
-import IconSave from "@/ui/view/icons/export"
 import InputText from "@/ui/view/input/text"
-import { TGDPainter } from "@/types"
+import { PainterUpdater } from "../hooks/painter-updater"
 
 export function renderHeader(
-    error: string | null,
-    handleSave: () => Promise<void>,
     handleCancel: () => Promise<void>,
-    painter: TGDPainter
+    updater: PainterUpdater
 ) {
+    const painter = updater.currentPainter
     return (
         <header>
             <Flex>
-                <Button
-                    color="accent"
-                    label="Save"
-                    enabled={error === null}
-                    icon={IconSave}
-                    onClick={handleSave}
-                />
                 <Button
                     flat={true}
                     label="Cancel"
@@ -31,9 +22,9 @@ export function renderHeader(
                 />
             </Flex>
             <InputText
-                label={`Shaders name (#${painter.id})`}
+                label={`Painter's name (#${painter.id})`}
                 value={painter.name}
-                onChange={(value) => (painter.name = value)}
+                onChange={updater.setName}
             />
             <Button color="accent" label="Delete" icon={IconDelete} />
         </header>

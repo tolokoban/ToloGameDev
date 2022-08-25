@@ -8,11 +8,12 @@ export interface TGDPainterAttrbutesGroup {
 export function divideAttributes(
     attributes: TGDPainterAttribute[]
 ): TGDPainterAttrbutesGroup[] {
+    const activeAttributes = attributes.filter((att) => att.active)
     const divisors = Array.from(
-        new Set<number>(attributes.map((att) => att.divisor))
+        new Set<number>(activeAttributes.map((att) => att.divisor))
     )
     return divisors.map((divisor) => ({
         divisor,
-        attributes: attributes.filter((att) => att.divisor === divisor),
+        attributes: activeAttributes.filter((att) => att.divisor === divisor),
     }))
 }

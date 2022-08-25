@@ -1,33 +1,30 @@
 import * as React from "react"
 import Button from "@/ui/view/button"
-import { TGDPainterAttribute } from "@/types"
-import "./attribute-data-editor-view.css"
+import "./view-float32array.css"
 
-export interface AttributeDataEditorViewProps {
+export interface ViewFloat32arrayProps {
     className?: string
-    attribute: TGDPainterAttribute
+    caption: string
+    columns: number
     value: number[]
-    onChange(this: void, value: number[]): void
-    onClose(this: void): void
+    onValidate(value: number[]): void
+    onCancel(): void
 }
 
-export default function AttributeDataEditorView(
-    props: AttributeDataEditorViewProps
-) {
+export default function ViewFloat32array(props: ViewFloat32arrayProps) {
     const [error, setError] = React.useState<null | string>(null)
     const [content, setContent] = React.useState<string>(
-        stringify(props.value, props.attribute.dim)
+        stringify(props.value, props.columns)
     )
     React.useEffect(() => setError(null), [content])
-    const att = props.attribute
     const handleValidate = () => {
         try {
             const data = JSON.parse(`[${content}]`) as number[]
-            const mod = att.dim * att.size
-            if (data.length % mod !== 0) {
-                setError(`${data.length} is no multiple of ${mod}!`)
+            const cols = props.columns
+            if (data.length % cols !== 0) {
+                setError(`${data.length} is no multiple of ${cols}!`)
             } else {
-                props.onChange(data)
+                props.onValidate(data)
             }
         } catch (ex) {
             setError("Invalid syntax!")
@@ -37,9 +34,8 @@ export default function AttributeDataEditorView(
         <div className={getClassNames(props)}>
             <div className="dialog theme-color-frame">
                 <header className="theme-color-primary-dark">
-                    <div className="name">{att.name}</div>
-                    <div>dimension = {att.dim}</div>
-                    <div>array size = {att.size}</div>
+                    <div className="name">{props.caption}</div>
+                    <div>Float32[]</div>
                 </header>
                 <main>
                     <textarea
@@ -53,7 +49,7 @@ export default function AttributeDataEditorView(
                     <Button
                         label="Cancel"
                         flat={true}
-                        onClick={props.onClose}
+                        onClick={props.onCancel}
                     />
                     {error && <div className="theme-color-error">{error}</div>}
                     <Button
@@ -67,8 +63,8 @@ export default function AttributeDataEditorView(
     )
 }
 
-function getClassNames(props: AttributeDataEditorViewProps): string {
-    const classNames = ["custom", "view-page-painter-AttributeDataEditorView"]
+function getClassNames(props: ViewFloat32arrayProps): string {
+    const classNames = ["custom", "editor-float32array-ViewFloat32array"]
     if (typeof props.className === "string") {
         classNames.push(props.className)
     }
@@ -76,12 +72,12 @@ function getClassNames(props: AttributeDataEditorViewProps): string {
     return classNames.join(" ")
 }
 
-function stringify(data: number[], dim: number): string {
+function stringify(data: number[], columns: number): string {
     const pieces: string[] = []
     for (let idx = 0; idx < data.length; idx++) {
         if (idx > 0) {
             pieces.push(", ")
-            if (idx % dim === 0) pieces.push("\n")
+            if (idx % columns === 0) pieces.push("\n")
         }
         const value = data[idx]
         pieces.push(`${value}`.padStart(12, " "))
