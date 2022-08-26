@@ -1,13 +1,13 @@
 import FragmentShader from "./painter.frag"
 import VertexShader from "./painter.vert"
-import { TGDPainter, TGDPainterMode } from "@/types"
+import { TGDPainter, TGDPainterDepthFunc, TGDPainterMode } from "@/types"
 
-export function makeTGDPainter(name?: string): TGDPainter {
+export function makeTGDPainter(): TGDPainter {
     const A = Math.sqrt(3) / 2
     const painter: TGDPainter = {
         id: -1,
         error: null,
-        name: name ?? makeName("Triangle"),
+        name: makeName("Triangle"),
         description: "",
         shader: {
             vert: VertexShader,
@@ -42,6 +42,13 @@ export function makeTGDPainter(name?: string): TGDPainter {
                 data: [1, 0, 0, 0, 1, 0, 0, 0, 1],
             },
         ],
+        depth: {
+            enabled: true,
+            clear: 1,
+            func: TGDPainterDepthFunc.LESS,
+            mask: true,
+            range: { near: 0, far: 1 },
+        },
     }
     return painter
 }

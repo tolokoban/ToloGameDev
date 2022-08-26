@@ -2,13 +2,14 @@ import * as React from "react"
 import IconEdit from "@/ui/view/icons/edit"
 import InputInteger from "@/ui/view/input/integer"
 import Touchable from "@/ui/view/touchable"
-import { TGDPainterAttribute } from "../../../../types"
+import { TGDPainterAttribute } from "@/types"
 import "./painter-attribute-view.css"
 
 export interface PainterAttributeViewProps {
     className?: string
     value: TGDPainterAttribute
     data: number[]
+    active: boolean
     onChange(value: TGDPainterAttribute): void
     onClick(value: TGDPainterAttribute): void
 }
@@ -23,7 +24,11 @@ export default function PainterAttributeView(props: PainterAttributeViewProps) {
     }
     return (
         <>
-            <div className="view-page-painter-PainterAttributeView name">
+            <div
+                className={`view-page-painter-PainterAttributeView name ${
+                    props.active ? "active" : "inactive"
+                }`}
+            >
                 {att.name}
                 {att.size > 1 ? `[${att.size}]` : ""}
             </div>
@@ -36,9 +41,21 @@ export default function PainterAttributeView(props: PainterAttributeViewProps) {
                 className="view-page-painter-PainterAttributeView data"
                 onClick={() => props.onClick(props.value)}
             >
-                <div className="data-view">
-                    {props.data.map((n) => `${n}`).join(", ")}
-                </div>
+                {props.active && (
+                    <div className="data-view active">
+                        {props.data
+                            .slice(0, 32)
+                            .map((n) => `${n}`)
+                            .join(", ")}
+                    </div>
+                )}
+                {!props.active && (
+                    <div className="data-view inactive">
+                        {att.name} is not currently used in the vertex shader.
+                        <br />
+                        However, we still keep its data if you need them later.
+                    </div>
+                )}
                 <IconEdit />
             </Touchable>
         </>

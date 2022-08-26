@@ -4,6 +4,7 @@ import Label from "../label"
 import OkIcon from "../icons/ok"
 import { Icon } from "../icons/generic"
 import { ThemeColorName } from "../types"
+import { useHotKey } from "../../hooks/hotkey"
 import "./button-view.css"
 
 export interface ButtonViewProps<Tag> {
@@ -26,6 +27,16 @@ export interface ButtonViewProps<Tag> {
     error?: string
     outline?: boolean
     enabled?: boolean
+    /**
+     * A keyboard shortcut to activate the button.
+     * Use these prefixes (in that order) for modifiers keys:
+     * * `C-` for **Control**.
+     * * `S-` for **Shift**.
+     * * `M-` for **Alt** (Meta).
+     * For example, if you want to react at Shift + Control + F10,
+     * the hotkey willl be "C-S-f10".
+     */
+    hotkey?: string
     /** If true, the icon is on the right. */
     reversed?: boolean
     visible?: boolean
@@ -46,6 +57,7 @@ export default function ButtonView<Tag>(props: ButtonViewProps<Tag>) {
 
         onClick(tag)
     }
+    useHotKey(props.hotkey, handleClick, props.enabled)
     if (props.visible === false) return null
 
     if (!label)

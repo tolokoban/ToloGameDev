@@ -1,2 +1,23 @@
-.editor-float32array-ViewUint16array {
+.editor-uint16array-ViewUInt16array {
+    width: 50vw;
+    min-width: 300px;
+    height: 80vh;
+}
+
+.editor-uint16array-ViewUInt16array main {
+    padding: 0.5em;
+}
+
+.editor-uint16array-ViewUInt16array textarea {
+    width: 100%;
+    border: 0;
+    height: 60vh;
+    resize: none;
+}
+
+.editor-uint16array-ViewUInt16array footer {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 1em;
 }

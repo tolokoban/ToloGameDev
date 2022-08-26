@@ -2,6 +2,7 @@ import {
     TGDObject,
     TGDPainter,
     TGDPainterAttribute,
+    TGDPainterDepth,
     Vector3,
     Vector4,
 } from "./types"
@@ -33,8 +34,16 @@ export function assertTGDPainter(
 ): asserts data is TGDPainter {
     assertObject(data, prefix)
     assertTGDObject(data, prefix)
-    const { error, description, shader, mode, count, elements, attributes } =
-        data
+    const {
+        error,
+        description,
+        shader,
+        mode,
+        count,
+        elements,
+        attributes,
+        depth,
+    } = data
     assertStringOrNull(error, `${prefix}.error`)
     assertString(description, `${prefix}.description`)
     assertNumber(mode, `${prefix}.mode`)
@@ -50,6 +59,22 @@ export function assertTGDPainter(
     for (let i = 0; i < attributes.length; i++) {
         assertTGDPainterAttribute(attributes[i], `${prefix}.attributes[${i}]`)
     }
+    assertTGDPainterDepth(depth, `${prefix}.depth`)
+}
+
+function assertTGDPainterDepth(
+    data: unknown,
+    prefix = "depth"
+): asserts data is TGDPainterDepth {
+    assertObject(data, prefix)
+    const { enabled, clear, func, mask, range } = data
+    assertBoolean(enabled, `${prefix}.enabled`)
+    assertNumber(clear, `${prefix}.clear`)
+    assertNumber(func, `${prefix}.func`)
+    assertBoolean(mask, `${prefix}.mask`)
+    assertObject(range, `${prefix}.range`)
+    assertNumber(range.near, `${prefix}.range.near`)
+    assertNumber(range.far, `${prefix}.range.far`)
 }
 
 export function assertTGDPainterAttribute(

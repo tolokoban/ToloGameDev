@@ -9,9 +9,9 @@ export default class Resizer {
     public readonly cover = new Float32Array([1, 1])
     public readonly contain = new Float32Array([1, 1])
 
-    check(gl: WebGL2RenderingContext, canvas: HTMLCanvasElement) {
-        const w = canvas.clientWidth
-        const h = canvas.clientHeight
+    check(gl: WebGL2RenderingContext) {
+        const { canvas } = gl
+        const { width: w, height: h } = canvas.getBoundingClientRect()
         if (w === this._width && h === this._height) return
 
         console.log("New canvas size:", w, h)
@@ -19,7 +19,7 @@ export default class Resizer {
         this._height = h
         this._ratio = w / h
         this._inverseRatio = h / w
-        this.cover[Y] = this._ratio
+        this.cover[Y] = this._inverseRatio
         this.contain[X] = this._inverseRatio
         canvas.width = w
         canvas.height = h

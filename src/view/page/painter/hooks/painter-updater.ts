@@ -1,26 +1,59 @@
 import * as React from "react"
-import painter from ".."
 import { getDataService } from "@/factory/data-service"
-import { TGDPainter, TGDPainterAttribute, TGDPainterMode } from "@/types"
+import { makeTGDPainter } from "@/factory/painter"
+import {
+    TGDPainter,
+    TGDPainterAttribute,
+    TGDPainterDepth,
+    TGDPainterDepthFunc,
+    TGDPainterMode,
+} from "@/types"
 
-export function usePainterUpdater(initialValue: TGDPainter = DEFAULT_PAINTER) {
-    const [currentPainter, setCurrentPainter] = React.useState(initialValue)
-    const [stablePainter, setStablePainter] = React.useState(initialValue)
-    return new PainterUpdater(
-        currentPainter,
-        stablePainter,
-        setCurrentPainter,
-        setStablePainter
+export function usePainterUpdater(initialValue?: TGDPainter) {
+    const value: TGDPainter = initialValue ?? makeTGDPainter()
+    const [currentPainter, setCurrentPainter] = React.useState(value)
+    const [stablePainter, setStablePainter] = React.useState(value)
+    const refUpdater = React.useRef(
+        new PainterUpdater(
+            currentPainter,
+            stablePainter,
+            setCurrentPainter,
+            setStablePainter
+        )
     )
+    return refUpdater.current
 }
 
 export class PainterUpdater {
+    private _currentPainter: TGDPainter
+    private _stablePainter: TGDPainter
+    private readonly setCurrentPainter: (painter: TGDPainter) => void
+    private readonly setStablePainter: (painter: TGDPainter) => void
+
     constructor(
-        public readonly currentPainter: TGDPainter,
-        public readonly stablePainter: TGDPainter,
-        private readonly setCurrentPainter: (painter: TGDPainter) => void,
-        private readonly setStablePainter: (painter: TGDPainter) => void
-    ) {}
+        currentPainter: TGDPainter,
+        stablePainter: TGDPainter,
+        setCurrentPainter: (painter: TGDPainter) => void,
+        setStablePainter: (painter: TGDPainter) => void
+    ) {
+        this._currentPainter = currentPainter
+        this._stablePainter = stablePainter
+        this.setCurrentPainter = (painter: TGDPainter) => {
+            this._currentPainter = painter
+            setCurrentPainter(painter)
+        }
+        this.setStablePainter = (painter: TGDPainter) => {
+            this._stablePainter = painter
+            setStablePainter(painter)
+        }
+    }
+
+    public get currentPainter() {
+        return this._currentPainter
+    }
+    public get stablePainter() {
+        return this._stablePainter
+    }
 
     public readonly reset = (painter: TGDPainter) => {
         this.setCurrentPainter({ ...painter })
@@ -130,6 +163,33 @@ export class PainterUpdater {
             ),
         })
     }
+    public readonly updateDepth = (update: Partial<TGDPainterDepth>) => {
+        const painter: TGDPainter = this.currentPainter
+        this.setCurrentPainter({
+            ...painter,
+            depth: { ...painter.depth, ...update },
+        })
+    }
+    public readonly setDepthEnabled = (enabled: boolean) => {
+        this.updateDepth({ enabled })
+    }
+    public readonly setDepthClear = (clear: number) => {
+        this.updateDepth({ clear })
+    }
+    public readonly setDepthMask = (mask: boolean) => {
+        this.updateDepth({ mask })
+    }
+    public readonly setDepthFunc = (func: TGDPainterDepthFunc) => {
+        this.updateDepth({ func })
+    }
+    public readonly setDepthRangeNear = (near: number) => {
+        const range = this.currentPainter.depth.range
+        this.updateDepth({ range: { ...range, near } })
+    }
+    public readonly setDepthRangeFar = (far: number) => {
+        const range = this.currentPainter.depth.range
+        this.updateDepth({ range: { ...range, far } })
+    }
     public readonly deactivateAttributes = () => {
         const painter: TGDPainter = this.currentPainter
         this.setCurrentPainter({
@@ -158,19 +218,4 @@ export class PainterUpdater {
         this.currentPainter.attributes.push(newAtt)
         return newAtt
     }
-}
-
-const DEFAULT_PAINTER: TGDPainter = {
-    attributes: [],
-    count: { element: 0, instance: 0, vertex: 0 },
-    description: "",
-    elements: [],
-    error: "No shader code defined yet!",
-    id: 0,
-    mode: TGDPainterMode.TRIANGLES,
-    name: "",
-    shader: {
-        vert: "",
-        frag: "",
-    },
 }

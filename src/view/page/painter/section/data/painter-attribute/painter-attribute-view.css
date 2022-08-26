@@ -1,3 +1,10 @@
+.view-page-painter-PainterAttributeView.name.inactive {
+    font-style: italic;
+    opacity: 0.5;
+    text-decoration: line-through;
+    text-decoration-color: var(--theme-color-error);
+}
+
 .view-page-painter-PainterAttributeView.data {
     display: flex;
     flex-direction: row;
@@ -20,4 +27,14 @@
     overflow: hidden;
     text-align: left;
     line-height: 0.8;
+}
+
+.view-page-painter-PainterAttributeView.data div.data-view.inactive {
+    font-size: 80%;
+    opacity: 1;
+    color: var(--theme-color-error);
+    max-height: 3em;
+    overflow: hidden;
+    text-align: left;
+    line-height: 1;
 }

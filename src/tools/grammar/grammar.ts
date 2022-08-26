@@ -1,7 +1,13 @@
 import Prism from "prismjs"
+import "prismjs/components/prism-typescript"
 
 export function getGrammarForLanguage(language: string): Prism.Grammar {
-    return GLSL
+    switch (language) {
+        case "ts":
+            return Prism.languages.typescript
+        default:
+            return GLSL
+    }
 }
 
 const TYPES = [

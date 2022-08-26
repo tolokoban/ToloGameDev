@@ -1,7 +1,9 @@
 import * as React from "react"
+import Button from "@/ui/view/button"
+import Flex from "@/ui/view/flex"
 import Renderer from "./renderer"
-import { TGDPainter } from "../../types"
-import { useDebouncedEffect } from "../../ui/hooks"
+import { TGDPainter } from "@/types"
+import { useDebouncedEffect } from "@/ui/hooks"
 import "./preview-view.css"
 
 export interface PreviewViewProps {
@@ -27,9 +29,24 @@ export default function PreviewView(props: PreviewViewProps) {
         20,
         [props.painter]
     )
+    const handleFullscreen = () => {
+        const canvas = refCanvas.current
+        if (!canvas) return
+
+        canvas.requestFullscreen({
+            navigationUI: "hide",
+        })
+    }
     return (
         <div className={getClassNames(props)}>
-            <h1>Preview</h1>
+            <Flex justifyContent="space-between">
+                <h1>Preview</h1>
+                <Button
+                    flat={true}
+                    label="Full screen"
+                    onClick={handleFullscreen}
+                />
+            </Flex>
             <canvas ref={refCanvas} className="theme-shadow-card"></canvas>
         </div>
     )

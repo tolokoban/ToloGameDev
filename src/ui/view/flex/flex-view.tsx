@@ -3,7 +3,7 @@ import "./flex-view.css"
 
 export interface FlexViewProps {
     className?: string
-    children?: JSX.Element | JSX.Element[] | null
+    children?: React.ReactNode
     dir?: "row" | "column" | "row-reverse" | "column-reverse"
     gap?: string
     justifyContent?:

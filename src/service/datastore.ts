@@ -1,12 +1,14 @@
 import DB from "./database"
 import GenericEvent from "../tools/generic-event"
+import { isObject } from "@/tools/type-guards"
 
 export default class DataStore<T extends { id: number; name: string }> {
     public readonly eventChange = new GenericEvent<DataStore<T>>()
 
     constructor(
         private readonly storeName: string,
-        private readonly isValidType: (data: unknown) => data is T
+        private readonly isValidType: (data: unknown) => data is T,
+        private readonly makeDefault: () => T
     ) {}
 
     async listItems(): Promise<T[]> {
@@ -21,7 +23,13 @@ export default class DataStore<T extends { id: number; name: string }> {
 
     async get(id: number): Promise<T | undefined> {
         const result = await DB.get(this.storeName, id)
-        if (this.isValidType(result)) return result
+        if (isObject(result)) {
+            const data: T = {
+                ...this.makeDefault(),
+                ...result,
+            }
+            if (this.isValidType(data)) return data
+        }
 
         console.error(
             `Bad object type in store "${this.storeName}" for id ${id}!`,

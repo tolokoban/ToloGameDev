@@ -1,5 +1,6 @@
 export function createWebGL2Context(
-    canvas: HTMLCanvasElement
+    canvas: HTMLCanvasElement,
+    options: Partial<WebGLContextAttributes> = {}
 ): WebGL2RenderingContext {
     const gl = canvas.getContext("webgl2", {
         alpha: true,
@@ -8,6 +9,7 @@ export function createWebGL2Context(
         stencil: false,
         depth: false,
         premultipliedAlpha: false,
+        ...options,
     })
     if (!gl) throw Error("Unable to create a WebGL2 context!")
 

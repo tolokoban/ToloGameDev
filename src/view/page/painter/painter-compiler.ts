@@ -1,26 +1,22 @@
 import { getConstName } from "@/tools/webgl/get-const-name"
 import { PainterUpdater } from "./hooks/painter-updater"
-import { TGDPainter, TGDPainterAttribute, TGDShaderAttribute } from "@/types"
-export default class ShadersCompiler {
+import { TGDShaderAttribute } from "@/types"
+
+export default class PainterCompiler {
     private readonly gl: WebGL2RenderingContext
-
-    constructor() {
-        const canvas = document.createElement("canvas")
-        const ctx = canvas.getContext("webgl2")
-        if (!ctx) throw Error("Unable to create a WebGL2 context!")
-
-        this.gl = ctx
-    }
 
     /**
      * Compiles the shaders and fill the `painter.attributes` array.
      * @returns `null` in case of success. The error message otherwise.
      */
     async compile(updater: PainterUpdater): Promise<void> {
-        const { gl } = this
-        const painter = updater.currentPainter
-        updater.clearError()
         try {
+            const canvas = document.createElement("canvas")
+            const gl = canvas.getContext("webgl2")
+            if (!gl) throw Error("Unable to create a WebGL2 context!")
+
+            const painter = updater.currentPainter
+            updater.clearError()
             if (painter.count.element > 0) {
                 // Check elements.
                 if (painter.elements.length < painter.count.element) {
@@ -29,6 +25,8 @@ export default class ShadersCompiler {
                     )
                 }
             }
+            console.log(`const VERT = \`${painter.shader.vert}\``)
+            console.log(`const FRAG = \`${painter.shader.frag}\``)
             const prg = createProgram(gl)
             linkVertShader(gl, prg, painter.shader.vert)
             linkFragShader(gl, prg, painter.shader.frag)

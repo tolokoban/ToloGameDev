@@ -1,7 +1,7 @@
 import { isNumber, isObject, isString } from "@/tools/type-guards"
 
 const DB_NAME = "TGD-Database"
-const DB_VERSION = 1
+const DB_VERSION = 5
 
 class Database {
     private db: IDBDatabase | null = null
@@ -143,7 +143,7 @@ class Database {
             )
             request.onerror = (evt) => {
                 console.error(
-                    `Unabel to open database "${DB_NAME}" in version ${DB_VERSION}!
+                    `Unable to open database "${DB_NAME}" in version ${DB_VERSION}!
 Error: `,
                     request.error
                 )
@@ -153,14 +153,25 @@ Error: `,
             request.onsuccess = () => {
                 const db = request.result
                 this.db = db
+                console.log(
+                    `IndexedDB "${db.name}" version ${db.version} ready!`
+                )
                 resolve(db)
             }
             request.onupgradeneeded = () => {
+                console.log("IndexedDB upgrade needed!")
                 const db = request.result
-                db.createObjectStore("painter", {
-                    keyPath: "id",
-                    autoIncrement: true,
-                })
+                const names = ["painter"]
+                for (const name of names) {
+                    if (db.objectStoreNames.contains(name)) {
+                        db.deleteObjectStore(name)
+                    }
+                    const store = db.createObjectStore(name, {
+                        keyPath: "id",
+                        autoIncrement: true,
+                    })
+                    store.createIndex("id", "id", { unique: true })
+                }
             }
         })
     }

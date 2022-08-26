@@ -58,3 +58,13 @@
 .view-page-PainterPage main div.uniforms-grid > div {
     opacity: 0.5;
 }
+
+.view-page-PainterPage main .deactivated {
+    opacity: 0.5;
+    font-style: italic;
+}
+
+.view-page-PainterPage main pre.export {
+    max-width: 50vw;
+    white-space: pre-wrap;
+}

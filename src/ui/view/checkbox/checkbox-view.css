@@ -95,3 +95,13 @@
 .ui-view-CheckboxView > header.hide {
     display: none;
 }
+
+.ui-view-CheckboxView > div.label {
+    opacity: 0.7;
+    text-decoration: line-through;
+}
+
+.ui-view-CheckboxView.ok > div.label {
+    opacity: 1;
+    text-decoration: none;
+}

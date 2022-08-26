@@ -29,6 +29,57 @@ export interface TGDPainter extends TGDObject {
     }
     elements: number[]
     attributes: TGDPainterAttribute[]
+    depth: TGDPainterDepth
+}
+
+export interface TGDPainterDepth {
+    enabled: boolean
+    /**
+     * Depth value used when the depth buffer is cleared.
+     * The value is clamped between 0 and 1.
+     *
+     * Default value: 1.
+     */
+    clear: number
+    /**
+     * Function that compares incoming pixel depth to
+     * the current depth buffer value.
+     *
+     * Default value: LESS.
+     */
+    func: TGDPainterDepthFunc
+    /**
+     * Sets whether writing into the depth buffer is
+     * enabled or disabled.
+     *
+     * Default value: true, meaning that writing is enabled.
+     */
+    mask: boolean
+    /**
+     * Define the visible range for Z.
+     *
+     * Default value: [0, 1].
+     */
+    range: { near: number; far: number }
+}
+
+export enum TGDPainterDepthFunc {
+    /** Never pass. */
+    NEVER,
+    /** Pass if the incoming value is less than the depth buffer value. */
+    LESS,
+    /** Pass if the incoming value equals the depth buffer value. */
+    EQUAL,
+    /** Pass if the incoming value is less than or equal to the depth buffer value. */
+    LEQUAL,
+    /** Pass if the incoming value is greater than the depth buffer value. */
+    GREATER,
+    /** Pass if the incoming value is not equal to the depth buffer value. */
+    NOTEQUAL,
+    /** Pass if the incoming value is greater than or equal to the depth buffer value. */
+    GEQUAL,
+    /** Always pass. */
+    ALWAYS,
 }
 
 export interface TGDShaderAttribute {

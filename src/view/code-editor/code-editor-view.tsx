@@ -7,7 +7,7 @@ import "./code-editor-view.css"
 export interface CodeEditorViewProps {
     className?: string
     value: string
-    onChange(value: string): void
+    onChange?(value: string): void
     language: string
 }
 
@@ -20,7 +20,8 @@ export default function CodeEditorView(props: CodeEditorViewProps) {
                 value={value}
                 onValueChange={(v) => {
                     setValue(v)
-                    props.onChange(v)
+                    const { onChange } = props
+                    if (onChange) onChange(v)
                 }}
                 highlight={(code) =>
                     Prism.highlight(
