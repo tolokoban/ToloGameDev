@@ -1,8 +1,14 @@
 {
     "random": {
-        "name": "Quickly produce a random number from a seed."
+        "name": "Nombre aléatoire"
     },
     "shift-hue": {
-        "name": "Hue rotation for RGB colors."
+        "name": "Rotation de la teinte d'une couleur"
+    },
+    "const/pi": {
+        "name": "Constante PI"
+    },
+    "const/tau": {
+        "name": "Constante TAU (2 * PI)"
     }
 }

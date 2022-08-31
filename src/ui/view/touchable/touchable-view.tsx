@@ -8,6 +8,7 @@ export interface TouchableViewProps<T> {
     title?: string
     style?: React.CSSProperties
     backgroundColor?: string
+    wide?: boolean
     children:
         | string
         | boolean
@@ -43,6 +44,7 @@ function getClassNames<T>(props: TouchableViewProps<T>): string {
         classNames.push(props.className)
     }
     if (props.enabled === false) classNames.push("disabled")
+    if (props.wide === true) classNames.push("wide")
 
     return classNames.join(" ")
 }

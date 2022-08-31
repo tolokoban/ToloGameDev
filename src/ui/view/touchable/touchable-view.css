@@ -1,4 +1,9 @@
 .ui-view-TouchableView {
+    --theme-margin-top: 0.5em;
+    --theme-margin-right: 0.5em;
+    --theme-margin-bottom: 0.5em;
+    --theme-margin-left: 0.5em;
+    display: inline-block;
     box-sizing: border-box;
     font: inherit;
     border: none;
@@ -6,7 +11,12 @@
     cursor: pointer;
     transition: all 0.2s;
     filter: brightness(100%);
-    margin: 0.5rem;
+    margin: var(--theme-margin-top) var(--theme-margin-right)
+        var(--theme-margin-bottom) var(--theme-margin-left);
+}
+
+.ui-view-TouchableView.wide {
+    width: calc(100% - var(--theme-margin-left) - var(--theme-margin-right));
 }
 
 .ui-view-TouchableView:active {
@@ -17,5 +27,5 @@
 .ui-view-TouchableView.disabled {
     cursor: default;
     filter: grayscale(100%);
-    opacity: .6;
+    opacity: 0.6;
 }

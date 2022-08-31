@@ -1,2 +1,10 @@
 .view-input-GlslSnippetView {
+    display: grid;
+    grid-template-columns: auto 50vw;
+    height: 70vh;
+    gap: 1em;
+}
+
+.view-input-GlslSnippetView > div.directory {
+    overflow: auto;
 }
