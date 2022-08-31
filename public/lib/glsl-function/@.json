@@ -1,5 +1,8 @@
 {
     "random": {
         "name": "Quickly produce a random number from a seed."
+    },
+    "shift-hue": {
+        "name": "Hue rotation for RGB colors."
     }
 }
