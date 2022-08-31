@@ -7,7 +7,7 @@ import { useRefId } from "../../hooks/id"
 import "./rating-view.css"
 import {
     View,
-    ViewWithChangeableValue,
+    ViewWithValue,
     ViewWithColor,
     ViewWithName,
     ViewWithSize,
@@ -16,7 +16,7 @@ import {
 const EMPTY_FUNCTION = () => {}
 
 export type RatingViewProps = View &
-    ViewWithChangeableValue<number> &
+    ViewWithValue<number> &
     ViewWithSize &
     ViewWithColor &
     ViewWithName & {

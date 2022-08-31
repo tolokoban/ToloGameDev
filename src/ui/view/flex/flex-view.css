@@ -6,6 +6,14 @@ div.ui-view-FlexView {
     flex: 0 0 auto;
 }
 
+.ui-view-FlexView .flex-01 {
+    flex: 0 1 auto;
+}
+
+.ui-view-FlexView .flex-10 {
+    flex: 1 0 auto;
+}
+
 .ui-view-FlexView .flex-1 {
     flex: 1 1 auto;
 }
@@ -26,3 +34,33 @@ div.ui-view-FlexView {
     flex: 5 5 auto;
 }
 
+.ui-view-FlexView .order-0 {
+    order: 0;
+}
+.ui-view-FlexView .order-1 {
+    order: 1;
+}
+.ui-view-FlexView .order-2 {
+    order: 2;
+}
+.ui-view-FlexView .order-3 {
+    order: 3;
+}
+.ui-view-FlexView .order-4 {
+    order: 4;
+}
+.ui-view-FlexView .order-5 {
+    order: 5;
+}
+.ui-view-FlexView .order-6 {
+    order: 6;
+}
+.ui-view-FlexView .order-7 {
+    order: 7;
+}
+.ui-view-FlexView .order-8 {
+    order: 8;
+}
+.ui-view-FlexView .order-9 {
+    order: 9;
+}

@@ -1,5 +1,4 @@
 import * as React from "react"
-import async from "../../../tools/async"
 import Button from "@/ui/view/button"
 import CodeEditor from "@/view/code-editor"
 import DataSection from "./section/data"
@@ -10,10 +9,10 @@ import Options from "@/ui/view/options"
 import PainterCompiler from "./painter-compiler"
 import Preview from "../../preview"
 import Runnable from "@/ui/view/runnable"
+import ShaderSection from "./section/shader"
 import { getDataService } from "@/factory/data-service"
 import { PainterUpdater, usePainterUpdater } from "./hooks/painter-updater"
 import { renderHeader } from "./render/header"
-import { renderHelp } from "./render/help"
 import { TGDPainter, TGDPainterAttribute } from "@/types"
 import { useLocalStorageState } from "../../../ui/hooks"
 import { usePainterLoader } from "./hooks/painter-loader"
@@ -63,33 +62,15 @@ export default function PainterPage(props: PainterPageProps) {
                             options={{
                                 data: "Data",
                                 mode: "Mode",
-                                vert: "Vertex Shader",
-                                frag: "Fragment Shader",
+                                shaders: "Shaders",
                                 export: "Export",
                             }}
                             value={section}
                             onChange={setSection}
                         />
                         <br />
-                        {section === "vert" && (
-                            <>
-                                <CodeEditor
-                                    language="glsl"
-                                    value={painter.shader.vert}
-                                    onChange={updater.setVertexShader}
-                                />
-                                {renderHelp()}
-                            </>
-                        )}
-                        {section === "frag" && (
-                            <>
-                                <CodeEditor
-                                    language="glsl"
-                                    value={painter.shader.frag}
-                                    onChange={updater.setFragmentShader}
-                                />
-                                {renderHelp()}
-                            </>
+                        {section === "shaders" && (
+                            <ShaderSection updater={updater} />
                         )}
                         {section === "data" && (
                             <DataSection updater={updater} />

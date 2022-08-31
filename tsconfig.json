@@ -21,7 +21,6 @@
         "outDir": "./dist/",
         "paths": {
             "@/*": ["*"],
-            "tp-lib/*": ["../../../lib/tp/src/*"],
             "*": ["src/*", "node_modules/*"]
         },
         "removeComments": false,

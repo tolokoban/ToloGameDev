@@ -30,9 +30,14 @@ export interface ViewWithColor {
     color?: ColorName
 }
 
-export interface ViewWithChangeableValue<T> {
+export interface ViewWithValue<T> {
     value: T
     onChange?(this: void, value: T): void
+}
+
+export interface ViewWithChangeableValue<T> {
+    value: T
+    onChange(this: void, value: T): void
 }
 
 export interface ViewWithName {
