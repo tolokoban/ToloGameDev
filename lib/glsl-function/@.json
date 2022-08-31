@@ -1,0 +1,14 @@
+{
+    "random": {
+        "name": "Nombre aléatoire"
+    },
+    "shift-hue": {
+        "name": "Rotation de la teinte d'une couleur"
+    },
+    "const/pi": {
+        "name": "Constante PI"
+    },
+    "const/tau": {
+        "name": "Constante TAU (2 * PI)"
+    }
+}
