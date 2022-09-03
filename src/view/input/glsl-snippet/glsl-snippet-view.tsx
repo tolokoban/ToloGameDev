@@ -1,6 +1,6 @@
 import * as React from "react"
 import ButtonGlslSnippet from "./button"
-import CodeEditor from "@/view/code-editor"
+import CodeViewer from "@/view/code-viewer"
 import { assertObject, assertString } from "../../../guards"
 import "./glsl-snippet-view.css"
 
@@ -49,7 +49,7 @@ export default function GlslSnippetView(props: GlslSnippetViewProps) {
                     />
                 ))}
             </div>
-            <CodeEditor language="glsl" value={code} onChange={setCode} />
+            <CodeViewer language="glsl" value={code} />
         </div>
     )
 }

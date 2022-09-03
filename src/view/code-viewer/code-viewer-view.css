@@ -1,0 +1,37 @@
+div.view-CodeViewerView {
+    position: relative;
+    margin: 0;
+    font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
+    font-size: 1rem;
+    color: #fffd;
+    background-color: #333;
+    padding: 1em;
+    line-height: 1.2;
+}
+
+div.view-CodeViewerView pre .comment {
+    color: #fff5;
+    font-style: italic;
+}
+
+div.view-CodeViewerView pre .number {
+    color: #fff;
+    font-weight: bolder;
+}
+
+div.view-CodeViewerView pre .type {
+    color: #cf9;
+}
+
+div.view-CodeViewerView pre .keyword {
+    color: #07f;
+}
+
+div.view-CodeViewerView pre .global {
+    color: #f70;
+}
+
+div.view-CodeViewerView pre .function {
+    color: #ed0;
+    font-weight: bold;
+}
