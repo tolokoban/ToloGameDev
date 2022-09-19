@@ -40,6 +40,12 @@ export interface ViewWithChangeableValue<T> {
     onChange(this: void, value: T): void
 }
 
+export type ViewWithChangeableStringifyableValue<T> =
+    ViewWithChangeableValue<T> & {
+        stringify(value: T): string
+        parse(text: string): T
+    }
+
 export interface ViewWithName {
     /** Name used for forms. */
     name?: string

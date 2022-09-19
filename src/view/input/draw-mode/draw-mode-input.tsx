@@ -14,7 +14,7 @@ const OPTIONS = {
     TRIANGLES: "TRIANGLES",
 }
 
-const TIPS = {
+const TIPS: { [key: string]: string } = {
     POINTS: "Single dot per vertex",
     LINE_STRIP: "One line going through all vertices",
     LINE_LOOP:
@@ -34,15 +34,17 @@ export interface DrawModeInputProps {
 export default function DrawModeInput(props: DrawModeInputProps) {
     const id = imp(props.value)
     return (
-        <div className={getClassNames(props)}>
-            <Label value="Drawing Primitive" />
-            <Options
-                options={OPTIONS}
-                value={id}
-                onChange={(value) => props.onChange(exp(value))}
-            />
-            <p>{TIPS[id]}</p>
-        </div>
+        <fieldset>
+            <legend>Drawing Primitive</legend>
+            <div className={getClassNames(props)}>
+                <Options
+                    options={OPTIONS}
+                    value={id}
+                    onChange={(value) => props.onChange(exp(value))}
+                />
+                <p>{TIPS[id]}</p>
+            </div>
+        </fieldset>
     )
 }
 

@@ -10,7 +10,7 @@ class Database {
         storeName: string,
         data: Omit<T, "id">
     ): Promise<number> {
-        if ("id" in data) delete data["id"]
+        if ("id" in data) delete (data as any)["id"]
         const result = await this.exec(storeName, "readwrite", (store) =>
             store.add(data)
         )

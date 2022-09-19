@@ -20,7 +20,7 @@ export function createAndFillArrayBuffer(
     console.log("gl.bindBuffer(gl.ARRAY_BUFFER, buffer)")
     console.log(`gl.bufferData(
     gl.ARRAY_BUFFER, 
-    new Float32Array(${JSON.stringify(data)}), 
+    new Float32Array([${data.join(",")}]), 
     gl.STATIC_DRAW
 )`)
     return buffer

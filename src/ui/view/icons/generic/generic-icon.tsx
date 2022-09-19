@@ -25,7 +25,7 @@ export default function GenericIcon(props: GenericIconProps) {
             className={getClassName(props)}
             style={getColorStyle(props.color)}
             viewBox="0 0 24 24"
-            preserveAspectRatio="meet xMidYMid"
+            preserveAspectRatio="xMidYMid meet"
             onClick={props.onClick}
             tabIndex={props.onClick ? 1 : undefined}
             strokeWidth={1.5}

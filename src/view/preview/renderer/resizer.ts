@@ -21,6 +21,7 @@ export default class Resizer {
         this._inverseRatio = h / w
         this.cover[Y] = this._inverseRatio
         this.contain[X] = this._inverseRatio
+        console.log("🚀 [resizer] this.contain, w, h = ", this.contain, w, h) // @FIXME: Remove this line written on 2022-09-12 at 10:47
         canvas.width = w
         canvas.height = h
         gl.viewport(0, 0, w, h)

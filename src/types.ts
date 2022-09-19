@@ -26,10 +26,54 @@ export interface TGDPainter extends TGDObject {
         instance: number
         vertex: number
         element: number
+        /**
+         * Number of times draw function will be called.
+         * Each time, we set the constant attributes (the one
+         * with a negative divisor).
+         */
+        loop: number
     }
     elements: number[]
     attributes: TGDPainterAttribute[]
+    uniforms: TGDPainterUniform[]
     depth: TGDPainterDepth
+    blending: TGDPainterBlending
+}
+
+export interface TGDPainterBlending {
+    enabled: boolean
+    funcSrcRGB: TGDPainterBlendingFunc
+    funcSrcAlpha: TGDPainterBlendingFunc
+    funcDstRGB: TGDPainterBlendingFunc
+    funcDstAlpha: TGDPainterBlendingFunc
+    equaRGB: TGDPainterBlendingEqua
+    equaAlpha: TGDPainterBlendingEqua
+}
+
+export enum TGDPainterBlendingFunc {
+    ZERO,
+    ONE,
+    SRC_COLOR,
+    ONE_MINUS_SRC_COLOR,
+    DST_COLOR,
+    ONE_MINUS_DST_COLOR,
+    SRC_ALPHA,
+    ONE_MINUS_SRC_ALPHA,
+    DST_ALPHA,
+    ONE_MINUS_DST_ALPHA,
+    CONSTANT_COLOR,
+    ONE_MINUS_CONSTANT_COLOR,
+    CONSTANT_ALPHA,
+    ONE_MINUS_CONSTANT_ALPHA,
+    SRC_ALPHA_SATURATE,
+}
+
+export enum TGDPainterBlendingEqua {
+    ADD,
+    SUBTRACT,
+    REVERSE_SUBTRACT,
+    MIN,
+    MAX,
 }
 
 export interface TGDPainterDepth {
@@ -82,9 +126,9 @@ export enum TGDPainterDepthFunc {
     ALWAYS,
 }
 
-export interface TGDShaderAttribute {
+export interface TGDShaderAttributeOrUniform {
     name: string
-    type: "float"
+    type: string
     /**
      * Length of the array. Otherwise it should be 1.
      */
@@ -95,7 +139,7 @@ export interface TGDShaderAttribute {
     dim: number
 }
 
-export interface TGDPainterAttribute extends TGDShaderAttribute {
+export interface TGDPainterAttribute extends TGDShaderAttributeOrUniform {
     /**
      * If not used in a shader, it will be inactive.
      * But we keep it in the object anyway to prevent
@@ -103,6 +147,11 @@ export interface TGDPainterAttribute extends TGDShaderAttribute {
      * has only been commented for a time.
      */
     active: boolean
+    /**
+     * If 0, this is a normal vertex attribute.
+     * If >0, this is an instance attribute.
+     * If <0, this is a loop attribute.
+     */
     divisor: number
     /**
      * 0 means that this is the static group.
@@ -113,6 +162,29 @@ export interface TGDPainterAttribute extends TGDShaderAttribute {
      * Initial data in Float32.
      */
     data: number[]
+}
+
+export type TGDPainterUniformData =
+    | { type: "Texture" }
+    | { type: "Error"; message: string }
+    | { type: "Value"; value: number }
+    | { type: "Slider"; min: number; max: number }
+    | {
+          type:
+              | "Time"
+              | "Random"
+              | "Pointer"
+              | "AspectRatio"
+              | "InverseAspectRatio"
+              | "AspectRatioCover"
+              | "AspectRatioContain"
+              | "VertexCount"
+              | "ElementCount"
+              | "InstanceCount"
+      }
+
+export interface TGDPainterUniform extends TGDShaderAttributeOrUniform {
+    data: TGDPainterUniformData
 }
 
 export type Vector2 = [number, number]

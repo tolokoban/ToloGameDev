@@ -32,7 +32,9 @@ export default function GlslSnippetView(props: GlslSnippetViewProps) {
             for (const key of selectedSnippets) {
                 const content = await fetchText(`lib/glsl-function/${key}.glsl`)
                 blocks.push(content)
-                setCode(blocks.join("\n\n"))
+                const newCode = blocks.map((text) => text.trim()).join("\n")
+                setCode(newCode)
+                navigator.clipboard.writeText(newCode)
             }
         }
         void action()

@@ -1,118 +1,108 @@
-import './combo-view.css'
+import * as React from "react"
+import Label from "../label"
+import { ViewWithChangeableValue } from "../types"
+import "./combo-view.css"
 
-import * as React from 'react'
+export type ComboItems<T> = Array<[key: T, element: React.ReactNode]>
 
-import Modal from '../../modal'
-import Dialog from '../dialog'
-import Label from '../label'
-import ComboItemView from './combo-item/combo-item-view'
-import { Items, useItems } from './hooks'
-
-let globalId = 1
-const ID = 'ui-view-Combo'
-
-function nextId() {
-    return `${ID}-${globalId++}`
-}
-
-export interface ComboViewProps {
+export type ComboViewProps<T> = ViewWithChangeableValue<T> & {
     className?: string
     wide?: boolean
     label?: string
-    value: string
-    onChange(value: string): void
-    children: JSX.Element[]
+    error?: string
+    items: ComboItems<T>
 }
 
-export default function ComboView(props: ComboViewProps) {
-    const items = useItems(props.children)
-    const [value, setValue] = React.useState(props.value)
-    React.useEffect(() => setValue(props.value), [props.value])
-    const refId = React.useRef<string>(nextId())
-    const handleClick = () => {
-        handleChange(value, props, items).then(setValue)
-    }
+export default function ComboView<T = string>(props: ComboViewProps<T>) {
+    const { error, label, items, value, onChange } = props
+    const id = React.useId()
+    const [open, setOpen] = React.useState(false)
+    const selected: React.ReactNode = findSelected(value, items)
+    React.useEffect(() => {
+        if (!open) return
+
+        const handleKeydown = (evt: KeyboardEvent) => {
+            if (evt.key === "Escape") {
+                evt.stopImmediatePropagation()
+                evt.preventDefault()
+                setOpen(false)
+            }
+        }
+        window.document.addEventListener("keydown", handleKeydown, true)
+        return () =>
+            window.document.removeEventListener("keydown", handleKeydown, true)
+    }, [open])
     return (
-        <div className={getClassNames(props)}>
-            <Label target={refId.current} value={props.label} />
-            <ComboItemView
-                onClick={handleClick}
-                wide={props.wide}
-                showButton={true}
-            >
-                {items[value]}
-            </ComboItemView>
-        </div>
+        <>
+            <div className={getClassNames(props)} tabIndex={0}>
+                <Label
+                    value={error ?? label}
+                    target={id}
+                    error={error ? true : false}
+                />
+                <button
+                    className="flex theme-shadow-button"
+                    onClick={() => setOpen(true)}
+                >
+                    <div className="theme-color-input">{selected}</div>
+                    <div className="theme-color-primary">▾</div>
+                </button>
+                <Label className="hide" value={label} target={id} />
+            </div>
+            {open && (
+                <div
+                    className="ui-view-ComboView-overlay"
+                    onClick={() => setOpen(false)}
+                >
+                    <div className="container theme-color-screen">
+                        {label && (
+                            <header className="theme-color-primary-dark">
+                                {label}
+                            </header>
+                        )}
+                        <main>
+                            {items
+                                .filter(([key]) => key !== value)
+                                .map(([key, item]) => (
+                                    <button
+                                        key={`${key}`}
+                                        tabIndex={0}
+                                        onClick={() => {
+                                            setOpen(false)
+                                            onChange(key)
+                                        }}
+                                    >
+                                        {item}
+                                    </button>
+                                ))}
+                        </main>
+                    </div>
+                </div>
+            )}
+        </>
     )
 }
 
-function getClassNames(props: ComboViewProps): string {
-    const classNames = ['custom', 'ui-view-ComboView']
-    if (typeof props.className === 'string') {
+function getClassNames<T>(props: ComboViewProps<T>): string {
+    const classNames = ["custom", "ui-view-ComboView"]
+    if (typeof props.className === "string") {
         classNames.push(props.className)
     }
-    if (props.wide === true) classNames.push('wide')
+    if (props.wide === true) classNames.push("wide")
 
-    return classNames.join(' ')
+    return classNames.join(" ")
 }
 
-async function handleChange(
-    value: string,
-    props: ComboViewProps,
-    items: Items
-): Promise<string> {
-    const newValue = await askForNewValue(value, items, props.label)
-    if (newValue === value) return value
-
-    props.onChange(newValue)
-    return newValue
-}
-
-async function askForNewValue(
-    value: string,
-    items: Items,
-    title?: string
-): Promise<string> {
-    const values = Object.keys(items)
-    if (values.length < 2) return value
-    if (values.length === 2) return getOtherValue(value, values)
-
-    return new Promise((resolve) => {
-        const modal = new Modal({
-            padding: '.5rem',
-            content: (
-                <Dialog
-                    title={title}
-                    onCancel={() => resolve(value)}
-                    hideOK={true}
-                >
-                    <div className="ui-view-ComboView-list">
-                        {Object.keys(items).map((key) => (
-                            <ComboItemView
-                                key={key}
-                                wide={true}
-                                value={key}
-                                showButton={false}
-                                onClick={() => {
-                                    modal.hide()
-                                    resolve(key)
-                                }}
-                            >
-                                {items[key]}
-                            </ComboItemView>
-                        ))}
-                    </div>
-                </Dialog>
-            ),
-        })
-        modal.show()
+function findSelected<T>(
+    value: T,
+    items: [key: T, element: React.ReactNode][]
+): React.ReactNode {
+    const item = items.find((item) => {
+        const [key] = item
+        return key === value
     })
-}
+    if (!item) return null
 
-function getOtherValue(value: string, values: string[]): string {
-    for (const item of values) {
-        if (value !== item) return item
-    }
-    // There is no other value.
-    return value
+    const [_key, node] = item
+    return node
 }

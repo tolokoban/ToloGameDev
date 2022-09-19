@@ -2,7 +2,7 @@ import * as React from "react"
 import Label from "../label"
 import PointerWatcher from "../../watcher/pointer"
 import { PointerWatcherEvent } from "../../watcher/pointer/pointer-watcher"
-import { useRefId } from "../../hooks/id"
+import { useRefId } from "../../hooks/ref-id"
 import "./slider-view.css"
 
 /**

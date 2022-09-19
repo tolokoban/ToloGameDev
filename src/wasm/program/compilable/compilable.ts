@@ -3,6 +3,7 @@ import MemoryManager from "../manager/memory-manager"
 import Wabt from "wabt"
 import { isNumber, isObject } from "../../../tools/type-guards"
 import { stringifyCode } from "../../stringify"
+import { throwError } from "../../../tools/error"
 import {
     InstrCode,
     PartialProgramOptions,
@@ -70,7 +71,7 @@ export default class Compilable extends Internals {
                     )
                     .join("\n")
             )
-            throw Error(ex)
+            throwError(ex)
         }
     }
 }

@@ -6,10 +6,12 @@ import InputInteger from "@/ui/view/input/integer"
 import InputText from "@/ui/view/input/text"
 import Label from "@/ui/view/label"
 import PainterAttributeView from "./painter-attribute"
+import PainterUniformView from "./painter-uniform"
 import { editFloat32Array } from "@/editor/float32array"
 import { editUint16Array } from "@/editor/uint16array"
 import { PainterUpdater } from "../../hooks/painter-updater"
 import { TGDPainter, TGDPainterAttribute } from "@/types"
+import "./data-section.css"
 
 export default function DataSection(props: { updater: PainterUpdater }) {
     const { updater } = props
@@ -17,7 +19,7 @@ export default function DataSection(props: { updater: PainterUpdater }) {
     const handleEditElements = useEditElementsHandler(painter, updater)
     const handleEditAttributeData = useEditAttributeDataHandler(updater)
     return (
-        <div>
+        <div className="view-page-painter-section-Data">
             <h1>Data</h1>
             <Flex wrap="wrap">
                 <InputText
@@ -45,12 +47,29 @@ export default function DataSection(props: { updater: PainterUpdater }) {
                     value={painter.count.element}
                     onChange={updater.setElementCount}
                 />
+                <InputInteger
+                    label="Loops"
+                    size={4}
+                    value={painter.count.loop}
+                    onChange={updater.setLoopCount}
+                />
                 <Button
                     label={`Edit elements (${painter.elements.length})`}
                     icon={IconEdit}
                     onClick={handleEditElements}
                 />
             </Flex>
+            <div className="uniforms">
+                <Label value="Uniform" />
+                <Label value="Type" />
+                {painter.uniforms.map((uni) => (
+                    <PainterUniformView
+                        key={uni.name}
+                        value={uni}
+                        onChange={(upt) => updater.updateUniform(uni.name, upt)}
+                    />
+                ))}
+            </div>
             <div className="attributes">
                 <Label value="Attribute" />
                 <Label value="Divisor" />

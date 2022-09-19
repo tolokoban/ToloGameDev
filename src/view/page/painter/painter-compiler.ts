@@ -1,18 +1,20 @@
 import { getConstName } from "@/tools/webgl/get-const-name"
 import { PainterUpdater } from "./hooks/painter-updater"
-import { TGDShaderAttribute } from "@/types"
+import {
+    TGDPainter,
+    TGDPainterAttribute,
+    TGDShaderAttributeOrUniform,
+} from "@/types"
 
 export default class PainterCompiler {
-    private readonly gl: WebGL2RenderingContext
-
     /**
      * Compiles the shaders and fill the `painter.attributes` array.
      * @returns `null` in case of success. The error message otherwise.
      */
     async compile(updater: PainterUpdater): Promise<void> {
+        const canvas = document.createElement("canvas")
+        const gl = canvas.getContext("webgl2")
         try {
-            const canvas = document.createElement("canvas")
-            const gl = canvas.getContext("webgl2")
             if (!gl) throw Error("Unable to create a WebGL2 context!")
 
             const painter = updater.currentPainter
@@ -25,6 +27,7 @@ export default class PainterCompiler {
                     )
                 }
             }
+            checkAttributes(painter)
             console.log(`const VERT = \`${painter.shader.vert}\``)
             console.log(`const FRAG = \`${painter.shader.frag}\``)
             const prg = createProgram(gl)
@@ -36,15 +39,27 @@ export default class PainterCompiler {
                 throw new Error("Could NOT link WebGL2 program!\n" + info)
             }
             updater.deactivateAttributes()
-            extractAttributes(gl, prg).forEach((att: TGDShaderAttribute) => {
-                const { name } = att
-                updater.updateAttribute(name, {
-                    type: att.type,
-                    dim: att.dim,
-                    size: att.size,
-                    active: true,
-                })
-            })
+            extractAttributes(gl, prg).forEach(
+                (att: TGDShaderAttributeOrUniform) => {
+                    const { name } = att
+                    updater.updateAttribute(name, {
+                        type: att.type,
+                        dim: att.dim,
+                        size: att.size,
+                        active: true,
+                    })
+                }
+            )
+            extractUniforms(gl, prg).forEach(
+                (uni: TGDShaderAttributeOrUniform) => {
+                    const { name } = uni
+                    updater.updateUniform(name, {
+                        type: uni.type,
+                        dim: uni.dim,
+                        size: uni.size,
+                    })
+                }
+            )
             await updater.validate()
         } catch (ex) {
             if (ex instanceof Error) updater.setError(ex.message)
@@ -149,11 +164,37 @@ function getShader(
     return shader
 }
 
+function extractUniforms(
+    gl: WebGL2RenderingContext,
+    prg: WebGLProgram
+): TGDShaderAttributeOrUniform[] {
+    const uniforms: TGDShaderAttributeOrUniform[] = []
+    const count = gl.getProgramParameter(prg, gl.ACTIVE_UNIFORMS) as number
+    for (let index = 0; index < count; index++) {
+        const uni = gl.getActiveUniform(prg, index)
+        if (!uni) continue
+
+        const location = gl.getUniformLocation(prg, uni.name)
+        if (!location) {
+            console.warn("Unused uniform:", uni.name)
+            continue
+        }
+
+        uniforms.push({
+            name: uni.name,
+            type: getConstName(gl, uni.type),
+            size: uni.size,
+            dim: getDimension(gl, uni.type),
+        })
+    }
+    return uniforms
+}
+
 function extractAttributes(
     gl: WebGL2RenderingContext,
     prg: WebGLProgram
-): TGDShaderAttribute[] {
-    const attributes: TGDShaderAttribute[] = []
+): TGDShaderAttributeOrUniform[] {
+    const attributes: TGDShaderAttributeOrUniform[] = []
     const count = gl.getProgramParameter(prg, gl.ACTIVE_ATTRIBUTES) as number
     for (let index = 0; index < count; index++) {
         const att = gl.getActiveAttrib(prg, index)
@@ -191,9 +232,35 @@ function getDimension(gl: WebGLRenderingContext, type: number) {
             return 9
         case gl.FLOAT_MAT4:
             return 16
+        case gl.SAMPLER_2D:
+            return 1
         default:
             throw Error(
                 `Don't know how to deal with type "${getConstName(gl, type)}"!`
             )
     }
 }
+
+function checkAttributes(painter: TGDPainter) {
+    const instanceAttributes: TGDPainterAttribute[] = []
+    const staticAttributes: TGDPainterAttribute[] = []
+    for (const att of painter.attributes) {
+        if (att.divisor > 0) instanceAttributes.push(att)
+        else if (att.divisor < 0) staticAttributes.push(att)
+    }
+    if (instanceAttributes.length > 0 && painter.count.instance <= 0) {
+        throw Error(
+            `You have instance attributes, but your instances count is zero: ${instanceAttributes
+                .map((att) => att.name)
+                .join(", ")}!`
+        )
+    }
+    if (staticAttributes.length > 0 && painter.count.loop <= 0) {
+        throw Error(
+            `You have static attributes, but your loop count is zero: ${staticAttributes
+                .map((att) => att.name)
+                .join(", ")}!`
+        )
+    }
+}
+

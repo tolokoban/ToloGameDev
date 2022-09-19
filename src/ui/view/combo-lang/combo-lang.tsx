@@ -1,10 +1,9 @@
-import './combo-lang.css'
+import * as React from "react"
+import Combo from "../combo"
+import { ComboItems } from "../combo/combo-view"
+import "./combo-lang.css"
 
-import * as React from 'react'
-
-import Combo from '../combo'
-
-const Languages = require('./languages.json') as { [key: string]: string }
+const Languages = require("./languages.json") as { [key: string]: string }
 
 interface IComboLangProps {
     // Array selectable languages.
@@ -43,7 +42,7 @@ export default function ComboLang(props: IComboLangProps) {
                   .sort(comparator),
           ]
     return (
-        <Combo
+        <Combo<string>
             label={props.label}
             wide={props.wide}
             value={value}
@@ -51,9 +50,8 @@ export default function ComboLang(props: IComboLangProps) {
                 setValue(v)
                 if (props.onChange) props.onChange(v)
             }}
-        >
-            {convertToItems(getLanguages(sortedCodes))}
-        </Combo>
+            items={convertToItems(getLanguages(sortedCodes))}
+        />
     )
 }
 
@@ -70,17 +68,23 @@ function getLanguages(languageCodes: string[] | undefined) {
     return narrowedLanguages
 }
 
-function makeComboItem(code: string, languages: { [key: string]: string }) {
+function makeComboItem(
+    code: string,
+    languages: { [key: string]: string }
+): [string, React.ReactNode] {
     const name = languages[code] ?? `<unknown: ${code}>`
-    return (
+    return [
+        code,
         <div className="ui-view-ComboLang-item" key={code}>
             <div>{name}</div>
             <div>{code}</div>
-        </div>
-    )
+        </div>,
+    ]
 }
 
-function convertToItems(languages: { [key: string]: string }): JSX.Element[] {
+function convertToItems(languages: {
+    [key: string]: string
+}): ComboItems<string> {
     const languagesCodes = Object.keys(languages)
     const elements = languagesCodes.map((code: string) =>
         makeComboItem(code, languages)

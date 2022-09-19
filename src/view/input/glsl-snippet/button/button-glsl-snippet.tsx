@@ -19,9 +19,9 @@ export default function ButtonGlslSnippet(props: ButtonGlslSnippetProps) {
             wide={true}
             onClick={() => props.onChange(!value)}
         >
+            <div>{label}</div>
             {value && <IconChecked />}
             {!value && <IconUnchecked />}
-            <div>{label}</div>
         </Touchable>
     )
 }

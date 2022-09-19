@@ -2,6 +2,10 @@ import * as React from "react"
 import { getDataService } from "@/factory/data-service"
 import { makeTGDPainter } from "@/factory/painter"
 import {
+    TGDPainterBlending,
+    TGDPainterUniform,
+    TGDPainterUniformData,
+    TGDShaderAttributeOrUniform,
     TGDPainter,
     TGDPainterAttribute,
     TGDPainterDepth,
@@ -147,6 +151,13 @@ export class PainterUpdater {
             count: { ...painter.count, element },
         })
     }
+    public readonly setLoopCount = (loop: number) => {
+        const painter = this.currentPainter
+        this.setCurrentPainter({
+            ...painter,
+            count: { ...painter.count, loop },
+        })
+    }
     public readonly updateAttribute = (
         name: string,
         update: Omit<Partial<TGDPainterAttribute>, "name">
@@ -161,6 +172,29 @@ export class PainterUpdater {
             attributes: painter.attributes.map((att) =>
                 att.name === name ? updatedAttribute : att
             ),
+        })
+    }
+    public readonly updateUniform = (
+        name: string,
+        update: Omit<Partial<TGDPainterUniform>, "name">
+    ) => {
+        const painter: TGDPainter = this.currentPainter
+        const updatedUniform: TGDPainterUniform = {
+            ...this.getOrCreateUniform(name),
+            ...update,
+        }
+        this.setCurrentPainter({
+            ...painter,
+            uniforms: painter.uniforms.map((uni) =>
+                uni.name === name ? updatedUniform : uni
+            ),
+        })
+    }
+    public readonly updateBlending = (update: Partial<TGDPainterBlending>) => {
+        const painter: TGDPainter = this.currentPainter
+        this.setCurrentPainter({
+            ...painter,
+            blending: { ...painter.blending, ...update },
         })
     }
     public readonly updateDepth = (update: Partial<TGDPainterDepth>) => {
@@ -218,4 +252,52 @@ export class PainterUpdater {
         this.currentPainter.attributes.push(newAtt)
         return newAtt
     }
+
+    private getOrCreateUniform(name: string): TGDPainterUniform {
+        const uni = this.currentPainter.uniforms.find((a) => a.name === name)
+        if (uni) return uni
+
+        const newUni: TGDPainterUniform = {
+            name,
+            type: "FLOAT",
+            size: 1,
+            dim: 1,
+            data: getUniformDataFromName(name),
+        }
+        this.currentPainter.uniforms.push(newUni)
+        return newUni
+    }
 }
+
+function getUniformDataFromName(name: string): TGDPainterUniformData {
+    switch (name) {
+        case "uniTime":
+        case "uniPointer":
+        case "uniAspectRatio":
+        case "uniInverseAspectRatio":
+        case "uniAspectRatioCover":
+        case "uniAspectRatioContain":
+        case "uniVertexCount":
+        case "uniElementCount":
+        case "uniInstanceCount":
+            return {
+                type: name.substring("uni".length),
+            } as TGDPainterUniformData
+        default:
+            return { type: "Value", value: 0 }
+    }
+}
+
+function figureOutUniformData(
+    type: string,
+    dim: number
+): TGDPainterUniformData {
+    switch (type) {
+        default:
+            return {
+                type: "Error",
+                message: `Don't know how to deal with uniforms of type "${type}"!`,
+            }
+    }
+}
+

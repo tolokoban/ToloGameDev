@@ -14,7 +14,7 @@ export function makeIconView(value: string, name?: string): Icon {
     const rendererFromCache = iconsRenderers.get(value)
     if (rendererFromCache) return rendererFromCache
 
-    const renderer: Icon = (props: Omit<GenericIconProps, "value">) => (
+    const renderer: Icon = (props?: Omit<GenericIconProps, "value">) => (
         <GenericIcon {...props} value={value} />
     )
     renderer.id = name ?? value

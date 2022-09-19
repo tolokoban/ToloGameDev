@@ -1,4 +1,5 @@
 import * as React from "react"
+import Blending from "./blending"
 import Depth from "./depth"
 import DrawModeInput from "@/view/input/draw-mode/draw-mode-input"
 import { PainterUpdater } from "../../hooks/painter-updater"
@@ -16,6 +17,7 @@ export default function ModeSection(props: ModeSectionProps) {
         <div className={getClassNames(props)}>
             <DrawModeInput value={painter.mode} onChange={updater.setMode} />
             <Depth updater={updater} />
+            <Blending updater={updater} />
         </div>
     )
 }

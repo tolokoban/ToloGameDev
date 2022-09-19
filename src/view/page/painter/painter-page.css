@@ -33,13 +33,6 @@
     margin: 0;
 }
 
-.view-page-PainterPage main div.attributes {
-    display: grid;
-    gap: 0 0.5em;
-    grid-template-columns: auto auto 1fr;
-    place-items: center stretch;
-}
-
 .view-page-PainterPage main div.uniforms-grid {
     display: grid;
     grid-template-columns: auto 1fr;
@@ -67,4 +60,15 @@
 .view-page-PainterPage main pre.export {
     max-width: 50vw;
     white-space: pre-wrap;
+}
+
+.view-page-PainterPage fieldset {
+    margin: 0;
+}
+
+.view-page-PainterPage fieldset > legend {
+    background: var(--background);
+    padding: 0.25em 0.5em;
+    border-radius: 0.25em;
+    font-weight: bolder;
 }

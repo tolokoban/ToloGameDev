@@ -2,7 +2,7 @@ import * as React from "react"
 import MainPage from "../view/page/main"
 import Pages from "@/view/page/pages"
 import PainterPage from "../view/page/painter"
-import { TGDObject, TGDPainter } from "../types"
+import { TGDObject } from "../types"
 import "./app.css"
 
 const PAGE_MAIN = "main"

@@ -1,4 +1,3 @@
-import MemoryManager from "../../manager/memory-manager"
 import Program from "../../program"
 import { maxType } from "./max-type"
 import { parseTokens, Token } from "./lexer"
@@ -24,28 +23,31 @@ interface TreeNodeErr extends TreeNodeCommon {
     index: number
 }
 
+export type TreeNodeOpeCode =
+    | "?"
+    | "add"
+    | "sub"
+    | "mul"
+    | "div"
+    | "and"
+    | "or"
+    | "xor"
+    | "lt"
+    | "gt"
+    | "le"
+    | "ge"
+    | "lt_u"
+    | "gt_u"
+    | "le_u"
+    | "ge_u"
+    | "lt_s"
+    | "gt_s"
+    | "le_s"
+    | "ge_s"
+
 export interface TreeNodeOpe extends TreeNodeCommon {
     kind: "ope"
-    code:
-        | "add"
-        | "sub"
-        | "mul"
-        | "div"
-        | "and"
-        | "or"
-        | "xor"
-        | "lt"
-        | "gt"
-        | "le"
-        | "ge"
-        | "lt_u"
-        | "gt_u"
-        | "le_u"
-        | "ge_u"
-        | "lt_s"
-        | "gt_s"
-        | "le_s"
-        | "ge_s"
+    code: TreeNodeOpeCode
     a: TreeNode
     b: TreeNode
 }
@@ -92,7 +94,7 @@ interface TreeNodeMemory extends TreeNodeCommon {
     bpe: number
 }
 
-const OPE_CODES = {
+const OPE_CODES: { [key: string]: TreeNodeOpeCode } = {
     "+": "add",
     "-": "sub",
     "*": "mul",

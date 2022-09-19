@@ -8,7 +8,7 @@ out vec3 varColor;
 void main() {
     float strength = 0.5 + 0.5 * cos(uniTime * 0.001);
     varColor = attColor * strength;
-    gl_Position = vec4(attPoint, 0.0, 0.0);
+    gl_Position = vec4(attPoint, 0.0, 1.0);
 }
 
 /**

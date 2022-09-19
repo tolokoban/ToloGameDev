@@ -3,7 +3,7 @@ import StarIcon from "../icons/star"
 import { getSizeStyle } from "../_common"
 import { Icon } from "../icons/generic"
 import { useChangeableValue } from "../../hooks/changeable-value"
-import { useRefId } from "../../hooks/id"
+import { useRefId } from "../../hooks/ref-id"
 import "./rating-view.css"
 import {
     View,

@@ -1,4 +1,4 @@
-type Action = (...args: any[]) => void | Promise<void>
+type Action<T extends unknown[]> = (...args: T) => void | Promise<void>
 
 /**
  * The function to call as much as you want. It will perform the debouce for you.
@@ -8,22 +8,22 @@ type Action = (...args: any[]) => void | Promise<void>
  * less than `delay` ms between them.
  * * delay - Number of milliseconds.
  */
-export default function <T extends Array<any>>(
-    action: (...args: T) => (void | Promise<void>),
+export default function <T extends unknown[]>(
+    action: (...args: T) => void | Promise<void>,
     delay: number
 ): (...args: T) => void {
     let timer = 0
     let timestamp = 0
-    let nextAction: Action = () => {
+    let nextAction: Action<T> = () => {
         /* Empty action*/
     }
-    let nextArgs: any[] = []
+    let nextArgs: unknown[] = []
     const throttleAction = () => {
         timer = 0
-        nextAction(...nextArgs)
+        nextAction(...(nextArgs as T))
     }
 
-    return function (this: { delay: number }, ...args: any[]) {
+    return function (this: { delay: number }, ...args: T) {
         nextAction = action
         nextArgs = args
         const now = Date.now()

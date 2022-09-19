@@ -7,12 +7,14 @@ type SetFunc<T extends WasmType> = (
 ) => Instruction<"void">
 
 export default class Set {
-    readonly i32: SetFunc<"i32" | "bool">
+    readonly bool: SetFunc<"bool">
+    readonly i32: SetFunc<"i32">
     readonly i64: SetFunc<"i64">
     readonly f32: SetFunc<"f32">
     readonly f64: SetFunc<"f64">
 
     constructor(prg: Program) {
+        this.bool = make("bool", prg)
         this.i32 = make("i32", prg)
         this.i64 = make("i64", prg)
         this.f32 = make("f32", prg)

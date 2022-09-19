@@ -37,6 +37,7 @@ module.exports = {
         enforceExtension: false,
         alias: {
             "@": Path.resolve(__dirname, "src"),
+            "react/jsx-runtime": require.resolve("react/jsx-runtime"),
             react: require.resolve("react"),
         },
         fallback: { path: false, fs: false },

@@ -56,7 +56,10 @@ class PointerWatcher {
         this.element = element
         if (!element) return
 
-        element.addEventListener("pointerdown", this.handlePointerDown)
+        element.addEventListener(
+            "pointerdown",
+            this.handlePointerDown as (evt: Event) => void
+        )
         element.addEventListener("contextmenu", this.handleContextMenu)
     }
 
@@ -64,7 +67,10 @@ class PointerWatcher {
         const { element } = this
         if (!element) return
 
-        element.removeEventListener("pointerdown", this.handlePointerDown)
+        element.removeEventListener(
+            "pointerdown",
+            this.handlePointerDown as (evt: Event) => void
+        )
         element.removeEventListener("contextmenu", this.handleContextMenu)
     }
 
