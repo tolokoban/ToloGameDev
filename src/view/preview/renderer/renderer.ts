@@ -2,7 +2,6 @@ import PointerWatcher from "../../../watcher/pointer/pointer-watcher"
 import Resizer from "./resizer"
 import Texture from "./texture"
 import { attachAttributes } from "./attach-attributes"
-import { AttributeDataEditorViewProps } from "./../../../../dist/view/page/painter/attribute-data-editor/attribute-data-editor-view.d"
 import { createAndFillArrayBuffer } from "./create-and-fill-array-buffer"
 import { createAndFillElementArrayBuffer } from "./create-and-fill-element-array-buffer"
 import { createProgram } from "@/tools/webgl/create-program"
@@ -10,6 +9,11 @@ import { createVertexArray } from "@/tools/webgl/create-vertex-array"
 import { createWebGL2Context } from "./create-webgl2-context"
 import { divideAttributes } from "./divide-attributes"
 import { getDrawMode } from "./get-draw-mode"
+import {
+    makeUniformSetter,
+    UniformSetter,
+    UniformSetterContext,
+} from "./uniforms"
 import {
     TGDPainter,
     TGDPainterAttribute,
@@ -25,20 +29,14 @@ interface AttributeWithLocation extends TGDPainterAttribute {
 
 export default class Renderer {
     public readonly ID = globalId++
+
     private readonly gl: WebGL2RenderingContext
+    private readonly uniformSetterContext: UniformSetterContext
     private readonly prg: WebGLProgram
     private readonly arrayBuffers: WebGLBuffer[] = []
     private readonly elementArrayBuffer: WebGLBuffer
     private readonly vertexArray: WebGLVertexArrayObject
-    private readonly uniTime: WebGLUniformLocation | null
-    private readonly uniInverseAspectRatio: WebGLUniformLocation | null
-    private readonly uniAspectRatio: WebGLUniformLocation | null
-    private readonly uniAspectRatioContain: WebGLUniformLocation | null
-    private readonly uniAspectRatioCover: WebGLUniformLocation | null
-    private readonly uniVertexCount: WebGLUniformLocation | null
-    private readonly uniElementCount: WebGLUniformLocation | null
-    private readonly uniInstanceCount: WebGLUniformLocation | null
-    private readonly uniPointer: WebGLUniformLocation | null
+    private readonly uniformSetters: UniformSetter[] = []
     private readonly textures: Texture[] = []
     /**
      * Drawing mode: gl.POINTS, gl.LINES, gl.TRIANGLE_FAN, ...
@@ -57,6 +55,19 @@ export default class Renderer {
         const gl = createWebGL2Context(canvas, {
             depth: painter.depth.enabled,
         })
+        this.uniformSetterContext = {
+            gl,
+            time: 0,
+            elementCount: painter.count.element,
+            instanceCount: painter.count.instance,
+            vertexCount: painter.count.vertex,
+            aspectRatio: 1,
+            inverseAspectRatio: 1,
+            aspectRatioContain: new Float32Array([1, 1]),
+            aspectRatioCover: new Float32Array([1, 1]),
+            pointer: new Float32Array(4),
+            textureSlots: 0,
+        }
         this.gl = gl
         this.mode = getDrawMode(gl, painter.mode)
         this.prg = createProgram(gl, {
@@ -87,33 +98,13 @@ export default class Renderer {
             const loc = gl.getUniformLocation(this.prg, uni.name)
             if (!loc) continue
 
-            this.textures.push(new Texture(gl, loc))
+            this.uniformSetters.push(
+                makeUniformSetter(loc, uni.data, this.uniformSetterContext)
+            )
+            if (uni.data.type === "Texture") {
+                this.textures.push(new Texture(gl, loc))
+            }
         }
-
-        this.uniTime = gl.getUniformLocation(this.prg, "uniTime")
-        this.uniInverseAspectRatio = gl.getUniformLocation(
-            this.prg,
-            "uniInverseAspectRatio"
-        )
-        this.uniAspectRatio = gl.getUniformLocation(this.prg, "uniAspectRatio")
-        this.uniAspectRatioCover = gl.getUniformLocation(
-            this.prg,
-            "uniAspectRatioCover"
-        )
-        this.uniAspectRatioContain = gl.getUniformLocation(
-            this.prg,
-            "uniAspectRatioContain"
-        )
-        this.uniVertexCount = gl.getUniformLocation(this.prg, "uniVertexCount")
-        this.uniElementCount = gl.getUniformLocation(
-            this.prg,
-            "uniElementCount"
-        )
-        this.uniInstanceCount = gl.getUniformLocation(
-            this.prg,
-            "uniInstanceCount"
-        )
-        this.uniPointer = gl.getUniformLocation(this.prg, "uniPointer")
         if (painter.depth.enabled) {
             gl.enable(gl.DEPTH_TEST)
             gl.clearDepth(painter.depth.clear)
@@ -163,7 +154,16 @@ export default class Renderer {
         resizer.check(gl)
         gl.clearColor(0, 0, 0, 1)
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT)
-        this.setUniformValues(time)
+        this.uniformSetterContext.time = time
+        this.uniformSetterContext.pointer = this.pointer.value
+        this.uniformSetterContext.aspectRatio = resizer.ratio
+        this.uniformSetterContext.inverseAspectRatio = resizer.inverseRatio
+        this.uniformSetterContext.aspectRatioContain = resizer.contain
+        this.uniformSetterContext.aspectRatioCover = resizer.cover
+        for (const uniformSetter of this.uniformSetters) {
+            uniformSetter(this.uniformSetterContext)
+        }
+        for (let i = 0; i < this.textures.length; i++) {}
         gl.bindVertexArray(vertexArray)
         for (let loop = 0; loop < painter.count.loop; loop++) {
             setStaticVertexValues(gl, loop, this.staticAttributes)
@@ -198,26 +198,6 @@ export default class Renderer {
             }
         }
         gl.bindVertexArray(null)
-    }
-
-    private setUniformValues(time: number) {
-        const { gl, resizer, painter } = this
-        if (this.uniTime) gl.uniform1f(this.uniTime, time)
-        if (this.uniAspectRatio)
-            gl.uniform1f(this.uniAspectRatio, resizer.ratio)
-        if (this.uniInverseAspectRatio)
-            gl.uniform1f(this.uniInverseAspectRatio, resizer.inverseRatio)
-        if (this.uniAspectRatioContain)
-            gl.uniform2fv(this.uniAspectRatioContain, resizer.contain)
-        if (this.uniAspectRatioCover)
-            gl.uniform2fv(this.uniAspectRatioCover, resizer.cover)
-        if (this.uniVertexCount)
-            gl.uniform1f(this.uniVertexCount, painter.count.vertex)
-        if (this.uniElementCount)
-            gl.uniform1f(this.uniElementCount, painter.count.element)
-        if (this.uniInstanceCount)
-            gl.uniform1f(this.uniInstanceCount, painter.count.instance)
-        if (this.uniPointer) gl.uniform4fv(this.uniPointer, this.pointer.value)
     }
 }
 

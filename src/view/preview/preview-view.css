@@ -15,3 +15,10 @@
     margin: 0;
     box-sizing: border-box;
 }
+
+.view-PreviewView div.uniforms {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1em;
+    align-items: center flex-start;
+}

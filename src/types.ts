@@ -168,7 +168,7 @@ export type TGDPainterUniformData =
     | { type: "Texture" }
     | { type: "Error"; message: string }
     | { type: "Value"; value: number }
-    | { type: "Slider"; min: number; max: number }
+    | { type: "Slider"; min: number; max: number; value: number }
     | {
           type:
               | "Time"

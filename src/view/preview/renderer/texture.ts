@@ -25,7 +25,8 @@ export default class Texture {
             gl.UNSIGNED_BYTE,
             new Uint8Array([0, 0, 255, 255])
         )
-
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
         // Asynchronously load an image
         var image = new Image()
         image.src = ImageURL

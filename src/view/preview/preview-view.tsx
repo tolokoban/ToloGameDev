@@ -1,7 +1,9 @@
 import * as React from "react"
 import Button from "@/ui/view/button"
 import Flex from "@/ui/view/flex"
+import InputFloat from "@/ui/view/input/float"
 import Renderer from "./renderer"
+import Slider from "@/ui/view/slider"
 import { TGDPainter } from "@/types"
 import { useDebouncedEffect } from "@/ui/hooks"
 import "./preview-view.css"
@@ -48,6 +50,44 @@ export default function PreviewView(props: PreviewViewProps) {
                 />
             </Flex>
             <canvas ref={refCanvas} className="theme-shadow-card"></canvas>
+            {props.painter && (
+                <div className="uniforms">
+                    {props.painter.uniforms.map((uni) => {
+                        switch (uni.data.type) {
+                            case "Value":
+                                const dataValue = uni.data
+                                return (
+                                    <>
+                                        <div>{uni.name}</div>
+                                        <InputFloat
+                                            value={dataValue.value}
+                                            onChange={(value) =>
+                                                (dataValue.value = value)
+                                            }
+                                        />
+                                    </>
+                                )
+                            case "Slider":
+                                const dataSlider = uni.data
+                                return (
+                                    <>
+                                        <div>{uni.name}</div>
+                                        <Slider
+                                            min={dataSlider.min}
+                                            max={dataSlider.max}
+                                            value={dataSlider.value}
+                                            onChange={(value) =>
+                                                (dataSlider.value = value)
+                                            }
+                                        />
+                                    </>
+                                )
+                            default:
+                                return null
+                        }
+                    })}
+                </div>
+            )}
         </div>
     )
 }
