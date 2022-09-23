@@ -16,7 +16,7 @@ export interface RunnableViewProps {
 export default function RunnableView(props: RunnableViewProps) {
     return (
         <div className={getClassNames(props)}>
-            <div className="children">{props.children}</div>
+            {props.children}
             <div className="overlay">
                 <svg viewBox="0 0 24 24">
                     <path

@@ -1,6 +1,7 @@
 import * as React from "react"
 import { getDataService } from "@/factory/data-service"
 import { makeTGDPainter } from "@/factory/painter"
+import { WEBGL2 } from "@/tgd/constants"
 import {
     TGDPainterBlending,
     TGDPainterUniform,
@@ -9,8 +10,6 @@ import {
     TGDPainter,
     TGDPainterAttribute,
     TGDPainterDepth,
-    TGDPainterDepthFunc,
-    TGDPainterMode,
 } from "@/types"
 
 export function usePainterUpdater(initialValue?: TGDPainter) {
@@ -124,7 +123,7 @@ export class PainterUpdater {
             },
         })
     }
-    public readonly setMode = (mode: TGDPainterMode) => {
+    public readonly setMode = (mode: keyof typeof WEBGL2.drawPrimitive) => {
         this.setCurrentPainter({
             ...this.currentPainter,
             mode,
@@ -213,7 +212,7 @@ export class PainterUpdater {
     public readonly setDepthMask = (mask: boolean) => {
         this.updateDepth({ mask })
     }
-    public readonly setDepthFunc = (func: TGDPainterDepthFunc) => {
+    public readonly setDepthFunc = (func: keyof typeof WEBGL2.depthFunc) => {
         this.updateDepth({ func })
     }
     public readonly setDepthRangeNear = (near: number) => {

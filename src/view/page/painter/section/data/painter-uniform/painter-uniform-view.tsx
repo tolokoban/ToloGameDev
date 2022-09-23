@@ -1,9 +1,15 @@
 import * as React from "react"
 import Combo from "@/ui/view/combo"
+import PainterUniformEdit from "./painter-uniform-edit"
+import PainterUniformSummary from "./painter-uniform-summary"
 import { ComboItems } from "@/ui/view/combo/combo-view"
-import { TGDPainterUniform, TGDPainterUniformData } from "@/types"
 import { valueToPercent } from "@mui/base"
 import "./painter-uniform-view.css"
+import {
+    TGDPainterUniform,
+    TGDPainterUniformData,
+    TGDPainterUniformDataType,
+} from "@/types"
 
 export interface PainterUniformViewProps {
     className?: string
@@ -18,18 +24,23 @@ export default function PainterUniformView(props: PainterUniformViewProps) {
             <div className={getClassNames(props)} title={props.value.type}>
                 {props.value.name}
             </div>
-            <div className={getClassNames(props)}>
+            <div className={getClassNames(props, "value")}>
                 <Combo
                     value={props.value.data.type}
                     items={items}
                     onChange={(type) =>
                         props.onChange({
                             ...props.value,
-                            data: {
-                                ...props.value.data,
-                                type,
-                            } as TGDPainterUniformData,
+                            data: makeData(props.value.data, type),
                         })
+                    }
+                />
+                <PainterUniformSummary value={props.value.data} />
+                <PainterUniformEdit
+                    name={props.value.name}
+                    value={props.value.data}
+                    onChange={(data: any) =>
+                        props.onChange({ ...props.value, data })
                     }
                 />
             </div>
@@ -37,10 +48,14 @@ export default function PainterUniformView(props: PainterUniformViewProps) {
     )
 }
 
-function getClassNames(props: PainterUniformViewProps): string {
+function getClassNames(
+    props: PainterUniformViewProps,
+    extraClasses = ""
+): string {
     const classNames = [
         "custom",
         "view-page-painter-section-data-PainterUniformView",
+        extraClasses,
     ]
     if (typeof props.className === "string") {
         classNames.push(props.className)
@@ -88,3 +103,33 @@ function filterItemsByType(type: string): ComboItems<string> {
               ],
           ]
 }
+
+function makeData(
+    data: TGDPainterUniformData,
+    type: string
+): TGDPainterUniformData {
+    if (data.type === type) return data
+
+    const dic = data as { [key: string]: unknown }
+    switch (type) {
+        case "Value":
+            return {
+                type,
+                value: defaultNumber(dic.value, 1),
+            }
+        case "Slider":
+            return {
+                type,
+                min: defaultNumber(dic.min, 0),
+                max: defaultNumber(dic.max, 1),
+                value: defaultNumber(dic.value, 0.5),
+            }
+        default:
+            return { type } as TGDPainterUniformData
+    }
+}
+
+function defaultNumber(value: unknown, defaultValue: number): number {
+    return typeof value === "number" ? value : defaultValue
+}
+

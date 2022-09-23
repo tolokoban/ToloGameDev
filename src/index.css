@@ -22,7 +22,13 @@ body {
 fieldset {
     display: inline-block;
     border: 1px solid var(--theme-color-on-screen-opacity-50);
+    background: var(--theme-color-screen-opacity-50);
+    color: var(--theme-color-on-screen);
     border-radius: 1em;
+}
+
+fieldset.wide {
+    display: block;
 }
 
 fieldset > legend {
@@ -41,7 +47,9 @@ body > div#app {
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
 }
 
 header {

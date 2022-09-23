@@ -1,12 +1,6 @@
 import FragmentShader from "./painter.frag"
 import VertexShader from "./painter.vert"
-import {
-    TGDPainter,
-    TGDPainterDepthFunc,
-    TGDPainterMode,
-    TGDPainterBlendingEqua,
-    TGDPainterBlendingFunc,
-} from "@/types"
+import { TGDPainter } from "@/types"
 
 export function makeTGDPainter(): TGDPainter {
     const A = Math.sqrt(3) / 2
@@ -19,7 +13,7 @@ export function makeTGDPainter(): TGDPainter {
             vert: VertexShader,
             frag: FragmentShader,
         },
-        mode: TGDPainterMode.TRIANGLES,
+        mode: "TRIANGLES",
         elements: [],
         count: {
             instance: 0,
@@ -50,21 +44,22 @@ export function makeTGDPainter(): TGDPainter {
             },
         ],
         uniforms: [],
+        textures: [],
         depth: {
             enabled: true,
             clear: 1,
-            func: TGDPainterDepthFunc.LESS,
+            func: "LESS",
             mask: true,
             range: { near: 0, far: 1 },
         },
         blending: {
             enabled: false,
-            equaRGB: TGDPainterBlendingEqua.ADD,
-            equaAlpha: TGDPainterBlendingEqua.ADD,
-            funcSrcRGB: TGDPainterBlendingFunc.ONE,
-            funcSrcAlpha: TGDPainterBlendingFunc.ONE,
-            funcDstRGB: TGDPainterBlendingFunc.ZERO,
-            funcDstAlpha: TGDPainterBlendingFunc.ZERO,
+            equaRGB: "FUNC_ADD",
+            equaAlpha: "FUNC_ADD",
+            funcSrcRGB: "ONE",
+            funcSrcAlpha: "ONE",
+            funcDstRGB: "ZERO",
+            funcDstAlpha: "ZERO",
         },
     }
     return painter

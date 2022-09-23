@@ -1,0 +1,6 @@
+.view-page-painter-header-PainterHeader div.section-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: .5em;
+}

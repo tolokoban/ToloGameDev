@@ -1,1 +1,1 @@
-export { default } from './combo-view'
+export { default, ComboItems } from "./combo-view"

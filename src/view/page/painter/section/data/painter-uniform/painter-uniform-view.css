@@ -1,1 +1,9 @@
-.view-page-painter-section-data-PainterUniformView {}
+.view-page-painter-section-data-PainterUniformView.value {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.view-page-painter-section-data-PainterUniformView.value > * {
+    flex: 0 0 auto;
+}

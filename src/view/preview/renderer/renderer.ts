@@ -8,18 +8,12 @@ import { createProgram } from "@/tools/webgl/create-program"
 import { createVertexArray } from "@/tools/webgl/create-vertex-array"
 import { createWebGL2Context } from "./create-webgl2-context"
 import { divideAttributes } from "./divide-attributes"
-import { getDrawMode } from "./get-draw-mode"
+import { TGDPainter, TGDPainterAttribute } from "@/types"
 import {
     makeUniformSetter,
     UniformSetter,
     UniformSetterContext,
 } from "./uniforms"
-import {
-    TGDPainter,
-    TGDPainterAttribute,
-    TGDPainterBlendingEqua,
-    TGDPainterBlendingFunc,
-} from "@/types"
 
 let globalId = 1
 
@@ -45,6 +39,7 @@ export default class Renderer {
     private readonly resizer = new Resizer()
     private readonly pointer = new PointerWatcher()
     private readonly staticAttributes: AttributeWithLocation[] = []
+    private readonly glConstMap = new Map<string, number>()
     private playing = true
 
     constructor(
@@ -69,7 +64,7 @@ export default class Renderer {
             textureSlots: 0,
         }
         this.gl = gl
-        this.mode = getDrawMode(gl, painter.mode)
+        this.mode = this.GL(painter.mode)
         this.prg = createProgram(gl, {
             vert: painter.shader.vert,
             frag: painter.shader.frag,
@@ -108,7 +103,7 @@ export default class Renderer {
         if (painter.depth.enabled) {
             gl.enable(gl.DEPTH_TEST)
             gl.clearDepth(painter.depth.clear)
-            gl.depthFunc(painter.depth.func)
+            gl.depthFunc(this.GL(painter.depth.func))
             gl.depthMask(painter.depth.mask)
             gl.depthRange(painter.depth.range.near, painter.depth.range.far)
         } else {
@@ -117,19 +112,34 @@ export default class Renderer {
         if (painter.blending.enabled) {
             gl.enable(gl.BLEND)
             gl.blendEquationSeparate(
-                getBlendEquation(gl, painter.blending.equaRGB),
-                getBlendEquation(gl, painter.blending.equaAlpha)
+                this.GL(painter.blending.equaRGB),
+                this.GL(painter.blending.equaAlpha)
             )
             gl.blendFuncSeparate(
-                superTogetBlendFunction(gl, painter.blending.funcSrcRGB),
-                superTogetBlendFunction(gl, painter.blending.funcDstRGB),
-                superTogetBlendFunction(gl, painter.blending.funcSrcAlpha),
-                superTogetBlendFunction(gl, painter.blending.funcDstAlpha)
+                this.GL(painter.blending.funcSrcRGB),
+                this.GL(painter.blending.funcDstRGB),
+                this.GL(painter.blending.funcSrcAlpha),
+                this.GL(painter.blending.funcDstAlpha)
             )
         } else {
             gl.disable(gl.BLEND)
         }
         window.requestAnimationFrame(this.paint)
+    }
+
+    private GL(name: string): number {
+        const { glConstMap } = this
+        if (glConstMap.size === 0) {
+            const dic = this.gl as unknown as { [key: string]: unknown }
+            for (const key in this.gl) {
+                const val: unknown = dic[key]
+                if (typeof val === "number") glConstMap.set(key, val)
+            }
+        }
+        const value = glConstMap.get(name)
+        if (typeof value !== "number")
+            throw Error(`There is no constant "${name}" in WebGL2!`)
+        return value
     }
 
     destroy() {
@@ -238,62 +248,4 @@ function setStaticVertexValues(
                 break
         }
     }
-}
-
-function getBlendEquation(
-    gl: WebGL2RenderingContext,
-    equa: TGDPainterBlendingEqua
-): number {
-    switch (equa) {
-        case TGDPainterBlendingEqua.ADD:
-            return gl.FUNC_ADD
-        case TGDPainterBlendingEqua.SUBTRACT:
-            return gl.FUNC_SUBTRACT
-        case TGDPainterBlendingEqua.REVERSE_SUBTRACT:
-            return gl.FUNC_REVERSE_SUBTRACT
-        case TGDPainterBlendingEqua.MIN:
-            return gl.MIN
-        case TGDPainterBlendingEqua.MAX:
-            return gl.MAX
-    }
-    throw Error(`Unknown equation: ${TGDPainterBlendingEqua[equa]}!`)
-}
-
-function superTogetBlendFunction(
-    gl: WebGL2RenderingContext,
-    func: TGDPainterBlendingFunc
-): number {
-    switch (func) {
-        case TGDPainterBlendingFunc.ZERO:
-            return gl.ZERO
-        case TGDPainterBlendingFunc.ONE:
-            return gl.ONE
-        case TGDPainterBlendingFunc.SRC_COLOR:
-            return gl.SRC_COLOR
-        case TGDPainterBlendingFunc.ONE_MINUS_SRC_COLOR:
-            return gl.ONE_MINUS_SRC_COLOR
-        case TGDPainterBlendingFunc.DST_COLOR:
-            return gl.DST_COLOR
-        case TGDPainterBlendingFunc.ONE_MINUS_DST_COLOR:
-            return gl.ONE_MINUS_DST_COLOR
-        case TGDPainterBlendingFunc.SRC_ALPHA:
-            return gl.SRC_ALPHA
-        case TGDPainterBlendingFunc.ONE_MINUS_SRC_ALPHA:
-            return gl.ONE_MINUS_SRC_ALPHA
-        case TGDPainterBlendingFunc.DST_ALPHA:
-            return gl.DST_ALPHA
-        case TGDPainterBlendingFunc.ONE_MINUS_DST_ALPHA:
-            return gl.ONE_MINUS_DST_ALPHA
-        case TGDPainterBlendingFunc.CONSTANT_COLOR:
-            return gl.CONSTANT_COLOR
-        case TGDPainterBlendingFunc.ONE_MINUS_CONSTANT_COLOR:
-            return gl.ONE_MINUS_CONSTANT_COLOR
-        case TGDPainterBlendingFunc.CONSTANT_ALPHA:
-            return gl.CONSTANT_ALPHA
-        case TGDPainterBlendingFunc.ONE_MINUS_CONSTANT_ALPHA:
-            return gl.ONE_MINUS_CONSTANT_ALPHA
-        case TGDPainterBlendingFunc.SRC_ALPHA_SATURATE:
-            return gl.SRC_ALPHA_SATURATE
-    }
-    throw Error(`Unknown equation: ${TGDPainterBlendingFunc[func]}!`)
 }

@@ -59,50 +59,58 @@ export default function DataSection(props: { updater: PainterUpdater }) {
                     onClick={handleEditElements}
                 />
             </Flex>
-            <div className="uniforms">
-                <Label value="Uniform" />
-                <Label value="Type" />
-                {painter.uniforms.map((uni) => (
-                    <PainterUniformView
-                        key={uni.name}
-                        value={uni}
-                        onChange={(upt) => updater.updateUniform(uni.name, upt)}
-                    />
-                ))}
-            </div>
-            <div className="attributes">
-                <Label value="Attribute" />
-                <Label value="Divisor" />
-                <Label value="Data (click to edit)" />
-                {painter.attributes
-                    .filter((att) => att.active)
-                    .map((att) => (
-                        <PainterAttributeView
-                            key={att.name}
-                            active={true}
-                            value={att}
-                            data={att.data}
+            <fieldset className="wide">
+                <legend>Uniforms</legend>
+                <div className="uniforms">
+                    <Label value="Uniform" />
+                    <Label value="Type" />
+                    {painter.uniforms.map((uni) => (
+                        <PainterUniformView
+                            key={uni.name}
+                            value={uni}
                             onChange={(upt) =>
-                                updater.updateAttribute(att.name, upt)
+                                updater.updateUniform(uni.name, upt)
                             }
-                            onClick={handleEditAttributeData}
                         />
                     ))}
-                {painter.attributes
-                    .filter((att) => !att.active)
-                    .map((att) => (
-                        <PainterAttributeView
-                            key={att.name}
-                            active={false}
-                            value={att}
-                            data={att.data}
-                            onChange={(upt) =>
-                                updater.updateAttribute(att.name, upt)
-                            }
-                            onClick={handleEditAttributeData}
-                        />
-                    ))}
-            </div>
+                </div>
+            </fieldset>
+            <fieldset className="wide">
+                <legend>attributes</legend>
+                <div className="attributes">
+                    <Label value="Attribute" />
+                    <Label value="Divisor" />
+                    <Label value="Data (click to edit)" />
+                    {painter.attributes
+                        .filter((att) => att.active)
+                        .map((att) => (
+                            <PainterAttributeView
+                                key={att.name}
+                                active={true}
+                                value={att}
+                                data={att.data}
+                                onChange={(upt) =>
+                                    updater.updateAttribute(att.name, upt)
+                                }
+                                onClick={handleEditAttributeData}
+                            />
+                        ))}
+                    {painter.attributes
+                        .filter((att) => !att.active)
+                        .map((att) => (
+                            <PainterAttributeView
+                                key={att.name}
+                                active={false}
+                                value={att}
+                                data={att.data}
+                                onChange={(upt) =>
+                                    updater.updateAttribute(att.name, upt)
+                                }
+                                onClick={handleEditAttributeData}
+                            />
+                        ))}
+                </div>
+            </fieldset>
         </div>
     )
 }

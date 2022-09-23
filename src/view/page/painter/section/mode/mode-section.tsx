@@ -1,8 +1,9 @@
 import * as React from "react"
 import Blending from "./blending"
+import ConstSelect from "@/view/const-select"
 import Depth from "./depth"
-import DrawModeInput from "@/view/input/draw-mode/draw-mode-input"
 import { PainterUpdater } from "../../hooks/painter-updater"
+import { WEBGL2 } from "@/tgd/constants"
 import "./mode-section.css"
 
 export interface ModeSectionProps {
@@ -15,7 +16,11 @@ export default function ModeSection(props: ModeSectionProps) {
     const painter = updater.currentPainter
     return (
         <div className={getClassNames(props)}>
-            <DrawModeInput value={painter.mode} onChange={updater.setMode} />
+            <ConstSelect
+                value={painter.mode}
+                onChange={updater.setMode}
+                items={WEBGL2.drawPrimitive}
+            />
             <Depth updater={updater} />
             <Blending updater={updater} />
         </div>

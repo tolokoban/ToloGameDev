@@ -13,7 +13,7 @@ export interface SliderViewProps {
     className?: string
     label?: string
     /** If defined, displayed at the right of the slider. */
-    text?: string | number
+    text?: string | number | ((value: number) => string)
     wide?: boolean
     min?: number
     max?: number
@@ -29,7 +29,7 @@ export default function SliderView(props: SliderViewProps) {
     const refButton = React.useRef<HTMLButtonElement | null>(null)
     const min = props.min ?? 0
     const max = props.max ?? 100
-    const steps = Math.max(1e-6, props.steps ?? 1)
+    const steps = Math.max(1e-9, props.steps ?? (max - min) / 100)
     const [value, setValue] = React.useState(clamp(props.value, min, max))
     const update = React.useCallback(
         (percent: number) => {
@@ -86,7 +86,13 @@ export default function SliderView(props: SliderViewProps) {
                     style={{ left: percent }}
                 ></button>
             </div>
-            {props.text && <div className="text">{props.text}</div>}
+            {props.text && (
+                <div className="text">
+                    {typeof props.text === "function"
+                        ? props.text(value)
+                        : props.text}
+                </div>
+            )}
         </div>
     )
 }

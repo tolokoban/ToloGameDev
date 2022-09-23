@@ -2,13 +2,7 @@ import * as React from "react"
 import Modal from "@/ui/modal/modal"
 import { getDataService } from "@/factory/data-service"
 import { PainterUpdater } from "./painter-updater"
-import {
-    TGDPainter,
-    TGDPainterBlendingEqua,
-    TGDPainterBlendingFunc,
-    TGDPainterDepthFunc,
-    TGDPainterMode,
-} from "../../../../types"
+import { TGDPainter } from "@/types"
 
 export function usePainterLoader(
     id: number,
@@ -33,12 +27,12 @@ export function usePainterLoader(
                     attributes: [],
                     blending: {
                         enabled: false,
-                        equaRGB: TGDPainterBlendingEqua.ADD,
-                        equaAlpha: TGDPainterBlendingEqua.ADD,
-                        funcSrcRGB: TGDPainterBlendingFunc.ONE,
-                        funcSrcAlpha: TGDPainterBlendingFunc.ONE,
-                        funcDstRGB: TGDPainterBlendingFunc.ZERO,
-                        funcDstAlpha: TGDPainterBlendingFunc.ZERO,
+                        equaRGB: "FUNC_ADD",
+                        equaAlpha: "FUNC_ADD",
+                        funcSrcRGB: "ONE",
+                        funcSrcAlpha: "ONE",
+                        funcDstRGB: "ZERO",
+                        funcDstAlpha: "ZERO",
                     },
                     count: {
                         element: 0,
@@ -49,7 +43,7 @@ export function usePainterLoader(
                     depth: {
                         enabled: false,
                         clear: 1,
-                        func: TGDPainterDepthFunc.LESS,
+                        func: "LESS",
                         mask: true,
                         range: { near: 0, far: 1 },
                     },
@@ -57,10 +51,11 @@ export function usePainterLoader(
                     elements: [],
                     error: "",
                     id: 0,
-                    mode: TGDPainterMode.TRIANGLES,
+                    mode: "TRIANGLES",
                     name: "",
                     shader: { vert: "", frag: "" },
                     uniforms: [],
+                    textures: [],
                 }
                 refUpdater.current.reset({
                     ...base,

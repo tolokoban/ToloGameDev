@@ -73,6 +73,7 @@ export default function PreviewView(props: PreviewViewProps) {
                                     <>
                                         <div>{uni.name}</div>
                                         <Slider
+                                            text={(v) => v.toFixed(3)}
                                             min={dataSlider.min}
                                             max={dataSlider.max}
                                             value={dataSlider.value}

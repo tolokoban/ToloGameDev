@@ -17,7 +17,7 @@
     min-height: 4rem;
 }
 
-.ui-view-RunnableView.running > div.children {
+.ui-view-RunnableView.running > * {
     opacity: 0.25;
     pointer-events: none;
 }

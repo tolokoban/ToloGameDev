@@ -1,16 +1,7 @@
+import { WEBGL2 } from "./tgd/constants"
 export interface TGDObject {
     id: number
     name: string
-}
-
-export enum TGDPainterMode {
-    POINTS = 1,
-    LINE_STRIP,
-    LINE_LOOP,
-    LINES,
-    TRIANGLE_STRIP,
-    TRIANGLE_FAN,
-    TRIANGLES,
 }
 
 export interface TGDPainter extends TGDObject {
@@ -21,7 +12,7 @@ export interface TGDPainter extends TGDObject {
         vert: string
         frag: string
     }
-    mode: TGDPainterMode
+    mode: keyof typeof WEBGL2.drawPrimitive
     count: {
         instance: number
         vertex: number
@@ -36,44 +27,19 @@ export interface TGDPainter extends TGDObject {
     elements: number[]
     attributes: TGDPainterAttribute[]
     uniforms: TGDPainterUniform[]
+    textures: TGDPainterTexture[]
     depth: TGDPainterDepth
     blending: TGDPainterBlending
 }
 
 export interface TGDPainterBlending {
     enabled: boolean
-    funcSrcRGB: TGDPainterBlendingFunc
-    funcSrcAlpha: TGDPainterBlendingFunc
-    funcDstRGB: TGDPainterBlendingFunc
-    funcDstAlpha: TGDPainterBlendingFunc
-    equaRGB: TGDPainterBlendingEqua
-    equaAlpha: TGDPainterBlendingEqua
-}
-
-export enum TGDPainterBlendingFunc {
-    ZERO,
-    ONE,
-    SRC_COLOR,
-    ONE_MINUS_SRC_COLOR,
-    DST_COLOR,
-    ONE_MINUS_DST_COLOR,
-    SRC_ALPHA,
-    ONE_MINUS_SRC_ALPHA,
-    DST_ALPHA,
-    ONE_MINUS_DST_ALPHA,
-    CONSTANT_COLOR,
-    ONE_MINUS_CONSTANT_COLOR,
-    CONSTANT_ALPHA,
-    ONE_MINUS_CONSTANT_ALPHA,
-    SRC_ALPHA_SATURATE,
-}
-
-export enum TGDPainterBlendingEqua {
-    ADD,
-    SUBTRACT,
-    REVERSE_SUBTRACT,
-    MIN,
-    MAX,
+    funcSrcRGB: keyof typeof WEBGL2.blendFunc
+    funcSrcAlpha: keyof typeof WEBGL2.blendFunc
+    funcDstRGB: keyof typeof WEBGL2.blendFunc
+    funcDstAlpha: keyof typeof WEBGL2.blendFunc
+    equaRGB: keyof typeof WEBGL2.blendEqua
+    equaAlpha: keyof typeof WEBGL2.blendEqua
 }
 
 export interface TGDPainterDepth {
@@ -91,7 +57,7 @@ export interface TGDPainterDepth {
      *
      * Default value: LESS.
      */
-    func: TGDPainterDepthFunc
+    func: keyof typeof WEBGL2.depthFunc
     /**
      * Sets whether writing into the depth buffer is
      * enabled or disabled.
@@ -105,25 +71,6 @@ export interface TGDPainterDepth {
      * Default value: [0, 1].
      */
     range: { near: number; far: number }
-}
-
-export enum TGDPainterDepthFunc {
-    /** Never pass. */
-    NEVER,
-    /** Pass if the incoming value is less than the depth buffer value. */
-    LESS,
-    /** Pass if the incoming value equals the depth buffer value. */
-    EQUAL,
-    /** Pass if the incoming value is less than or equal to the depth buffer value. */
-    LEQUAL,
-    /** Pass if the incoming value is greater than the depth buffer value. */
-    GREATER,
-    /** Pass if the incoming value is not equal to the depth buffer value. */
-    NOTEQUAL,
-    /** Pass if the incoming value is greater than or equal to the depth buffer value. */
-    GEQUAL,
-    /** Always pass. */
-    ALWAYS,
 }
 
 export interface TGDShaderAttributeOrUniform {
@@ -164,6 +111,22 @@ export interface TGDPainterAttribute extends TGDShaderAttributeOrUniform {
     data: number[]
 }
 
+export type TGDPainterUniformDataType =
+    | "Texture"
+    | "Error"
+    | "Value"
+    | "Slider"
+    | "Time"
+    | "Random"
+    | "Pointer"
+    | "AspectRatio"
+    | "InverseAspectRatio"
+    | "AspectRatioCover"
+    | "AspectRatioContain"
+    | "VertexCount"
+    | "ElementCount"
+    | "InstanceCount"
+
 export type TGDPainterUniformData =
     | { type: "Texture" }
     | { type: "Error"; message: string }
@@ -190,3 +153,39 @@ export interface TGDPainterUniform extends TGDShaderAttributeOrUniform {
 export type Vector2 = [number, number]
 export type Vector3 = [number, number, number]
 export type Vector4 = [number, number, number, number]
+
+export type TGDPainterTexture =
+    | TGDPainterTexture2D
+    | TGDPainterTexture2DArray
+    | TGDPainterTexture3D
+    | TGDPainterTextureCubeMap
+
+interface TGDPainterTextureCommon {
+    type: keyof typeof WEBGL2.texture
+    name: string
+    sampler: TGDPainterTextureSampler
+}
+
+export interface TGDPainterTexture2D extends TGDPainterTextureCommon {
+    type: "TEXTURE_2D"
+}
+
+export interface TGDPainterTexture2DArray extends TGDPainterTextureCommon {
+    type: "TEXTURE_2D_ARRAY"
+}
+
+export interface TGDPainterTexture3D extends TGDPainterTextureCommon {
+    type: "TEXTURE_3D"
+}
+
+export interface TGDPainterTextureCubeMap extends TGDPainterTextureCommon {
+    type: "TEXTURE_CUBE_MAP"
+}
+
+export interface TGDPainterTextureSampler {
+    magFilter?: keyof typeof WEBGL2.samplerMagFilter
+    minFilter?: keyof typeof WEBGL2.samplerMinFilter
+    wrapR?: keyof typeof WEBGL2.samplerWrap
+    wrapS?: keyof typeof WEBGL2.samplerWrap
+    wrapT?: keyof typeof WEBGL2.samplerWrap
+}

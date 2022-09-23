@@ -2,13 +2,14 @@ import * as React from "react"
 import Button from "@/ui/view/button"
 import Checkbox from "@/ui/view/checkbox"
 import CodeEditor from "@/view/code-editor"
-import DepthFuncInput from "@/view/input/depth-func/depth-func-input"
+import ConstSelect from "../../../../../const-select"
 import Flex from "@/ui/view/flex"
 import IconShow from "@/ui/view/icons/show"
 import InputFloat from "@/ui/view/input/float"
 import Modal from "@/ui/modal"
 import { PainterUpdater } from "../../../hooks/painter-updater"
-import { TGDPainter, TGDPainterDepthFunc } from "@/types"
+import { TGDPainter } from "@/types"
+import { WEBGL2 } from "../../../../../../tgd/constants"
 import "./depth-view.css"
 
 export interface DepthViewProps {
@@ -40,7 +41,8 @@ export default function DepthView(props: DepthViewProps) {
                 </Flex>
                 {painter.depth.enabled && (
                     <>
-                        <DepthFuncInput
+                        <ConstSelect
+                            items={WEBGL2.depthFunc}
                             value={painter.depth.func}
                             onChange={updater.setDepthFunc}
                         />
@@ -90,7 +92,7 @@ function makeShowDepthCodeHandler(painter: TGDPainter) {
                 language="ts"
                 value={`gl.enable(gl.DEPTH_TEST)
 gl.clearDepth(${painter.depth.clear})
-gl.depthFunc(gl.${TGDPainterDepthFunc[painter.depth.func]})
+gl.depthFunc(gl.${painter.depth.func})
 gl.depthMask(${painter.depth.mask})
 gl.depthRange(${painter.depth.range.near}, ${painter.depth.range.far})
 `}
