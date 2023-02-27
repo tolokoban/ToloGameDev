@@ -1,6 +1,6 @@
 import * as React from "react"
 import App from "./app"
-import Modal from "@/ui/modal"
+import { ModalProvider } from "@/ui/modal"
 import Theme from "@/ui/theme"
 import { createRoot } from "react-dom/client"
 import { getDataService } from "./factory/data-service"
@@ -8,33 +8,38 @@ import { isTGDPainter } from "./guards"
 import "./index.css"
 
 async function start() {
-    await Theme.apply({
+    const theme = new Theme({
         colors: {
-            accent: {
-                dark: "hsl(30, 90%, 40%)",
-                base: "hsl(30, 80%, 60%)",
-                light: "hsl(30, 100%, 75%)",
-            },
+            input: "#eefe",
+            neutral: { hue: 210, chroma: [10, 2], lightness: [20, 80] },
             primary: {
-                dark: "hsl(210, 80%, 50%)",
-                base: "hsl(210, 70%, 70%)",
-                light: "hsl(210, 100%, 80%)",
+                hue: 210,
+                chroma: [80, 100],
+                lightness: [10, 90],
             },
-            black: "#000d",
-            white: "#fffd",
-            error: "#f30",
-            screen: "hsl(210, 50%, 20%)",
-            frame: "hsl(210, 50%, 30%)",
-            section: "hsl(210, 50%, 40%)",
-            input: "hsl(210, 20%, 80%)",
+            secondary: {
+                hue: 72,
+                chroma: [90, 100],
+                lightness: [40, 75],
+            },
+            tertiary: {
+                hue: [100, 100],
+                chroma: [100, 120],
+                lightness: [50, 120],
+            },
         },
     })
-    await Modal.wait("Initializing Database...", initDatabase())
+    theme.apply()
+    await initDatabase()
     const container = document.getElementById("app")
     if (!container) throw Error(`No element with id "app"!`)
 
     const root = createRoot(container)
-    root.render(<App />)
+    root.render(
+        <ModalProvider>
+            <App />
+        </ModalProvider>
+    )
 }
 
 void start()

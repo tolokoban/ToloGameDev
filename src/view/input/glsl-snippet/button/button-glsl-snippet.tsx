@@ -1,7 +1,7 @@
 import * as React from "react"
-import IconChecked from "@/ui/view/icons/checked"
-import IconUnchecked from "@/ui/view/icons/unchecked"
-import Touchable from "@/ui/view/touchable"
+import IconChecked from "@/ui/view/icons/IconChecked"
+import IconUnchecked from "@/ui/view/icons/IconUnchecked"
+import Touchable from "@/ui/view/Touchable"
 import "./button-glsl-snippet.css"
 
 export interface ButtonGlslSnippetProps {
@@ -16,7 +16,6 @@ export default function ButtonGlslSnippet(props: ButtonGlslSnippetProps) {
     return (
         <Touchable
             className={getClassNames(props)}
-            wide={true}
             onClick={() => props.onChange(!value)}
         >
             <div>{label}</div>

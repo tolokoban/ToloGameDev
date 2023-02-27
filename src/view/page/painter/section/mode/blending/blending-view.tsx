@@ -1,10 +1,12 @@
 import * as React from "react"
-import Checkbox from "@/ui/view/checkbox"
+import Checkbox from "@/ui/view/Checkbox"
 import ConstSelect from "@/view/const-select"
-import Flex from "@/ui/view/flex"
+import Panel from "@/ui/view/Panel"
 import { PainterUpdater } from "../../../hooks/painter-updater"
 import { WEBGL2 } from "@/tgd/constants"
 import "./blending-view.css"
+import CodeExpander from "../../../../../CodeExpander"
+import { generateBlendTest } from "../../../../../../factory/code/generate-blend-test"
 
 export interface BlendingViewProps {
     className?: string
@@ -19,27 +21,30 @@ export default function BlendingView(props: BlendingViewProps) {
             <legend>Blending</legend>
             <div className={getClassNames(props)}>
                 <Checkbox
-                    label="Enabled?"
                     value={value.enabled}
                     onChange={(enabled) => update({ enabled })}
-                />
+                >
+                    Enabled?
+                </Checkbox>
                 {value.enabled && (
                     <>
-                        <Flex justifyContent="space-between">
+                        <Panel
+                            display="grid"
+                            gridTemplateColumns="repeat(4, auto)"
+                            gap="M"
+                            margin={["M", 0]}
+                        >
+                            <div></div>
+                            <div>Equation</div>
+                            <div>Source</div>
+                            <div>Destination</div>
+                            <div>RGB</div>
                             <ConstSelect
                                 label="Equation for RGB"
                                 value={value.equaRGB}
                                 items={WEBGL2.blendEqua}
                                 onChange={(equaRGB) => update({ equaRGB })}
                             />
-                            <ConstSelect
-                                label="Equation for Alpha"
-                                value={value.equaAlpha}
-                                items={WEBGL2.blendEqua}
-                                onChange={(equaAlpha) => update({ equaAlpha })}
-                            />
-                        </Flex>
-                        <Flex justifyContent="space-between">
                             <ConstSelect
                                 label="Source RGB"
                                 value={value.funcSrcRGB}
@@ -49,21 +54,26 @@ export default function BlendingView(props: BlendingViewProps) {
                                 }
                             />
                             <ConstSelect
-                                label="Source Alpha"
-                                value={value.funcSrcAlpha}
-                                items={WEBGL2.blendFunc}
-                                onChange={(funcSrcAlpha) =>
-                                    update({ funcSrcAlpha })
-                                }
-                            />
-                        </Flex>
-                        <Flex justifyContent="space-between">
-                            <ConstSelect
                                 label="Destination RGB"
                                 value={value.funcDstRGB}
                                 items={WEBGL2.blendFunc}
                                 onChange={(funcDstRGB) =>
                                     update({ funcDstRGB })
+                                }
+                            />
+                            <div>Alpha</div>
+                            <ConstSelect
+                                label="Equation for Alpha"
+                                value={value.equaAlpha}
+                                items={WEBGL2.blendEqua}
+                                onChange={(equaAlpha) => update({ equaAlpha })}
+                            />
+                            <ConstSelect
+                                label="Source Alpha"
+                                value={value.funcSrcAlpha}
+                                items={WEBGL2.blendFunc}
+                                onChange={(funcSrcAlpha) =>
+                                    update({ funcSrcAlpha })
                                 }
                             />
                             <ConstSelect
@@ -74,9 +84,10 @@ export default function BlendingView(props: BlendingViewProps) {
                                     update({ funcDstAlpha })
                                 }
                             />
-                        </Flex>
+                        </Panel>
                     </>
                 )}
+                <CodeExpander>{generateBlendTest(value)}</CodeExpander>
             </div>
         </fieldset>
     )

@@ -1,0 +1,25 @@
+.Data :global(div.attributes) {
+    display: grid;
+    gap: 0 0.5em;
+    grid-template-columns: auto 3em 3em 1fr;
+    place-items: center stretch;
+}
+
+.Data :global(div.uniforms) {
+    display: grid;
+    gap: 0.5em;
+    grid-template-columns: auto 1fr;
+    place-items: center stretch;
+}
+
+.grid {
+    place-items: start;
+}
+
+.grid > * {
+    grid-row: 2;
+}
+
+.grid > label {
+    grid-row: 1;
+}

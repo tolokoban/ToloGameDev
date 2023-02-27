@@ -1,6 +1,6 @@
 import * as React from "react"
 import ObjectButton from "../../object-button"
-import Runnable from "@/ui/view/runnable"
+import Busy from "@/ui/view/Busy"
 import { TGDObject } from "@/types"
 import { usePaintersList } from "@/hooks/painters-list"
 import "./painters-list.css"
@@ -13,7 +13,7 @@ export interface PaintersListProps {
 export default function PaintersList(props: PaintersListProps) {
     const painters = usePaintersList()
     return (
-        <Runnable className={getClassNames(props)} running={!painters}>
+        <Busy className={getClassNames(props)} busy={!painters}>
             {painters &&
                 painters.map((item) => (
                     <ObjectButton
@@ -30,7 +30,7 @@ export default function PaintersList(props: PaintersListProps) {
                     Use the above button to add a new one.
                 </p>
             )}
-        </Runnable>
+        </Busy>
     )
 }
 

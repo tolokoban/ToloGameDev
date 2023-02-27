@@ -1,0 +1,15 @@
+.Slider {
+    display: flex;
+    gap: 0.5em;
+    justify-content: flex-start;
+    align-items: center;
+    flex-direction: row;
+}
+
+.Slider > input {
+    flex: 1 1 auto;
+}
+
+.Slider > div {
+    flex: 0 0 auto;
+}

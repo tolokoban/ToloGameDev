@@ -1,15 +1,14 @@
-import { IWebGL, ITextureOptions } from '../types'
-import Texture from './texture'
-import TextureVideo from './texture-video'
+import Texture from "./texture"
+import TextureVideo from "./texture-video"
+import { ITextureOptions, IWebGL } from "../types"
 
 export default {
     createTexture2D,
     fromCamera,
     fromURL,
     fromData,
-    fromDataLuminance
+    fromDataLuminance,
 }
-
 
 function createTexture2D(gl: IWebGL): Texture {
     return new Texture(gl)
@@ -27,9 +26,9 @@ async function fromCamera(
         const stream = await navigator.mediaDevices.getUserMedia({
             video: {
                 width: minWidth > 0 ? minWidth : 1920,
-                height: minHeight > 0 ? minHeight : 1080
+                height: minHeight > 0 ? minHeight : 1080,
             },
-            audio: false
+            audio: false,
         })
         const tex = new TextureVideo(gl, video, minWidth, minHeight)
         video.srcObject = stream
@@ -50,17 +49,22 @@ function fromData(
     options?: Partial<ITextureOptions>
 ): WebGLTexture {
     const texture = gl.createTexture()
-    if (!gl) throw "Unable to create a WebGL Texture!"
+    if (!texture) throw "Unable to create a WebGL Texture!"
 
     const opt: ITextureOptions = {
         linear: true,
-        ...options
+        ...options,
     }
     gl.bindTexture(gl.TEXTURE_2D, texture)
     gl.texImage2D(
-        gl.TEXTURE_2D, 0, gl.RGBA,
-        width, height, 0,
-        gl.RGBA, gl.UNSIGNED_BYTE,
+        gl.TEXTURE_2D,
+        0,
+        gl.RGBA,
+        width,
+        height,
+        0,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
         data
     )
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.TEXTURE_WRAP_S)
@@ -86,13 +90,18 @@ function fromDataLuminance(
 
     const opt: ITextureOptions = {
         linear: true,
-        ...options
+        ...options,
     }
     gl.bindTexture(gl.TEXTURE_2D, texture)
     gl.texImage2D(
-        gl.TEXTURE_2D, 0, gl.LUMINANCE,
-        width, height, 0,
-        gl.LUMINANCE, gl.UNSIGNED_BYTE,
+        gl.TEXTURE_2D,
+        0,
+        gl.LUMINANCE,
+        width,
+        height,
+        0,
+        gl.LUMINANCE,
+        gl.UNSIGNED_BYTE,
         data
     )
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.TEXTURE_WRAP_S)
@@ -116,23 +125,31 @@ function fromURL(
 
     const opt: ITextureOptions = {
         linear: true,
-        ...options
+        ...options,
     }
+    const w = gl.drawingBufferWidth
     gl.bindTexture(gl.TEXTURE_2D, texture)
     // Start with a transparent black pixel.
     gl.texImage2D(
-        gl.TEXTURE_2D, 0, gl.RGBA,
-        1, 1, 0,
-        gl.RGBA, gl.UNSIGNED_BYTE,
+        gl.TEXTURE_2D,
+        0,
+        gl.RGBA,
+        1,
+        1,
+        0,
+        gl.RGBA,
+        gl.UNSIGNED_BYTE,
         new Uint8Array([0, 0, 0, 0])
     )
 
-    const image = new Image();
+    const image = new Image()
     image.onload = function () {
-        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.bindTexture(gl.TEXTURE_2D, texture)
         gl.texImage2D(
-            gl.TEXTURE_2D, 0,
-            gl.RGBA, gl.RGBA,
+            gl.TEXTURE_2D,
+            0,
+            gl.RGBA,
+            gl.RGBA,
             gl.UNSIGNED_BYTE,
             image
         )
@@ -159,7 +176,6 @@ function fromURL(
 
     return texture as WebGLTexture
 }
-
 
 function isPowerOf2(value: number): boolean {
     return (value & (value - 1)) == 0

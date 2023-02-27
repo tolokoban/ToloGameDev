@@ -5,6 +5,7 @@ import Depth from "./depth"
 import { PainterUpdater } from "../../hooks/painter-updater"
 import { WEBGL2 } from "@/tgd/constants"
 import "./mode-section.css"
+import Panel from "@/ui/view/Panel"
 
 export interface ModeSectionProps {
     className?: string
@@ -15,15 +16,22 @@ export default function ModeSection(props: ModeSectionProps) {
     const { updater } = props
     const painter = updater.currentPainter
     return (
-        <div className={getClassNames(props)}>
+        <Panel
+            className={getClassNames(props)}
+            display="flex"
+            flexDirection="column"
+            justifyContent="flex-start"
+            alignItems="flex-start"
+        >
             <ConstSelect
+                label="Primitive"
                 value={painter.mode}
                 onChange={updater.setMode}
                 items={WEBGL2.drawPrimitive}
             />
             <Depth updater={updater} />
             <Blending updater={updater} />
-        </div>
+        </Panel>
     )
 }
 

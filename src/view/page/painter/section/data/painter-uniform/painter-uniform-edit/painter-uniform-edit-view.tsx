@@ -1,9 +1,10 @@
 import * as React from "react"
-import IconEdit from "@/ui/view/icons/edit"
-import InputFloat from "@/ui/view/input/float"
-import Modal from "@/ui/modal"
+import IconEdit from "@/ui/view/icons/IconEdit"
+import InputFloat from "@/ui/view/InputFloat"
 import { TGDPainterUniformData } from "@/types"
 import "./painter-uniform-edit-view.css"
+import { useModal } from "@/ui/modal"
+import { ModalManagerInterface } from "../../../../../../../ui/modal/types"
 
 export interface PainterUniformEditViewProps {
     name: string
@@ -14,23 +15,27 @@ export interface PainterUniformEditViewProps {
 export default function PainterUniformEditView(
     props: PainterUniformEditViewProps
 ) {
-    const handleClick = makeClickHandler(props)
+    const handleClick = useClickHandler(props)
     if (!handleClick) return null
     return <IconEdit onClick={handleClick} />
 }
 
-function makeClickHandler(props: PainterUniformEditViewProps) {
+function useClickHandler(props: PainterUniformEditViewProps) {
+    const modal = useModal()
     switch (props.value.type) {
         case "Value":
-            return makeClickHandlerForValue(props)
+            return makeClickHandlerForValue(modal, props)
         case "Slider":
-            return makeClickHandlerForSlider(props)
+            return makeClickHandlerForSlider(modal, props)
         default:
             return undefined
     }
 }
 
-function makeClickHandlerForValue(props: PainterUniformEditViewProps) {
+function makeClickHandlerForValue(
+    modal: ModalManagerInterface,
+    props: PainterUniformEditViewProps
+) {
     const data = props.value
     const name = props.name
     const onChange = props.onChange
@@ -38,7 +43,7 @@ function makeClickHandlerForValue(props: PainterUniformEditViewProps) {
         if (data.type !== "Value") return
 
         let { value } = data
-        const confirm = await Modal.confirm({
+        const confirm = await modal.confirm({
             autoClosable: true,
             title: name,
             content: (
@@ -58,7 +63,10 @@ function makeClickHandlerForValue(props: PainterUniformEditViewProps) {
         }
     }
 }
-function makeClickHandlerForSlider(props: PainterUniformEditViewProps) {
+function makeClickHandlerForSlider(
+    modal: ModalManagerInterface,
+    props: PainterUniformEditViewProps
+) {
     const data = props.value
     const name = props.name
     const onChange = props.onChange
@@ -66,7 +74,7 @@ function makeClickHandlerForSlider(props: PainterUniformEditViewProps) {
         if (data.type !== "Slider") return
 
         let { value, min, max } = data
-        const confirm = await Modal.confirm({
+        const confirm = await modal.confirm({
             autoClosable: true,
             title: name,
             content: (

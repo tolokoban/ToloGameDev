@@ -1,232 +1,183 @@
 import Color from "../color"
-import CssVarManager from "./css-var-manager"
+import ClassNames from "./class-names"
 import "./theme.css"
 
-const CSS_PREFIX = "theme"
-const CSS_COLOR = "-color"
-const CSS_ON = "-on"
-const CSS_COLOR_PRIMARY = "-primary"
-const CSS_COLOR_PRIMARY_LIGHT = "-primary-light"
-const CSS_COLOR_PRIMARY_DARK = "-primary-dark"
-const CSS_COLOR_ACCENT = "-accent"
-const CSS_COLOR_ACCENT_LIGHT = "-accent-light"
-const CSS_COLOR_ACCENT_DARK = "-accent-dark"
-const CSS_COLOR_ERROR = "-error"
-const CSS_COLOR_SCREEN = "-screen"
-const CSS_COLOR_FRAME = "-frame"
-const CSS_COLOR_SECTION = "-section"
-const CSS_COLOR_INPUT = "-input"
-const CSS_COLOR_WHITE = "-white"
-const CSS_COLOR_BLACK = "-black"
-const CSS_COLOR_LINK = "-link"
-const CSS_OPACITY = "-opacity-"
-const CSS_SHADOW = "-shadow"
+const DEFAULT_COLOR_TEXT_LIGHT = "#fffe"
+const DEFAULT_COLOR_TEXT_DARK = "#000e"
+const DEFAULT_COLOR_PRIMARY: ThemeColor = { hue: 215 }
+const DEFAULT_COLOR_SECONDARY: ThemeColor = { hue: 60 }
+const DEFAULT_COLOR_TERTIARY: ThemeColor = { hue: 100 }
+const DEFAULT_COLOR_NEUTRAL: ThemeColor = {
+    hue: 61,
+    chroma: 0,
+    lightness: [50, 100],
+}
+const DEFAULT_COLOR_INPUT = "#fff"
+const DEFAULT_COLOR_ERROR = "#d00"
+const DEFAULT_COLOR_VALID = "#0f0"
+
+export type ThemeColor =
+    | string[]
+    | {
+          hue: number | [number, number]
+          chroma?: number | [number, number]
+          lightness?: number | [number, number]
+      }
+
+interface ThemeSettingsColors {
+    textLight: string
+    textDark: string
+    primary: ThemeColor
+    secondary: ThemeColor
+    tertiary: ThemeColor
+    neutral: ThemeColor
+    input: string
+    error: string
+    valid: string
+}
 
 export interface ThemeSettings {
-    colors: {
-        primary: ColorPalette
-        accent: ColorPalette
-        error: string
-        screen: string
-        frame: string
-        section: string
-        input: string
-        white: string
-        black: string
+    colors?: Partial<ThemeSettingsColors>
+    gap?: {
+        XS: string
+        S: string
+        M: string
+        L: string
+        XL: string
     }
 }
 
-interface ColorPalette {
-    dark: string
-    base: string
-    light: string
-}
+export default class Theme {
+    public static readonly classNames = new ClassNames()
 
-type ColorNames =
-    | "primary"
-    | "primary-light"
-    | "primary-dark"
-    | "accent"
-    | "accent-light"
-    | "accent-dark"
-    | "error"
-    | "screen"
-    | "frame"
-    | "section"
-    | "input"
-    | "white"
-    | "black"
-    | "link"
+    private readonly vars: Array<[name: string, value: string]> = []
 
-const Theme = {
-    apply,
-    get current() {
-        return currentTheme
-    },
-    get defaultDarkTheme(): ThemeSettings {
-        return {
-            colors: {
-                black: "#000",
-                white: "#fff",
-                error: "#f20",
-                screen: "#ddd",
-                frame: "#e9ebef",
-                section: "#eff2f5",
-                input: "#fff",
-                primary: {
-                    dark: "#050A56",
-                    base: "#0083CB",
-                    light: "#00D4FE",
-                },
-                accent: {
-                    dark: "#802d00",
-                    base: "#cb4800",
-                    light: "#ff8c4d",
-                },
-            },
+    constructor(options: ThemeSettings = {}) {
+        const colors = options.colors ?? {}
+        const gap = options.gap ?? {
+            XS: ".25rem",
+            S: ".5rem",
+            M: "1rem",
+            L: "2rem",
+            XL: "4rem",
         }
-    },
-    get defaultLightTheme(): ThemeSettings {
-        return {
-            colors: {
-                black: "#111e",
-                white: "#eeee",
-                error: "#f20",
-                screen: "#bbb",
-                frame: "#ccc",
-                section: "#ddd",
-                input: "#eee",
-                primary: { dark: "#1f2859", base: "#3e50b4", light: "#5871ff" },
-                accent: { dark: "#59501f", base: "#b4a23e", light: "#ffe658" },
-            },
+        this.add("gap-none", "0")
+        this.add("gap-XS", gap.XS)
+        this.add("gap-S", gap.S)
+        this.add("gap-M", gap.M)
+        this.add("gap-L", gap.L)
+        this.add("gap-XL", gap.XL)
+        this.add(
+            "color-text-light",
+            colors.textLight ?? DEFAULT_COLOR_TEXT_LIGHT
+        )
+        this.add("color-text-dark", colors.textDark ?? DEFAULT_COLOR_TEXT_DARK)
+        this.addColor("input", colors.input ?? DEFAULT_COLOR_INPUT)
+        this.addColor("error", colors.error ?? DEFAULT_COLOR_ERROR)
+        this.addColor("valid", colors.valid ?? DEFAULT_COLOR_VALID)
+        this.addColorVars(
+            "primary",
+            makeColors(colors.primary ?? DEFAULT_COLOR_PRIMARY)
+        )
+        this.addColorVars(
+            "secondary",
+            makeColors(colors.secondary ?? DEFAULT_COLOR_SECONDARY)
+        )
+        this.addColorVars(
+            "tertiary",
+            makeColors(colors.tertiary ?? DEFAULT_COLOR_TERTIARY)
+        )
+        this.addColorVars(
+            "neutral",
+            makeColors(colors.neutral ?? DEFAULT_COLOR_NEUTRAL)
+        )
+    }
+
+    /**
+     * Add a new CSS custom variable.
+     */
+    private add(name: string, value: string, alpha = 1) {
+        let color = value
+        if (alpha <= 0) color = "transparent"
+        else if (alpha < 1) {
+            color = `${value}${padHex(Math.round(255 * alpha))}`
         }
-    },
+        this.vars.push([name, color])
+    }
+
+    private addColor(name: string, color: string) {
+        this.add(`color-${name}`, color)
+        this.add(
+            `color-on-${name}`,
+            `var(--theme-color-text-${Color.isLight(color) ? `dark` : "light"}`
+        )
+    }
+
+    private addColorVars(name: string, colors: string[]) {
+        let index = 1
+        for (const color of colors) {
+            this.add(`color-${name}-${index}`, color)
+            for (let alpha = 1; alpha < 10; alpha++) {
+                this.add(`color-${name}-${index}-${alpha}`, color, alpha / 10)
+            }
+            this.add(
+                `color-on-${name}-${index}`,
+                `var(--theme-color-text-${
+                    Color.isLight(color) ? "dark" : "light"
+                })`
+            )
+            index++
+        }
+        this.add(`color-${name}`, `var(--theme-color-${name}-5)`)
+        this.add(`color-${name}-light`, `var(--theme-color-${name}-8)`)
+        this.add(`color-${name}-dark`, `var(--theme-color-${name}-2)`)
+        this.add(`color-on-${name}`, `var(--theme-color-on-${name}-5)`)
+        this.add(`color-on-${name}-light`, `var(--theme-color-on-${name}-8)`)
+        this.add(`color-on-${name}-dark`, `var(--theme-color-on-${name}-2)`)
+    }
+
+    /**
+     * Apply this theme to `element`.
+     * @param element Default to `document.body`.
+     */
+    apply(element?: HTMLElement | SVGElement) {
+        const target = element ?? globalThis.window?.document.body
+        if (target) {
+            for (const [key, val] of this.vars) {
+                target.style.setProperty(`--theme-${key}`, val)
+            }
+        }
+    }
 }
 
-export default Theme
-
-let currentTheme: ThemeSettings = Theme.defaultDarkTheme
-
-/**
- *
- * @param settings All the theme settings are needed. Use a helper function
- * if you want default values to be filled for you.
- * @param target Target element to apply to theme on. If omitted the theme is applied on BODY.
- */
-function apply(settings: ThemeSettings, target?: HTMLElement | SVGElement) {
-    currentTheme = settings
-    const vars = new CssVarManager(target)
-    applyColors(settings, vars)
-    applyShadows(settings, vars)
-}
-
-function applyColors(settings: ThemeSettings, vars: CssVarManager) {
-    const white = Color.fromColorOrString(settings.colors.white)
-    const black = Color.fromColorOrString(settings.colors.black)
-    applyColor(vars, "primary", settings.colors.primary.base, white, black)
-    applyColor(
-        vars,
-        "primary-light",
-        settings.colors.primary.light,
-        white,
-        black
+function makeColors(colorDef: ThemeColor): string[] {
+    const colors: string[] = convertThemeColorIntoArray(colorDef)
+    const output = Color.makeGradient(9, ...colors).map(
+        (color) => color.cssValue
     )
-    applyColor(vars, "primary-dark", settings.colors.primary.dark, white, black)
-    applyColor(vars, "accent", settings.colors.accent.base, white, black)
-    applyColor(vars, "accent-light", settings.colors.accent.light, white, black)
-    applyColor(vars, "accent-dark", settings.colors.accent.dark, white, black)
-    applyColor(vars, "error", settings.colors.error, white, black)
-    applyColor(vars, "screen", settings.colors.screen, white, black)
-    applyColor(vars, "frame", settings.colors.frame, white, black)
-    applyColor(vars, "section", settings.colors.section, white, black)
-    applyColor(vars, "input", settings.colors.input, white, black)
-    applyColor(vars, "white", settings.colors.white, white, black)
-    applyColor(vars, "black", settings.colors.black, white, black)
-    vars.set(
-        varNameForColor("link"),
-        Color.bestContrast(
-            settings.colors.frame,
-            settings.colors.accent.dark,
-            settings.colors.accent.base,
-            settings.colors.accent.light
-        )
-    )
+    return output
 }
 
-function applyColor(
-    vars: CssVarManager,
-    colorName: ColorNames,
-    colorValue: string,
-    white: Color,
-    black: Color
-) {
-    const color = Color.fromColorOrString(colorValue)
-    vars.set(varNameForColor(colorName), color.stringify())
-    const step = 5
-    const percent = 0.01
-    for (let opacity = step; opacity < 100; opacity += step) {
-        color.A = opacity * percent
-        vars.set(varNameForColor(colorName, opacity), color.stringify())
-    }
-    const colorOn = Color.bestContrast(color, white, black)
-    vars.set(varNameForColorOn(colorName), colorOn.stringify())
-    for (let opacity = step; opacity < 100; opacity += step) {
-        const transparentColorOn = colorOn.copy()
-        transparentColorOn.A = opacity * percent * colorOn.A
-        vars.set(
-            varNameForColorOn(colorName, opacity),
-            transparentColorOn.stringify()
-        )
-    }
+function convertThemeColorIntoArray(colorDef: ThemeColor): string[] {
+    if (Array.isArray(colorDef)) return colorDef
+
+    const [hue1, hue2] = ensurePair(colorDef.hue)
+    const [chroma1, chroma2] = ensurePair(colorDef.chroma ?? [200, 50])
+    const [lightness1, lightness2] = ensurePair(colorDef.lightness ?? [5, 100])
+    return [
+        Color.fromLCH(lightness1, chroma1, hue1).cssValue,
+        Color.fromLCH(lightness2, chroma2, hue2).cssValue,
+    ]
 }
 
-const COLOR_CLASSNAME_MAPPING: { [key in ColorNames]: string } = {
-    "accent-dark": CSS_COLOR_ACCENT_DARK,
-    "accent-light": CSS_COLOR_ACCENT_LIGHT,
-    "primary-dark": CSS_COLOR_PRIMARY_DARK,
-    "primary-light": CSS_COLOR_PRIMARY_LIGHT,
-    accent: CSS_COLOR_ACCENT,
-    black: CSS_COLOR_BLACK,
-    error: CSS_COLOR_ERROR,
-    frame: CSS_COLOR_FRAME,
-    input: CSS_COLOR_INPUT,
-    primary: CSS_COLOR_PRIMARY,
-    screen: CSS_COLOR_SCREEN,
-    section: CSS_COLOR_SECTION,
-    white: CSS_COLOR_WHITE,
-    link: CSS_COLOR_LINK,
+function ensurePair(value: number | [number, number]): [number, number] {
+    if (Array.isArray(value)) return value
+
+    return [value, value]
 }
 
-function varNameForColor(color: ColorNames, opacity: number = 0) {
-    const colorClassName = COLOR_CLASSNAME_MAPPING[color]
-    return `${CSS_PREFIX}${CSS_COLOR}${colorClassName}${
-        opacity > 0 ? `${CSS_OPACITY}${opacity}` : ""
-    }`
-}
-
-function varNameForColorOn(color: ColorNames, opacity: number = 0) {
-    const colorClassName = COLOR_CLASSNAME_MAPPING[color]
-    return `${CSS_PREFIX}${CSS_COLOR}${CSS_ON}${colorClassName}${
-        opacity > 0 ? `${CSS_OPACITY}${opacity}` : ""
-    }`
-}
-
-function applyShadows(settings: ThemeSettings, vars: CssVarManager) {
-    // @see: https://material.io/design/environment/elevation.html#default-elevations
-    const types: { [key: string]: number } = {
-        card: 1,
-        button: 2,
-        header: 4,
-        "button-pressed": 8,
-        dialog: 24,
-    }
-    const color = "#000a"
-    const scale = 0.0625
-    for (const type of Object.keys(types)) {
-        const value = types[type] * scale
-        vars.set(
-            `${CSS_PREFIX}${CSS_SHADOW}-${type}`,
-            `0 ${value}rem ${2 * value}rem ${color}`
-        )
-    }
+function padHex(value: number, size = 2): string {
+    let hex = `${value.toString(16)}`
+    while (hex.length < size) hex = `0${hex}`
+    return hex
 }

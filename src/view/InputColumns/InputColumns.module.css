@@ -1,0 +1,17 @@
+.InputColumns {
+    --custom-columns: 4;
+    display: grid;
+    place-items: start;
+    grid-template-rows: repeat(var(--custom-columns), 1fr);
+    grid-template-rows: auto auto;
+    gap: 0 1em;
+    margin: 1em 0;
+}
+
+.InputColumns > * {
+    grid-row: 2;
+}
+
+.InputColumns > label {
+    grid-row: 1;
+}

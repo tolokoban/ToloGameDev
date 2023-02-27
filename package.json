@@ -1,6 +1,6 @@
 {
     "name": "tolo-game-dev",
-    "version": "0.2.0",
+    "version": "0.3.0",
     "private": true,
     "sideEffects": [
         "*.css"
@@ -12,6 +12,7 @@
         "@fontsource/roboto": "^4.5.8",
         "@mui/icons-material": "^5.10.3",
         "@mui/material": "^5.10.4",
+        "colord": "^2.9.3",
         "json5": "^2.2.1",
         "material-ui-confirm": "^3.0.5",
         "md5": "^2.3.0",

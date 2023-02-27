@@ -10,16 +10,16 @@ export function createProgram(
 
     const vertShader = gl.createShader(gl.VERTEX_SHADER)
     if (!vertShader) throw Error("Unable to create a Vertex Shader handle!")
+
     gl.shaderSource(vertShader, opts.vert)
     gl.compileShader(vertShader)
     gl.attachShader(prg, vertShader)
-
     const fragShader = gl.createShader(gl.FRAGMENT_SHADER)
     if (!fragShader) throw Error("Unable to create a Fragment Shader handle!")
+
     gl.shaderSource(fragShader, opts.frag)
     gl.compileShader(fragShader)
     gl.attachShader(prg, fragShader)
-
     gl.linkProgram(prg)
     return prg
 }

@@ -84,9 +84,6 @@ export interface TGDShaderAttributeOrUniform {
      * Dimension. For instance, a `vec4` has a dimension of 4.
      */
     dim: number
-}
-
-export interface TGDPainterAttribute extends TGDShaderAttributeOrUniform {
     /**
      * If not used in a shader, it will be inactive.
      * But we keep it in the object anyway to prevent
@@ -94,6 +91,9 @@ export interface TGDPainterAttribute extends TGDShaderAttributeOrUniform {
      * has only been commented for a time.
      */
     active: boolean
+}
+
+export interface TGDPainterAttribute extends TGDShaderAttributeOrUniform {
     /**
      * If 0, this is a normal vertex attribute.
      * If >0, this is an instance attribute.
@@ -161,7 +161,7 @@ export type TGDPainterTexture =
     | TGDPainterTextureCubeMap
 
 interface TGDPainterTextureCommon {
-    type: keyof typeof WEBGL2.texture
+    type: keyof typeof WEBGL2.textureType
     name: string
     sampler: TGDPainterTextureSampler
 }

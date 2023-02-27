@@ -1,10 +1,12 @@
 import * as React from "react"
 
 export interface PagesProps {
-    page: string
     children: JSX.Element[]
+    page: string
 }
 
-export default function Pages(props: PagesProps) {
-    return <>{props.children.find((child) => child.key === props.page)}</>
+export default function Pages({ page, children }: PagesProps) {
+    const component =
+        children.find((child) => child.key === page) ?? children[0]
+    return <>{component}</>
 }

@@ -1,14 +1,15 @@
 import * as React from "react"
+import { ModalManagerInterface } from "@/ui/modal/types"
 import Dialog from "./view"
-import Modal from "@/ui/modal"
 
 export async function editFloat32Array(
+    modal: ModalManagerInterface,
     caption: string,
     data: number[],
     columns: number
 ): Promise<number[]> {
     return new Promise<number[]>((resolve) => {
-        const modal = Modal.show({
+        const hide = modal.show({
             autoClosable: true,
             content: (
                 <Dialog
@@ -16,11 +17,11 @@ export async function editFloat32Array(
                     columns={columns}
                     value={data}
                     onCancel={() => {
-                        modal.hide()
+                        hide()
                         resolve(data)
                     }}
                     onValidate={(value) => {
-                        modal.hide()
+                        hide()
                         resolve(value)
                     }}
                 />

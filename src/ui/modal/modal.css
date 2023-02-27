@@ -1,7 +1,7 @@
 div.ui-Modal {
     --transition-duration: 0.3s;
     --padding: 1rem;
-    --background-color: var(--theme-color-screen-opacity-50);
+    --background-color: var(--theme-color-neutral-2-opacity-50);
 
     z-index: 9999999;
     position: fixed;
@@ -14,29 +14,28 @@ div.ui-Modal {
     margin: 0;
     padding: var(--padding);
     overflow: hidden;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
+    display: grid;
+    place-content: center;
     transition: background-color var(--transition-duration);
     background-color: transparent;
     box-sizing: border-box;
+    backdrop-filter: blur(3px);
 }
 
 div.ui-Modal.align-left {
-    justify-content: flex-start;
+    justify-content: start;
 }
 
 div.ui-Modal.align-right {
-    justify-content: flex-end;
+    justify-content: end;
 }
 
 div.ui-Modal.align-top {
-    align-items: flex-start;
+    align-content: start;
 }
 
 div.ui-Modal.align-bottom {
-    align-items: flex-end;
+    align-content: end;
 }
 
 div.ui-Modal.show {
@@ -79,8 +78,8 @@ div.ui-Modal-error pre {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    max-width: 90vw;
-    gap: 1em;
+    max-width: 480px;
+    gap: 1rem;
 }
 
 .ui-Modal-promise-waiter > * {
@@ -88,9 +87,10 @@ div.ui-Modal-error pre {
 }
 
 .ui-Modal-promise-waiter > svg {
-    flex: 0 0 auto;
+    flex: 0 0 3rem;
     animation: ui-Modal-anim 1s linear infinite;
-    font-size: 2em;
+    width: 3rem;
+    height: 3rem;
 }
 
 @keyframes ui-Modal-anim {
@@ -100,4 +100,22 @@ div.ui-Modal-error pre {
     100% {
         transform: rotate(-360deg);
     }
+}
+
+div.ui-Modal div.progress-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: stretch;
+    height: 4em;
+    width: calc(min(640px, 80vw));
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+div.ui-Modal div.progress-container * {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }

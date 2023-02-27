@@ -1,0 +1,10 @@
+.LabelContent {
+    all: inherit;
+    margin: 0;
+    padding: 0;
+    display: contents;
+}
+
+.Label {
+    opacity: 0.6;
+}

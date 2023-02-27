@@ -1,20 +1,22 @@
+import { isString } from "@/guards"
+import AtomicState from "@/state/atomic-state"
+import { useModal } from "@/ui/modal"
+import Busy from "@/ui/view/Busy"
+import Button from "@/ui/view/Button"
+import IconGear from "@/ui/view/icons/IconGear"
 import * as React from "react"
-import Button from "@/ui/view/button"
+import Panel from "../../../ui/view/Panel"
+import Preview from "../../preview"
+import Pages from "../pages"
+import PainterHeader from "./header"
+import { usePainterLoader } from "./hooks/painter-loader"
+import { PainterUpdater, usePainterUpdater } from "./hooks/painter-updater"
+import PainterCompiler from "./painter-compiler"
+import "./painter-page.css"
 import DataSection from "./section/data"
 import DocumentationSection from "./section/documentation"
-import IconGear from "@/ui/view/icons/gear"
-import Modal from "@/ui/modal"
 import ModeSection from "./section/mode"
-import Pages from "../pages"
-import PainterCompiler from "./painter-compiler"
-import PainterHeader from "./header"
-import Preview from "../../preview"
-import Runnable from "@/ui/view/runnable"
 import ShaderSection from "./section/shader"
-import { PainterUpdater, usePainterUpdater } from "./hooks/painter-updater"
-import { useLocalStorageState } from "@/ui/hooks"
-import { usePainterLoader } from "./hooks/painter-loader"
-import "./painter-page.css"
 
 export interface PainterPageProps {
     className?: string
@@ -22,19 +24,21 @@ export interface PainterPageProps {
     onClose(this: void): void
 }
 
+const atomSection = new AtomicState("data", {
+    id: "painter/section",
+    guard: isString,
+})
+
 export default function PainterPage(props: PainterPageProps) {
     const refCompiler = React.useRef(new PainterCompiler())
     const updater = usePainterUpdater()
     const painter = updater.currentPainter
-    const [section, setSection] = useLocalStorageState(
-        "data",
-        "painter/section"
-    )
+    const [section, setSection] = atomSection.useState()
     const handleCompile = () => refCompiler.current.compile(updater)
     usePainterLoader(props.id, updater, handleCompile)
     const handleBack = useBackHandler(updater, props)
     return (
-        <Runnable running={false} className={getClassNames(props)}>
+        <Busy busy={false} className={getClassNames(props)}>
             <PainterHeader
                 section={section}
                 onSectionChange={setSection}
@@ -43,15 +47,17 @@ export default function PainterPage(props: PainterPageProps) {
             <main>
                 <div>
                     <Button
-                        wide={true}
                         icon={IconGear}
-                        label="Recompile and save painter (Ctrl-Enter)"
                         enabled={painter !== updater.stablePainter}
                         onClick={handleCompile}
                         hotkey="C-enter"
-                    />
+                    >
+                        Recompile and save painter (Ctrl-Enter)
+                    </Button>
                     {painter.error && (
-                        <pre className="theme-color-error">{painter.error}</pre>
+                        <Panel backColor="error" color="error">
+                            <pre>{painter.error}</pre>
+                        </Panel>
                     )}
                     <Preview painter={updater.stablePainter} />
                 </div>
@@ -67,26 +73,29 @@ export default function PainterPage(props: PainterPageProps) {
                     </Pages>
                 </div>
             </main>
-        </Runnable>
+        </Busy>
     )
 }
 
 function useBackHandler(updater: PainterUpdater, props: PainterPageProps) {
+    const modal = useModal()
     return async () => {
         const confirm =
             updater.currentPainter === updater.stablePainter ||
-            (await Modal.confirm(
-                <div>
+            (await modal.confirm({
+                content: (
                     <div>
-                        "You are about to revert all the changes you made for
-                        these shaders."
+                        <div>
+                            "You are about to revert all the changes you made
+                            for these shaders."
+                        </div>
+                        <div>
+                            This Painter will be automatically saved once
+                            compiled successfully.
+                        </div>
                     </div>
-                    <div>
-                        This Painter will be automatically saved once compiled
-                        successfully.
-                    </div>
-                </div>
-            ))
+                ),
+            }))
         if (confirm) props.onClose()
     }
 }

@@ -1,0 +1,25 @@
+.InputText {
+    font: inherit;
+    background: transparent;
+    width: 100%;
+    border: none;
+    padding: 0 0.5em;
+    line-height: 2em;
+    height: 2em;
+    color: inherit;
+    background-color: none;
+    border-bottom: 2px solid currentColor;
+    transition: all 0.2s;
+}
+
+.InputText:focus {
+    background-color: var(--theme-color-input);
+    color: var(--theme-color-on-input);
+    border: none;
+    outline: none;
+}
+
+.InputText.invalid {
+    background-color: var(--theme-color-error);
+    color: var(--theme-color-on-error);
+}

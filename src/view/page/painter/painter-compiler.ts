@@ -8,7 +8,8 @@ import {
 
 export default class PainterCompiler {
     /**
-     * Compiles the shaders and fill the `painter.attributes` array.
+     * Compiles the shaders and fill the `painter.attributes`
+     * and `painter.uniforms` arrays.
      * @returns `null` in case of success. The error message otherwise.
      */
     async compile(updater: PainterUpdater): Promise<void> {
@@ -50,6 +51,7 @@ export default class PainterCompiler {
                     })
                 }
             )
+            updater.deactivateUniforms()
             extractUniforms(gl, prg).forEach(
                 (uni: TGDShaderAttributeOrUniform) => {
                     const { name } = uni
@@ -57,6 +59,7 @@ export default class PainterCompiler {
                         type: uni.type,
                         dim: uni.dim,
                         size: uni.size,
+                        active: true,
                     })
                 }
             )
@@ -182,6 +185,7 @@ function extractUniforms(
 
         uniforms.push({
             name: uni.name,
+            active: true,
             type: getConstName(gl, uni.type),
             size: uni.size,
             dim: getDimension(gl, uni.type),
@@ -208,6 +212,7 @@ function extractAttributes(
         }
 
         attributes.push({
+            active: true,
             name: att?.name,
             type: "float",
             size: att.size,

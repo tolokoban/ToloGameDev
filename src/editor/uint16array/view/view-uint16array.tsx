@@ -1,5 +1,5 @@
 import * as React from "react"
-import Button from "@/ui/view/button"
+import Button from "@/ui/view/Button"
 import { assertNumber } from "../../../guards"
 import "./view-uint16array.css"
 
@@ -59,17 +59,13 @@ export default function ViewUint16array(props: ViewUint16arrayProps) {
                     ></textarea>
                 </main>
                 <footer className="theme-color-section">
-                    <Button
-                        label="Cancel"
-                        flat={true}
-                        onClick={props.onCancel}
-                    />
+                    <Button variant="text" onClick={props.onCancel}>
+                        Cancel
+                    </Button>
                     {error && <div className="theme-color-error">{error}</div>}
-                    <Button
-                        label="Validate"
-                        onClick={handleValidate}
-                        enabled={!error}
-                    />
+                    <Button onClick={handleValidate} enabled={!error}>
+                        Validate
+                    </Button>
                 </footer>
             </div>
         </div>

@@ -1,5 +1,5 @@
 import * as React from "react"
-import Touchable from "@/ui/view/touchable"
+import Touchable from "@/ui/view/Touchable"
 import { TGDObject } from "../../types"
 import "./object-button.css"
 

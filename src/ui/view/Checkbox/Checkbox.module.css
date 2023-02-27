@@ -1,0 +1,16 @@
+.Checkbox {
+    all: inherit;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    cursor: pointer;
+}
+
+.Checkbox[aria-checked="true"] {
+    opacity: 1;
+}
+
+.Checkbox[aria-checked="false"] {
+    opacity: 0.8;
+}

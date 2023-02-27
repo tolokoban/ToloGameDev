@@ -46,7 +46,7 @@ export function assertTGDPainter(
     } = data
     assertStringOrNull(error, `${prefix}.error`)
     assertString(description, `${prefix}.description`)
-    assertNumber(mode, `${prefix}.mode`)
+    assertString(mode, `${prefix}.mode`)
     assertNumberArray(elements, `${prefix}.elements`)
     assertObject(shader, `${prefix}.shader`)
     assertString(shader.vert, `${prefix}.shader.vert`)
@@ -70,7 +70,7 @@ function assertTGDPainterDepth(
     const { enabled, clear, func, mask, range } = data
     assertBoolean(enabled, `${prefix}.enabled`)
     assertNumber(clear, `${prefix}.clear`)
-    assertNumber(func, `${prefix}.func`)
+    assertString(func, `${prefix}.func`)
     assertBoolean(mask, `${prefix}.mask`)
     assertObject(range, `${prefix}.range`)
     assertNumber(range.near, `${prefix}.range.near`)

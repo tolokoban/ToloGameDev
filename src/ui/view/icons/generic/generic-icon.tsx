@@ -1,29 +1,36 @@
 import * as React from "react"
-import { getColorStyle } from "../../_common"
-import { View, ViewWithColor } from "../../types"
-import "./generic-icon.css"
+import { ColorStyleProps, styleColor } from "../../../theme/styles/color"
+import Style from "./generic-icon.module.css"
+import Theme from "@/ui/theme"
 
-export type GenericIconProps = View &
-    ViewWithColor & {
-        type?: "filled" | "outlined" | "bold" | "dual"
-        /** Starts the animation if `true` */
-        animate?: boolean
-        /** Dscription of the drawing. Ex.: `M8,20L12,10L16,20Z` */
-        value: string
-        onClick?(): void
-    }
+const $ = Theme.classNames
 
-export type Icon = ((
-    props?: Omit<GenericIconProps, "value">
-) => JSX.Element) & { id: string }
+export type GenericIconProps = {
+    className?: string
+    type?: "filled" | "outlined" | "bold" | "dual"
+    size?: string
+    /** Starts the animation if `true` */
+    animate?: boolean
+    /** Description of the drawing. Ex.: `M8,20L12,10L16,20Z` */
+    value: string
+    onClick?(): void
+} & ColorStyleProps
+
+export type Icon = ((props: Omit<GenericIconProps, "value">) => JSX.Element) & {
+    id: string
+}
 
 export default function GenericIcon(props: GenericIconProps) {
     const { value } = props
     const type = props.type ?? "filled"
+    const style: React.CSSProperties = {
+        ...styleColor(props),
+        fontSize: props.size ?? "1.5em",
+    }
     return (
         <svg
             className={getClassName(props)}
-            style={getColorStyle(props.color)}
+            style={style}
             viewBox="0 0 24 24"
             preserveAspectRatio="xMidYMid meet"
             onClick={props.onClick}
@@ -55,12 +62,12 @@ export default function GenericIcon(props: GenericIconProps) {
 }
 
 function getClassName(props: GenericIconProps): string {
-    const classNames = ["custom", "view", "ui-view-icons-GenericIcon"]
+    const classNames = [Style.GenericIcon]
     if (typeof props.className === "string") {
         classNames.push(props.className)
     }
-    if (props.animate === true) classNames.push("animate")
-    if (props.onClick) classNames.push("clickable")
+    if (props.animate === true) classNames.push(Style.animate)
+    if (props.onClick) classNames.push(Style.clickable)
 
     return classNames.join(" ")
 }

@@ -16,7 +16,7 @@
 }
 
 .view-page-painter-PainterAttributeView.data:hover {
-    background: var(--theme-color-accent);
+    background: var(--theme-color-secondary);
     color: var(--theme-color-on-accent);
 }
 

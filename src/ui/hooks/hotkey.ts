@@ -1,5 +1,40 @@
 import * as React from "react"
 
+type HotkeyPrefix = "C-" | "S-" | "M-" | "C-S-" | "C-M-" | "C-S-M-" | "S-M"
+type HotKeySuffix =
+    | "a"
+    | "b"
+    | "c"
+    | "d"
+    | "e"
+    | "f"
+    | "g"
+    | "h"
+    | "i"
+    | "j"
+    | "k"
+    | "l"
+    | "m"
+    | "n"
+    | "o"
+    | "p"
+    | "q"
+    | "r"
+    | "s"
+    | "t"
+    | "u"
+    | "v"
+    | "w"
+    | "x"
+    | "y"
+    | "z"
+    | "enter"
+    | "escape"
+    | `f${number}`
+    | "space"
+
+export type HotKey = HotKeySuffix | `${HotkeyPrefix}${HotKeySuffix}`
+
 /**
  * A keyboard shortcut to trigger an action.
  * Use these prefixes (in that order) for modifiers keys:
@@ -14,7 +49,7 @@ import * as React from "react"
  * @param enabled
  */
 export function useHotKey(
-    hotkey: string | undefined,
+    hotkey: HotKey | undefined,
     onKeyDown: () => void,
     enabled = true
 ) {

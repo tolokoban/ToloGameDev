@@ -3,6 +3,7 @@ import MainPage from "../view/page/main"
 import Pages from "@/view/page/pages"
 import PainterPage from "../view/page/painter"
 import { TGDObject } from "../types"
+import State from "@/state"
 import "./app.css"
 
 const PAGE_MAIN = "main"
@@ -14,7 +15,6 @@ export default function App() {
     const handleShadersEdit = (obj: TGDObject) => {
         setPage(PAGE_PAINTER)
         setCurrentShaders(obj.id)
-        console.log("🚀 [app] obj = ", obj) // @FIXME: Remove this line written on 2022-08-15 at 13:54
     }
     return (
         <Pages page={page}>

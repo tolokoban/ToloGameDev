@@ -233,6 +233,16 @@ export class PainterUpdater {
             })),
         })
     }
+    public readonly deactivateUniforms = () => {
+        const painter: TGDPainter = this.currentPainter
+        this.setCurrentPainter({
+            ...painter,
+            uniforms: painter.uniforms.map((uni) => ({
+                ...uni,
+                active: false,
+            })),
+        })
+    }
 
     private getOrCreateAttrib(name: string): TGDPainterAttribute {
         const att = this.currentPainter.attributes.find((a) => a.name === name)
@@ -258,6 +268,7 @@ export class PainterUpdater {
 
         const newUni: TGDPainterUniform = {
             name,
+            active: true,
             type: "FLOAT",
             size: 1,
             dim: 1,

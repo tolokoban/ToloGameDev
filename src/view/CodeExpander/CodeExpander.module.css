@@ -1,0 +1,17 @@
+.CodeExpander > summary {
+    cursor: pointer;
+    padding: 0.25em 0.5em;
+}
+
+.CodeExpander > summary > div {
+    display: inline-flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1em;
+    margin-left: 1em;
+}
+
+.CodeExpander > summary:hover {
+    background-color: var(--theme-color-secondary);
+    color: var(--theme-color-on-secondary);
+}

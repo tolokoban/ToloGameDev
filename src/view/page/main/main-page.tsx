@@ -1,6 +1,6 @@
 import * as React from "react"
-import Button from "@/ui/view/button"
-import IconAdd from "@/ui/view/icons/add"
+import Button from "@/ui/view/Button"
+import IconAdd from "@/ui/view/icons/IconAdd"
 import PaintersList from "../../painters/list"
 import { getDataService } from "@/factory/data-service"
 import { makeTGDPainter } from "../../../factory/painter"
@@ -37,11 +37,11 @@ export default function MainPages(props: MainPageProps) {
                     <legend>
                         <Button
                             icon={IconAdd}
-                            label="Painters"
-                            color="accent"
-                            flat={false}
+                            color="secondary-5"
                             onClick={handleNewPainter}
-                        />
+                        >
+                            Painters
+                        </Button>
                     </legend>
                     <PaintersList onClick={props.onPainterEdit} />
                 </fieldset>

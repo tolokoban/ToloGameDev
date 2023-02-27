@@ -1,15 +1,9 @@
 import * as React from "react"
-import Combo from "@/ui/view/combo"
+import Combo, { ComboItems } from "@/ui/view/Combo"
 import PainterUniformEdit from "./painter-uniform-edit"
 import PainterUniformSummary from "./painter-uniform-summary"
-import { ComboItems } from "@/ui/view/combo/combo-view"
-import { valueToPercent } from "@mui/base"
 import "./painter-uniform-view.css"
-import {
-    TGDPainterUniform,
-    TGDPainterUniformData,
-    TGDPainterUniformDataType,
-} from "@/types"
+import { TGDPainterUniform, TGDPainterUniformData } from "@/types"
 
 export interface PainterUniformViewProps {
     className?: string
@@ -132,4 +126,3 @@ function makeData(
 function defaultNumber(value: unknown, defaultValue: number): number {
     return typeof value === "number" ? value : defaultValue
 }
-

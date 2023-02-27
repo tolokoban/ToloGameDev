@@ -1,11 +1,10 @@
 import * as React from "react"
-import Button from "@/ui/view/button"
-import Flex from "@/ui/view/flex"
-import InputFloat from "@/ui/view/input/float"
+import Button from "@/ui/view/Button"
+import Panel from "@/ui/view/Panel"
 import Renderer from "./renderer"
-import Slider from "@/ui/view/slider"
+import UniformLiveEditorView from "../uniform-live-editor"
 import { TGDPainter } from "@/types"
-import { useDebouncedEffect } from "@/ui/hooks"
+import { useDebouncedEffect } from "@/ui/hooks/debounced-effect"
 import "./preview-view.css"
 
 export interface PreviewViewProps {
@@ -41,52 +40,18 @@ export default function PreviewView(props: PreviewViewProps) {
     }
     return (
         <div className={getClassNames(props)}>
-            <Flex justifyContent="space-between">
+            <Panel display="flex" justifyContent="space-between">
                 <h1>Preview</h1>
-                <Button
-                    flat={true}
-                    label="Full screen"
-                    onClick={handleFullscreen}
-                />
-            </Flex>
+                <Button variant="text" onClick={handleFullscreen}>
+                    Full screen
+                </Button>
+            </Panel>
             <canvas ref={refCanvas} className="theme-shadow-card"></canvas>
             {props.painter && (
                 <div className="uniforms">
-                    {props.painter.uniforms.map((uni) => {
-                        switch (uni.data.type) {
-                            case "Value":
-                                const dataValue = uni.data
-                                return (
-                                    <>
-                                        <div>{uni.name}</div>
-                                        <InputFloat
-                                            value={dataValue.value}
-                                            onChange={(value) =>
-                                                (dataValue.value = value)
-                                            }
-                                        />
-                                    </>
-                                )
-                            case "Slider":
-                                const dataSlider = uni.data
-                                return (
-                                    <>
-                                        <div>{uni.name}</div>
-                                        <Slider
-                                            text={(v) => v.toFixed(3)}
-                                            min={dataSlider.min}
-                                            max={dataSlider.max}
-                                            value={dataSlider.value}
-                                            onChange={(value) =>
-                                                (dataSlider.value = value)
-                                            }
-                                        />
-                                    </>
-                                )
-                            default:
-                                return null
-                        }
-                    })}
+                    {props.painter.uniforms.map((uni) => (
+                        <UniformLiveEditorView uniform={uni} />
+                    ))}
                 </div>
             )}
         </div>

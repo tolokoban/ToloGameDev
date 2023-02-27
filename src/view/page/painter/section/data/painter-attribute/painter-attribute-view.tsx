@@ -1,9 +1,10 @@
 import * as React from "react"
-import IconEdit from "@/ui/view/icons/edit"
-import InputInteger from "@/ui/view/input/integer"
-import Touchable from "@/ui/view/touchable"
+import IconEdit from "@/ui/view/icons/IconEdit"
+import InputInteger from "@/ui/view/InputInteger"
+import Touchable from "@/ui/view/Touchable"
 import { TGDPainterAttribute } from "@/types"
 import "./painter-attribute-view.css"
+import CheckBox from "@/ui/view/Checkbox"
 
 export interface PainterAttributeViewProps {
     className?: string
@@ -32,8 +33,14 @@ export default function PainterAttributeView(props: PainterAttributeViewProps) {
                 {att.name}
                 {att.size > 1 ? `[${att.size}]` : ""}
             </div>
+            <CheckBox
+                value={att.dynamicGroup > 0}
+                onChange={(dynamicGroup) =>
+                    update({ dynamicGroup: dynamicGroup ? 1 : 0 })
+                }
+            />
             <InputInteger
-                size={2}
+                maxWidth="2em"
                 value={att.divisor}
                 onChange={(divisor) => update({ divisor })}
             />

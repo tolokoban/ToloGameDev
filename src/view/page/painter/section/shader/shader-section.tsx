@@ -1,18 +1,19 @@
-import Button from "@/ui/view/button"
+import Button from "@/ui/view/Button"
 import CodeEditor from "@/view/code-editor"
-import Flex from "@/ui/view/flex"
+import Panel from "@/ui/view/Panel"
 import GlslSnippetView from "@/view/input/glsl-snippet"
 import Help from "./help"
-import IconBook from "@/ui/view/icons/book"
-import IconHelp from "@/ui/view/icons/help"
-import Modal from "@/ui/modal"
-import Options from "@/ui/view/options"
+import IconBook from "@/ui/view/icons/IconBook"
+import IconHelp from "@/ui/view/icons/IconHelp"
+import Options from "@/ui/view/Options"
 import React from "react"
 import { PainterUpdater } from "../../hooks/painter-updater"
+import { useModal } from "@/ui/modal"
 
 type ShaderType = "vert" | "frag"
 
 export default function DataSection(props: { updater: PainterUpdater }) {
+    const modal = useModal()
     const [type, setType] = React.useState<ShaderType>("vert")
     const { updater } = props
     const code =
@@ -23,7 +24,12 @@ export default function DataSection(props: { updater: PainterUpdater }) {
         type === "vert" ? updater.setVertexShader : updater.setFragmentShader
     return (
         <div>
-            <Flex justifyContent="space-between" alignItems="center" gap="1em">
+            <Panel
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                gap="1em"
+            >
                 <Options<ShaderType>
                     label="Type de shader"
                     options={{
@@ -34,17 +40,15 @@ export default function DataSection(props: { updater: PainterUpdater }) {
                     onChange={setType}
                 />
                 <Button
-                    label="Bibliothèque"
                     icon={IconBook}
-                    onClick={handleLibrary}
-                />
-                <Button
-                    label="Doc"
-                    icon={IconHelp}
-                    flat={true}
-                    onClick={handleHelp}
-                />
-            </Flex>
+                    onClick={() => modal.info(<GlslSnippetView />)}
+                >
+                    Bibliothèque
+                </Button>
+                <Button icon={IconHelp} variant="text" onClick={handleHelp}>
+                    Doc
+                </Button>
+            </Panel>
             <CodeEditor language="glsl" value={code} onChange={setCode} />
             <Help />
         </div>
@@ -56,8 +60,4 @@ function handleHelp() {
         "https://www.khronos.org/opengles/sdk/docs/manglsl/docbook4/",
         "_HELP_"
     )
-}
-
-function handleLibrary() {
-    Modal.info(<GlslSnippetView />)
 }

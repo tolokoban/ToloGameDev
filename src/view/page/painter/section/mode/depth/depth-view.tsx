@@ -1,15 +1,14 @@
-import * as React from "react"
-import Button from "@/ui/view/button"
-import Checkbox from "@/ui/view/checkbox"
-import CodeEditor from "@/view/code-editor"
-import ConstSelect from "../../../../../const-select"
-import Flex from "@/ui/view/flex"
-import IconShow from "@/ui/view/icons/show"
-import InputFloat from "@/ui/view/input/float"
-import Modal from "@/ui/modal"
-import { PainterUpdater } from "../../../hooks/painter-updater"
+import { WEBGL2 } from "@/tgd/constants"
 import { TGDPainter } from "@/types"
-import { WEBGL2 } from "../../../../../../tgd/constants"
+import Checkbox from "@/ui/view/Checkbox"
+import InputFloat from "@/ui/view/InputFloat"
+import Label from "@/ui/view/Label"
+import Panel from "@/ui/view/Panel"
+import CodeExpander from "@/view/CodeExpander"
+import InputColumns from "@/view/InputColumns"
+import { generateDepthTest } from "../../../../../../factory/code/generate-depth-test"
+import ConstSelect from "../../../../../const-select"
+import { PainterUpdater } from "../../../hooks/painter-updater"
 import "./depth-view.css"
 
 export interface DepthViewProps {
@@ -20,85 +19,71 @@ export interface DepthViewProps {
 export default function DepthView(props: DepthViewProps) {
     const { updater } = props
     const painter = updater.currentPainter
-    const handleShowDepthCode = makeShowDepthCodeHandler(painter)
     return (
         <fieldset>
             <legend>Depth</legend>
             <div className={getClassNames(props)}>
-                <Flex>
+                <Panel display="flex">
                     <Checkbox
-                        label="Depth Test?"
                         value={painter.depth.enabled}
                         onChange={updater.setDepthEnabled}
-                    />
+                    >
+                        Depth Test?
+                    </Checkbox>
                     {painter.depth.enabled && (
-                        <Checkbox
-                            label="Write Z to depth buffer (depthMask)?"
-                            value={painter.depth.mask}
-                            onChange={updater.setDepthMask}
-                        />
+                        <>
+                            <ConstSelect
+                                label="Test"
+                                items={WEBGL2.depthFunc}
+                                value={painter.depth.func}
+                                onChange={updater.setDepthFunc}
+                            />
+                            <Checkbox
+                                value={painter.depth.mask}
+                                onChange={updater.setDepthMask}
+                            >
+                                Write Z to depth buffer (depthMask)?
+                            </Checkbox>
+                        </>
                     )}
-                </Flex>
+                </Panel>
                 {painter.depth.enabled && (
                     <>
-                        <ConstSelect
-                            items={WEBGL2.depthFunc}
-                            value={painter.depth.func}
-                            onChange={updater.setDepthFunc}
-                        />
-                        <Flex>
-                            <InputFloat
-                                min={0}
-                                max={1}
-                                size={2}
-                                label="Clear"
-                                value={painter.depth.clear}
-                                onChange={updater.setDepthClear}
-                            />
-                            <InputFloat
-                                min={0}
-                                max={1}
-                                size={2}
-                                label="Near"
-                                value={painter.depth.range.near}
-                                onChange={updater.setDepthRangeNear}
-                            />
-                            <InputFloat
-                                min={0}
-                                max={1}
-                                size={2}
-                                label="Far"
-                                value={painter.depth.range.far}
-                                onChange={updater.setDepthRangeFar}
-                            />
-                            <Button
-                                icon={IconShow}
-                                flat={true}
-                                label="Code"
-                                onClick={handleShowDepthCode}
-                            />
-                        </Flex>
+                        <InputColumns columns={3}>
+                            <Label value="Clear">
+                                <InputFloat
+                                    min={0}
+                                    max={1}
+                                    maxWidth="2em"
+                                    value={painter.depth.clear}
+                                    onChange={updater.setDepthClear}
+                                />
+                            </Label>
+                            <Label value="Near">
+                                <InputFloat
+                                    min={0}
+                                    max={1}
+                                    maxWidth="2em"
+                                    value={painter.depth.range.near}
+                                    onChange={updater.setDepthRangeNear}
+                                />
+                            </Label>
+                            <Label value="Far">
+                                <InputFloat
+                                    min={0}
+                                    max={1}
+                                    maxWidth="2em"
+                                    value={painter.depth.range.far}
+                                    onChange={updater.setDepthRangeFar}
+                                />
+                            </Label>
+                        </InputColumns>
                     </>
                 )}
+                <CodeExpander>{generateDepthTest(painter.depth)}</CodeExpander>
             </div>
         </fieldset>
     )
-}
-
-function makeShowDepthCodeHandler(painter: TGDPainter) {
-    return () => {
-        Modal.info(
-            <CodeEditor
-                language="ts"
-                value={`gl.enable(gl.DEPTH_TEST)
-gl.clearDepth(${painter.depth.clear})
-gl.depthFunc(gl.${painter.depth.func})
-gl.depthMask(${painter.depth.mask})
-gl.depthRange(${painter.depth.range.near}, ${painter.depth.range.far})
-`}
-            />
-        )
-    }
 }
 
 function getClassNames(props: DepthViewProps): string {

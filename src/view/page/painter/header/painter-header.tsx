@@ -1,15 +1,14 @@
-import * as React from "react"
-import Button from "@/ui/view/button"
-import Flex from "@/ui/view/flex"
-import IconBack from "@/ui/view/icons/back"
-import IconChecked from "@/ui/view/icons/checked"
-import IconCode from "@/ui/view/icons/code"
-import IconData from "@/ui/view/icons/data"
-import IconExport from "@/ui/view/icons/export"
-import IconHelp from "@/ui/view/icons/help"
-import IconTexture from "@/ui/view/icons/texture"
-import Options from "@/ui/view/options"
-import { Icon } from "@/ui/view/icons/generic"
+import Button from "@/ui/view/Button"
+import { Icon } from "@/ui/view/icons/generic/generic-icon"
+import IconBack from "@/ui/view/icons/IconBack"
+import IconChecked from "@/ui/view/icons/IconChecked"
+import IconCode from "@/ui/view/icons/IconCode"
+import IconData from "@/ui/view/icons/IconData"
+import IconExport from "@/ui/view/icons/IconExport"
+import IconHelp from "@/ui/view/icons/IconHelp"
+import IconTexture from "@/ui/view/icons/IconTexture"
+import Options from "@/ui/view/Options"
+import Panel from "@/ui/view/Panel"
 import "./painter-header.css"
 
 export interface PainterHeaderProps {
@@ -25,14 +24,11 @@ export default function PainterHeader({
 }: PainterHeaderProps) {
     return (
         <header className="view-page-painter-header-PainterHeader">
-            <Flex>
-                <Button
-                    flat={true}
-                    label="Back"
-                    icon={IconBack}
-                    onClick={onBack}
-                />
-            </Flex>
+            <Panel display="flex">
+                <Button variant="text" icon={IconBack} onClick={onBack}>
+                    Back
+                </Button>
+            </Panel>
             <Options
                 options={{
                     data: makeItem(IconData, "Data"),

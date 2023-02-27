@@ -1,0 +1,40 @@
+.Options {
+    display: inline-block;
+}
+
+.OptionsWide {
+    display: block;
+}
+
+.OptionsWide :global(div.options) {
+    display: flex;
+    background-color: var(--theme-color-primary);
+}
+
+.Options :global(div.options) {
+    display: inline-flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: stretch;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.Options :global(div.options) > :global(.button) {
+    margin: 0;
+    padding: 0.125rem 0.5rem;
+    flex: 1 1 auto;
+    box-shadow: 0 0 1px currentColor;
+    display: grid;
+    place-items: center;
+}
+
+.Options :global(div.options) > :global(.button.selected) {
+    font-weight: 900;
+    background-color: var(--theme-color-secondary-7);
+}
+
+.Options :global(div.options) > :global(.button.not-selected) {
+    background-color: var(--theme-color-primary);
+    color: var(--theme-color-on-primary-5);
+}

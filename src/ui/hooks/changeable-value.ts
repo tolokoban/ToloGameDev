@@ -1,8 +1,8 @@
 import * as React from "react"
-import { ViewWithChangeableValue } from "./../view/types"
+import { ViewWithValue } from "../types"
 
 export function useChangeableValue<T>(
-    props: ViewWithChangeableValue<T>
+    props: ViewWithValue<T>
 ): [value: T, setValue: (value: T) => void] {
     const [value, setValue] = React.useState(props.value)
     React.useEffect(() => {
@@ -12,7 +12,7 @@ export function useChangeableValue<T>(
         value,
         (v: T) => {
             setValue(v)
-            if (props.onChange) props.onChange(v)
+            props.onChange?.(v)
         },
     ]
 }

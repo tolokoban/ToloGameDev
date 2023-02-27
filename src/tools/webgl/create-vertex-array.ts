@@ -4,6 +4,5 @@ export function createVertexArray(
     const vertexArray = gl.createVertexArray()
     if (!vertexArray) throw Error("Unable to create Vertex Array Object!")
 
-    gl.bindVertexArray(vertexArray)
     return vertexArray
 }

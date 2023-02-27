@@ -1,0 +1,13 @@
+.Dialog {
+    background-color: var(--theme-color-neutral);
+    color: var(--theme-color-on-neutral);
+}
+
+.Dialog > footer {
+    background-color: var(--theme-color-neutral-3);
+    color: var(--theme-color-on-neutral-3);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0.5em 1em;
+}

@@ -1,1 +1,3 @@
-.view-page-painter-section-mode-BlendingView {}
+.view-page-painter-section-mode-BlendingView .children-with-background > * {
+    background-color: var(--theme-color-neutral);
+}

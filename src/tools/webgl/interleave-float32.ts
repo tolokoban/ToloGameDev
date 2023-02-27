@@ -16,6 +16,8 @@ export function interleaveFloat32(
     const attributeSize = inputs
         .map(([_data, size]) => size)
         .reduce((total, value) => total + value, 0)
+    if (attributeSize <= 0) return new Float32Array()
+
     const attributesCount = inputs
         .map(([data, size]) => Math.floor(data.length / size))
         .reduce((previous, current) => Math.min(previous, current), 1e10)

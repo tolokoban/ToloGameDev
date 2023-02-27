@@ -1,4 +1,5 @@
-import ImageURL from "@/gfx/depth-map.jpg"
+import ImageURL from "@/gfx/test.webp"
+// import ImageURL from "@/gfx/depth-map.jpg"
 
 export default class Texture {
     public readonly texture: WebGLTexture
