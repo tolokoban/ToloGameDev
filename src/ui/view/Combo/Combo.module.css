@@ -45,7 +45,6 @@
 }
 
 .ComboOverlay {
-    background-color: var(--theme-color-neutral-2-5);
     position: fixed;
     left: 0;
     top: 0;
@@ -55,6 +54,8 @@
     height: 100%;
     display: grid;
     place-items: center;
+    backdrop-filter: blur(3px) brightness(50%);
+    z-index: 999998;
 }
 
 .ComboOverlay > :global(div.container) {
@@ -63,7 +64,7 @@
     justify-content: flex-start;
     align-items: stretch;
     gap: 0;
-    box-shadow: var(--theme-shadow-dialog);
+    box-shadow: 0 0.5em 1em var(--theme-color-primary-9);
     z-index: 999999;
     max-height: 80vh;
 }
@@ -72,6 +73,7 @@
     flex: 0 0 auto;
     font-weight: 900;
     font-variant: small-caps;
+    box-shadow: none;
 }
 
 .ComboOverlay > :global(div.container) > main {
@@ -89,10 +91,10 @@
 .ComboOverlay > :global(div.container) > main > button {
     all: unset;
     margin: 0;
-    padding: 0 0.25em;
+    padding: 0 1em;
     cursor: pointer;
     height: 3em;
-    box-shadow: 0 1px inset var(--theme-color-on-input-opacity-50);
+    box-shadow: 0 0.5px inset var(--theme-color-on-input);
     display: flex;
     flex-direction: row;
     justify-content: space-between;

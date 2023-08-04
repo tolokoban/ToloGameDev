@@ -32,7 +32,7 @@ export default function Checkbox({
     if (color) style.color = `var(--theme-color-${color})`
     return (
         <button
-            className={$.join(className, Style.Checkbox)}
+            className={$.join(className, Style.Checkbox, value && Style.bold)}
             aria-checked={val}
             onClick={() => setVal(!val)}
             style={style}

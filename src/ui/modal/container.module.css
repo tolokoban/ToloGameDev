@@ -9,6 +9,7 @@
     overflow: auto;
     pointer-events: all;
     z-index: 999999;
+    backdrop-filter: blur(2px) brightness(50%);
 }
 
 .L {

@@ -1,6 +1,5 @@
-import { isString } from "@/guards"
-import AtomicState from "@/state/atomic-state"
 import { useModal } from "@/ui/modal"
+import State from "@/state"
 import Busy from "@/ui/view/Busy"
 import Button from "@/ui/view/Button"
 import IconGear from "@/ui/view/icons/IconGear"
@@ -15,6 +14,7 @@ import PainterCompiler from "./painter-compiler"
 import "./painter-page.css"
 import DataSection from "./section/data"
 import DocumentationSection from "./section/documentation"
+import ExportSection from "./section/export"
 import ModeSection from "./section/mode"
 import ShaderSection from "./section/shader"
 
@@ -24,16 +24,11 @@ export interface PainterPageProps {
     onClose(this: void): void
 }
 
-const atomSection = new AtomicState("data", {
-    id: "painter/section",
-    guard: isString,
-})
-
 export default function PainterPage(props: PainterPageProps) {
     const refCompiler = React.useRef(new PainterCompiler())
     const updater = usePainterUpdater()
     const painter = updater.currentPainter
-    const [section, setSection] = atomSection.useState()
+    const [section, setSection] = State.pages.painter.section.useState()
     const handleCompile = () => refCompiler.current.compile(updater)
     usePainterLoader(props.id, updater, handleCompile)
     const handleBack = useBackHandler(updater, props)
@@ -67,9 +62,10 @@ export default function PainterPage(props: PainterPageProps) {
                         <DataSection key="data" updater={updater} />
                         <ModeSection key="mode" updater={updater} />
                         <DocumentationSection key="doc" />
-                        <pre key="export" className="export">
-                            {JSON.stringify(updater.stablePainter)}
-                        </pre>
+                        <ExportSection
+                            key="export"
+                            painter={updater.stablePainter}
+                        />
                     </Pages>
                 </div>
             </main>

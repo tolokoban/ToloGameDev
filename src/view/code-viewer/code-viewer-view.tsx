@@ -2,6 +2,7 @@ import * as React from "react"
 import Prism from "prismjs"
 import { getGrammarForLanguage } from "@/tools/grammar"
 import "./code-viewer-view.css"
+import { useModal } from "@/ui/modal"
 
 export interface CodeViewerViewProps {
     className?: string
@@ -10,6 +11,7 @@ export interface CodeViewerViewProps {
 }
 
 export default function CodeViewerView(props: CodeViewerViewProps) {
+    const modal = useModal()
     const refCode = React.useRef<null | HTMLElement>(null)
     React.useEffect(() => {
         window.setTimeout(() => {
@@ -24,8 +26,13 @@ export default function CodeViewerView(props: CodeViewerViewProps) {
             code.innerHTML = html
         }, 100)
     }, [props.value, props.language])
+    const handleDoubleClick = () => {
+        navigator.clipboard.writeText(props.value).then(() => {
+            modal.info("This code has been copied to the clipboard!")
+        })
+    }
     return (
-        <div className={getClassNames(props)}>
+        <div className={getClassNames(props)} onDoubleClick={handleDoubleClick}>
             <pre>
                 <code
                     ref={refCode}

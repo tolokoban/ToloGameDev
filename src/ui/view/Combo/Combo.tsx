@@ -70,20 +70,28 @@ export default function Combo<T = string>({
                             </header>
                         )}
                         <main>
-                            {items
-                                .filter(([key]) => key !== value)
-                                .map(([key, item]) => (
-                                    <button
-                                        key={`${key}`}
-                                        tabIndex={0}
-                                        onClick={() => {
-                                            setOpen(false)
-                                            onChange?.(key)
-                                        }}
-                                    >
-                                        {item}
-                                    </button>
-                                ))}
+                            {items.map(([key, item]) => (
+                                <button
+                                    key={`${key}`}
+                                    style={
+                                        key !== value
+                                            ? {}
+                                            : {
+                                                  fontWeight: "bolder",
+                                                  color: "var(--theme-color-on-secondary-9)",
+                                                  background:
+                                                      "var(--theme-color-secondary-9)",
+                                              }
+                                    }
+                                    tabIndex={0}
+                                    onClick={() => {
+                                        setOpen(false)
+                                        onChange?.(key)
+                                    }}
+                                >
+                                    {item}
+                                </button>
+                            ))}
                         </main>
                     </div>
                 </div>

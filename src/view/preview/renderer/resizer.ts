@@ -11,7 +11,9 @@ export default class Resizer {
 
     check(gl: WebGL2RenderingContext) {
         const { canvas } = gl
-        const { width: w, height: h } = canvas.getBoundingClientRect()
+        const { width: w, height: h } = (
+            canvas as HTMLCanvasElement
+        ).getBoundingClientRect()
         if (w === this._width && h === this._height) return
 
         console.log("New canvas size:", w, h)

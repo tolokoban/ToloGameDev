@@ -5,7 +5,6 @@ import {
     divideAttributes,
     TGDPainterAttrbutesGroup,
 } from "../../view/preview/renderer/divide-attributes"
-import { Code, ConfirmationNumberOutlined } from "@mui/icons-material"
 
 export function generateVertexArrayObject(
     attributes: TGDPainterAttribute[],

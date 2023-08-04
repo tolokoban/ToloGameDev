@@ -1,6 +1,7 @@
 .Dialog {
     background-color: var(--theme-color-neutral);
     color: var(--theme-color-on-neutral);
+    box-shadow: 0 0.5em 1em #000;
 }
 
 .Dialog > footer {

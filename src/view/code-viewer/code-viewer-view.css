@@ -24,7 +24,12 @@ div.view-CodeViewerView pre .type {
 }
 
 div.view-CodeViewerView pre .keyword {
-    color: #07f;
+    color: #4af;
+}
+
+div.view-CodeViewerView pre .class-name {
+    color: #a4f;
+    font-weight: bolder;
 }
 
 div.view-CodeViewerView pre .global {
@@ -33,5 +38,10 @@ div.view-CodeViewerView pre .global {
 
 div.view-CodeViewerView pre .function {
     color: #ed0;
-    font-weight: bold;
+    font-weight: bolder;
+}
+
+div.view-CodeViewerView pre .string {
+    color: #dbf;
+    font-weight: lighter;
 }

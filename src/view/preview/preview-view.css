@@ -10,7 +10,9 @@
 .view-PreviewView > canvas {
     flex: 0 0 auto;
     width: 50vw;
-    height: 50vh;
+    max-width: 640px;
+    height: 70vh;
+    max-height: 480px;
     background-color: #000;
     margin: 0;
     box-sizing: border-box;

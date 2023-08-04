@@ -1,7 +1,5 @@
 import { TGDPainterBlending } from "./../../types"
-import { TGDPainterDepth } from "../../types"
 import { CodeBlock } from "./types"
-import { Code } from "@mui/icons-material"
 
 export function generateBlendTest(blend: TGDPainterBlending): CodeBlock {
     if (blend.enabled) {

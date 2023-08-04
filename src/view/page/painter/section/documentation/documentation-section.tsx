@@ -2,6 +2,8 @@ import * as React from "react"
 import ConstSelect from "@/view/const-select"
 import { EMPTY_FUNC, WEBGL2 } from "@/tgd/constants"
 import "./documentation-section.css"
+import Button from "@/ui/view/Button/Button"
+import Panel from "@/ui/view/Panel/Panel"
 
 export interface DocumentationSectionProps {
     className?: string
@@ -13,13 +15,14 @@ export default function DocumentationSection(props: DocumentationSectionProps) {
     return (
         <div className={getClassNames(props)}>
             <h1>Documentations</h1>
-            <ul>
-                <li>
-                    <a href="https://docs.gl/es3/glTexParameter" target="doc">
-                        OpenGL ES 3.1
-                    </a>
-                </li>
-            </ul>
+            <Panel display="flex" justifyContent="space-around">
+                {link("https://docs.gl/es3/glTexParameter", "OpenGL ES 3.1")}
+                {link(
+                    "https://www.khronos.org/opengles/sdk/docs/manglsl/docbook4/",
+                    "GLSL ES 3.0"
+                )}
+                {link("doc/webgl20-reference-guide.pdf", "WebGL 2 Quick Ref")}
+            </Panel>
             <ConstSelect
                 label="Depth Func"
                 items={WEBGL2.depthFunc}
@@ -27,6 +30,14 @@ export default function DocumentationSection(props: DocumentationSectionProps) {
                 onChange={setValue}
             />
         </div>
+    )
+}
+
+function link(url: string, label: React.ReactNode) {
+    return (
+        <Button variant="outlined" onClick={() => window.open(url, "doc")}>
+            {label}
+        </Button>
     )
 }
 

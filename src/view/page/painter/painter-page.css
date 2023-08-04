@@ -27,11 +27,11 @@
     bottom: 0;
     width: 100%;
     display: grid;
-    grid-template-columns: 50vw 1fr;
+    grid-template-columns: auto 1fr;
     gap: 1em;
     place-items: start center;
     padding: 1em;
-    flex: 1 1 auto;
+    flex: 0 0 auto;
 }
 
 .view-page-PainterPage main > div {
@@ -44,13 +44,6 @@
     white-space: pre-wrap;
     padding: 0.5em;
     font-size: 80%;
-}
-
-.view-page-PainterPage main > div > canvas {
-    width: 50vw;
-    height: 50vh;
-    background-color: #000;
-    margin: 0;
 }
 
 .view-page-PainterPage main div.uniforms-grid {
